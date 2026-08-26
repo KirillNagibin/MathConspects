@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Показательная и Логарифмическая функции</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-orange: #F97316;
+            --brand-green: #4CAF50;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.2rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1rem; color: var(--accent); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px;}
+        .prop-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; line-height: 1.4; }
+
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.1rem; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; width: 100%; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 150px; text-align: center; font-size: 0.9rem;
+        }
+        .process-btn.active {
+            background: rgba(6, 182, 212, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+        
+        .win-banner {
+            background-color: rgba(76, 175, 80, 0.2); border: 1px solid var(--brand-green);
+            color: var(--brand-green); padding: 10px; border-radius: 8px; text-align: center;
+            font-weight: bold; margin-bottom: 15px; display: none;
+        }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Показательная и Логарифмическая функции</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">О чем этот конспект?</strong><br>
+                <span style="color: var(--text-muted);">Здесь мы рассмотрим две функции, которые являются взаимно обратными друг другу. Это значит, что их графики симметричны относительно прямой $y = x$. Обе эти функции зависят от основания $a$, которое жестко определяет их поведение.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="trending-up"></i> 1. Показательная функция (Экспонента)</h2>
+        <div class="card">
+            <div class="formula-box" style="border-color: var(--brand-purple);">
+                $$y = a^x \quad (a > 0, a \neq 1)$$
+            </div>
+            <p>Функция, у которой переменная $x$ находится в показателе степени. В отличие от степенной функции ($y = x^2$), основание $a$ всегда зафиксировано.</p>
+            
+            <div class="props-grid">
+                <div class="prop-card">
+                    <div class="prop-title" style="color: var(--brand-purple);">Основание $a > 1$</div>
+                    <ul style="margin:0; padding-left: 15px; font-size: 0.9rem; text-align: left;">
+                        <li>Функция стремительно <b>возрастает</b>.</li>
+                        <li>Чем больше $a$, тем круче рост.</li>
+                    </ul>
+                </div>
+                <div class="prop-card">
+                    <div class="prop-title" style="color: var(--info-text);">Основание $0 < a < 1$</div>
+                    <ul style="margin:0; padding-left: 15px; font-size: 0.9rem; text-align: left;">
+                        <li>Функция <b>убывает</b>.</li>
+                        <li>Приближается к нулю при $x \to \infty$.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p style="color: var(--text-muted); margin-top: 20px; margin-bottom: 0;">Область определения: $x \in \mathbb{R}$. Область значений: $y > 0$. График всегда проходит через точку $(0; 1)$ и имеет горизонтальную асимптоту $y = 0$ (ось X).</p>
+        </div>
+
+        <h2><i data-lucide="gamepad-2"></i> 2. Лаборатория: Показательная функция</h2>
+        <p style="color: var(--text-muted);">Подберите основание $a$. Заметьте, как изменение значения $a$ через единицу зеркально меняет характер функции (возрастание на убывание).</p>
+        
+        <div class="simulator" style="border-color: var(--brand-purple);">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-exp-game" onclick="setExpMode('game')" style="border-color: var(--brand-purple); color: var(--brand-purple);">Игра: Угадай график</div>
+                <div class="process-btn" id="btn-exp-sandbox" onclick="setExpMode('sandbox')">Песочница</div>
+            </div>
+
+            <div class="win-banner" id="exp-success" style="color: var(--brand-purple); border-color: var(--brand-purple); background-color: rgba(139, 92, 246, 0.2);">
+                <i data-lucide="check-circle" style="vertical-align: middle; margin-right: 5px;"></i> Отлично! Графики совпали!
+            </div>
+
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--brand-purple);">Основание a: <span id="val-exp-a" style="font-weight: bold;">2.0</span></label>
+                    <input type="range" id="sim-exp-a" min="0.1" max="5.0" value="2.0" step="0.1" style="accent-color: var(--brand-purple);">
+                </div>
+                <div class="control-group" style="justify-content: flex-end;">
+                    <button class="btn btn-outline" id="exp-new-game" onclick="initExpGame()" style="width: 100%; border-color: var(--brand-purple); color: var(--brand-purple);">Новая цель</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: center;">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Уравнение</div>
+                    <div class="dashboard-value" id="dash-exp-eq" style="color: var(--brand-purple);">$y = 2^x$</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Монотонность</div>
+                    <div class="dashboard-value" id="dash-exp-mono" style="color: #fff;">Возрастает</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-exp" width="600" height="300"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="bar-chart-2"></i> 3. Логарифмическая функция</h2>
+        <div class="card">
+            <div class="formula-box" style="border-color: var(--brand-orange);">
+                $$y = \log_a x \quad (a > 0, a \neq 1, x > 0)$$
+            </div>
+            <p>Функция, обратная показательной. Она отвечает на вопрос: «В какую степень возвести $a$, чтобы получить $x$?».</p>
+            
+            <div class="props-grid">
+                <div class="prop-card">
+                    <div class="prop-title" style="color: var(--brand-orange);">Основание $a > 1$</div>
+                    <ul style="margin:0; padding-left: 15px; font-size: 0.9rem; text-align: left;">
+                        <li>Функция медленно <b>возрастает</b>.</li>
+                        <li>Находится в I и IV четвертях.</li>
+                    </ul>
+                </div>
+                <div class="prop-card">
+                    <div class="prop-title" style="color: var(--info-text);">Основание $0 < a < 1$</div>
+                    <ul style="margin:0; padding-left: 15px; font-size: 0.9rem; text-align: left;">
+                        <li>Функция <b>убывает</b>.</li>
+                        <li>Так же находится в I и IV четвертях.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p style="color: var(--text-muted); margin-top: 20px; margin-bottom: 0;">Область определения строго ограничена: $x > 0$. График всегда проходит через точку $(1; 0)$ и имеет вертикальную асимптоту $x = 0$ (ось Y).</p>
+        </div>
+
+        <h2><i data-lucide="gamepad-2"></i> 4. Лаборатория: Логарифмическая функция</h2>
+        <p style="color: var(--text-muted);">Подберите основание $a$. График асимптотически приближается к оси Y, но никогда ее не пересекает (иллюстрация ОДЗ логарифма).</p>
+        
+        <div class="simulator" style="border-color: var(--brand-orange);">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-log-game" onclick="setLogMode('game')" style="border-color: var(--brand-orange); color: var(--brand-orange);">Игра: Угадай график</div>
+                <div class="process-btn" id="btn-log-sandbox" onclick="setLogMode('sandbox')">Песочница</div>
+            </div>
+
+            <div class="win-banner" id="log-success" style="color: var(--brand-orange); border-color: var(--brand-orange); background-color: rgba(249, 115, 22, 0.2);">
+                <i data-lucide="check-circle" style="vertical-align: middle; margin-right: 5px;"></i> Отлично! Графики совпали!
+            </div>
+
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--brand-orange);">Основание a: <span id="val-log-a" style="font-weight: bold;">2.0</span></label>
+                    <input type="range" id="sim-log-a" min="0.1" max="5.0" value="2.0" step="0.1" style="accent-color: var(--brand-orange);">
+                </div>
+                <div class="control-group" style="justify-content: flex-end;">
+                    <button class="btn btn-outline" id="log-new-game" onclick="initLogGame()" style="width: 100%; border-color: var(--brand-orange); color: var(--brand-orange);">Новая цель</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: center;">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Уравнение</div>
+                    <div class="dashboard-value" id="dash-log-eq" style="color: var(--brand-orange);">$y = \log_2 x$</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Монотонность</div>
+                    <div class="dashboard-value" id="dash-log-mono" style="color: #fff;">Возрастает</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-log" width="600" height="300"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            function drawGrid(ctx, w, h, originX, originY, scaleX, scaleY = scaleX) {
+                ctx.clearRect(0, 0, w, h);
+                
+                ctx.strokeStyle = '#2a2a2a';
+                ctx.lineWidth = 1;
+                let startX = originX % scaleX;
+                for(let x = startX; x < w; x += scaleX) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                }
+                let startY = originY % scaleY;
+                for(let y = startY; y < h; y += scaleY) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                ctx.strokeStyle = '#888';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke();
+
+                ctx.fillStyle = '#888';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                
+                for(let x = startX; x < w; x += scaleX) {
+                    let val = Math.round((x - originX) / scaleX);
+                    if (val !== 0 && Math.abs(x - originX) > 1) {
+                        ctx.beginPath(); ctx.moveTo(x, originY - 3); ctx.lineTo(x, originY + 3); ctx.stroke();
+                        ctx.fillText(val, x, originY + 6);
+                    }
+                }
+                
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                for(let y = startY; y < h; y += scaleY) {
+                    let val = Math.round(-(y - originY) / scaleY);
+                    if (val !== 0 && Math.abs(y - originY) > 1) {
+                        ctx.beginPath(); ctx.moveTo(originX - 3, y); ctx.lineTo(originX + 3, y); ctx.stroke();
+                        ctx.fillText(val, originX - 6, y);
+                    }
+                }
+
+                ctx.fillText('x', w - 10, originY - 10);
+                ctx.fillText('y', originX + 15, 10);
+                ctx.fillText('0', originX - 8, originY + 8);
+            }
+
+            // Функция отрисовки экспоненты
+            function drawExpLine(ctx, w, h, originX, originY, scaleX, scaleY, a, color, isDashed=false) {
+                if (a <= 0 || a === 1) return;
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                if (isDashed) ctx.setLineDash([8, 8]);
+                else ctx.setLineDash([]);
+
+                let firstPoint = true;
+                for (let px = 0; px <= w; px += 2) {
+                    let x = (px - originX) / scaleX;
+                    let y = Math.pow(a, x);
+                    let py = originY - y * scaleY;
+                    if (py > h + 200 || py < -200) { firstPoint = true; continue; }
+                    if (firstPoint) { ctx.moveTo(px, py); firstPoint = false; }
+                    else { ctx.lineTo(px, py); }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Функция отрисовки логарифма
+            function drawLogLine(ctx, w, h, originX, originY, scaleX, scaleY, a, color, isDashed=false) {
+                if (a <= 0 || a === 1) return;
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                if (isDashed) ctx.setLineDash([8, 8]);
+                else ctx.setLineDash([]);
+
+                let firstPoint = true;
+                for (let px = originX + 0.1; px <= w; px += 2) {
+                    let x = (px - originX) / scaleX;
+                    if (x <= 0) continue;
+                    let y = Math.log(x) / Math.log(a);
+                    let py = originY - y * scaleY;
+                    if (py > h + 200 || py < -200) { firstPoint = true; continue; }
+                    if (firstPoint) { ctx.moveTo(px, py); firstPoint = false; }
+                    else { ctx.lineTo(px, py); }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            /* --- СИМУЛЯТОР ЭКСППОНЕНТЫ --- */
+            const canvasExp = document.getElementById('canvas-exp');
+            const ctxExp = canvasExp.getContext('2d');
+            const inExpA = document.getElementById('sim-exp-a');
+            const valExpA = document.getElementById('val-exp-a');
+            const dashExpEq = document.getElementById('dash-exp-eq');
+            const dashExpMono = document.getElementById('dash-exp-mono');
+            const expSuccess = document.getElementById('exp-success');
+
+            let expMode = 'game';
+            let expTargetA = 2.0;
+
+            window.setExpMode = function(mode) {
+                expMode = mode;
+                document.getElementById('btn-exp-game').classList.toggle('active', mode === 'game');
+                document.getElementById('btn-exp-sandbox').classList.toggle('active', mode === 'sandbox');
+                document.getElementById('btn-exp-sandbox').style.borderColor = mode === 'sandbox' ? 'var(--brand-purple)' : 'var(--border)';
+                document.getElementById('btn-exp-sandbox').style.color = mode === 'sandbox' ? 'var(--brand-purple)' : 'var(--text-muted)';
+                document.getElementById('btn-exp-sandbox').style.background = mode === 'sandbox' ? 'rgba(139, 92, 246, 0.1)' : 'var(--bg-card)';
+                document.getElementById('exp-new-game').style.display = mode === 'game' ? 'block' : 'none';
+                if (mode === 'game') window.initExpGame();
+                else updateExp();
+            };
+
+            window.initExpGame = function() {
+                let r = (Math.floor(Math.random() * 40) + 1) * 0.1; 
+                if (Math.abs(r - 1.0) < 0.05) r = 2.0;
+                expTargetA = r;
+                expSuccess.style.display = 'none';
+                inExpA.value = 1.5;
+                updateExp();
+            };
+
+            function updateExp() {
+                const rect = canvasExp.parentElement.getBoundingClientRect();
+                if (rect.width > 0) canvasExp.width = rect.width;
+                let a = parseFloat(inExpA.value);
+                if (Math.abs(a - 1.0) < 0.05) { a = 1.1; inExpA.value = 1.1; } 
+                valExpA.textContent = a.toFixed(1);
+                dashExpEq.innerHTML = `$y = ${a.toFixed(1)}^x$`;
+                dashExpMono.textContent = a > 1 ? "Возрастает" : "Убывает";
+                safeMathRender([dashExpEq]);
+                const w = canvasExp.width, h = canvasExp.height;
+                const originX = w / 2, originY = h - 50, scaleX = 30, scaleY = 30;
+                drawGrid(ctxExp, w, h, originX, originY, scaleX, scaleY);
+                if (expMode === 'game') {
+                    drawExpLine(ctxExp, w, h, originX, originY, scaleX, scaleY, expTargetA, 'rgba(245, 158, 11, 0.8)', true);
+                }
+                drawExpLine(ctxExp, w, h, originX, originY, scaleX, scaleY, a, 'var(--brand-purple)');
+                if (expMode === 'game') {
+                    expSuccess.style.display = (Math.abs(a - expTargetA) < 0.05) ? 'block' : 'none';
+                }
+            }
+            inExpA.addEventListener('input', updateExp);
+
+            /* --- СИМУЛЯТОР ЛОГАРИФМА --- */
+            const canvasLog = document.getElementById('canvas-log');
+            const ctxLog = canvasLog.getContext('2d');
+            const inLogA = document.getElementById('sim-log-a');
+            const valLogA = document.getElementById('val-log-a');
+            const dashLogEq = document.getElementById('dash-log-eq');
+            const dashLogMono = document.getElementById('dash-log-mono');
+            const logSuccess = document.getElementById('log-success');
+
+            let logMode = 'game';
+            let logTargetA = 2.0;
+
+            window.setLogMode = function(mode) {
+                logMode = mode;
+                document.getElementById('btn-log-game').classList.toggle('active', mode === 'game');
+                document.getElementById('btn-log-sandbox').classList.toggle('active', mode === 'sandbox');
+                document.getElementById('btn-log-sandbox').style.borderColor = mode === 'sandbox' ? 'var(--brand-orange)' : 'var(--border)';
+                document.getElementById('btn-log-sandbox').style.color = mode === 'sandbox' ? 'var(--brand-orange)' : 'var(--text-muted)';
+                document.getElementById('btn-log-sandbox').style.background = mode === 'sandbox' ? 'rgba(249, 115, 22, 0.1)' : 'var(--bg-card)';
+                document.getElementById('log-new-game').style.display = mode === 'game' ? 'block' : 'none';
+                if (mode === 'game') window.initLogGame();
+                else updateLog();
+            };
+
+            window.initLogGame = function() {
+                let r = (Math.floor(Math.random() * 40) + 1) * 0.1; 
+                if (Math.abs(r - 1.0) < 0.05) r = 2.0;
+                logTargetA = r;
+                logSuccess.style.display = 'none';
+                inLogA.value = 1.5;
+                updateLog();
+            };
+
+            function updateLog() {
+                const rect = canvasLog.parentElement.getBoundingClientRect();
+                if (rect.width > 0) canvasLog.width = rect.width;
+                let a = parseFloat(inLogA.value);
+                if (Math.abs(a - 1.0) < 0.05) { a = 1.1; inLogA.value = 1.1; } 
+                valLogA.textContent = a.toFixed(1);
+                dashLogEq.innerHTML = `$y = \\log_{${a.toFixed(1)}} x$`;
+                dashLogMono.textContent = a > 1 ? "Возрастает" : "Убывает";
+                safeMathRender([dashLogEq]);
+                const w = canvasLog.width, h = canvasLog.height;
+                const originX = 50, originY = h / 2, scaleX = 30, scaleY = 30;
+                drawGrid(ctxLog, w, h, originX, originY, scaleX, scaleY);
+                if (logMode === 'game') {
+                    drawLogLine(ctxLog, w, h, originX, originY, scaleX, scaleY, logTargetA, 'rgba(245, 158, 11, 0.8)', true);
+                }
+                drawLogLine(ctxLog, w, h, originX, originY, scaleX, scaleY, a, 'var(--brand-orange)');
+                if (logMode === 'game') {
+                    logSuccess.style.display = (Math.abs(a - logTargetA) < 0.05) ? 'block' : 'none';
+                }
+            }
+            inLogA.addEventListener('input', updateLog);
+
+            // Инициализация
+            window.initExpGame();
+            window.initLogGame();
+
+            window.addEventListener('resize', () => {
+                updateExp();
+                updateLog();
+            });
+        });
+    </script>
+</body>
+</html>
