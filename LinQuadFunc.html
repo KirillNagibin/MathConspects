@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Линейная и квадратичная функции (8 класс)</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-green: #4CAF50;
+            --brand-purple: #8B5CF6;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 0 auto; padding: 20px; }
+
+        h1 { font-size: 2.2rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1rem; color: var(--accent); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px;}
+        
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.1rem; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; width: 100%; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 150px; text-align: center; font-size: 0.9rem;
+        }
+        .process-btn.active {
+            background: rgba(6, 182, 212, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+        
+        .win-banner {
+            background-color: rgba(76, 175, 80, 0.2); border: 1px solid var(--brand-green);
+            color: var(--brand-green); padding: 10px; border-radius: 8px; text-align: center;
+            font-weight: bold; margin-bottom: 15px; display: none;
+        }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Линейная и квадратичная функции</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Что такое функция?</strong><br>
+                <span style="color: var(--text-muted);">Функция — это правило, по которому каждому значению одной переменной (независимой $x$) ставится в соответствие ровно одно значение другой переменной (зависимой $y$). В 8 классе мы детально изучаем два самых важных "правила": прямую линию и параболу.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="trending-up"></i> 1. Линейная функция (Прямая)</h2>
+        <div class="card">
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$y = kx + b$$
+            </div>
+            <p>Графиком линейной функции всегда является <b>прямая линия</b>. Чтобы её построить, достаточно найти координаты всего двух точек. Поведение прямой полностью определяется её коэффициентами $k$ и $b$.</p>
+            
+            <div class="props-grid">
+                <div class="prop-card">
+                    <div class="prop-title" style="color: var(--brand-green);">Коэффициент $k$ (Наклон)</div>
+                    <ul style="margin:0; padding-left: 15px; font-size: 0.9rem;">
+                        <li>Если $k > 0$, функция <b>возрастает</b> (идет вверх).</li>
+                        <li>Если $k < 0$, функция <b>убывает</b> (идет вниз).</li>
+                        <li>Если $k = 0$, прямая параллельна оси X ($y = b$).</li>
+                    </ul>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Чем больше модуль $|k|$, тем круче (ближе к вертикали) идет прямая.</p>
+                </div>
+                <div class="prop-card">
+                    <div class="prop-title" style="color: var(--warn-text);">Коэффициент $b$ (Сдвиг)</div>
+                    <ul style="margin:0; padding-left: 15px; font-size: 0.9rem;">
+                        <li>Показывает <b>точку пересечения с осью Y</b>.</li>
+                        <li>Координаты этой точки всегда: $(0; b)$.</li>
+                        <li>Если $b = 0$, получаем прямую пропорциональность $y = kx$, которая обязательно проходит через начало координат $(0; 0)$.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="sliders-horizontal"></i> 2. Лаборатория: Линейная функция</h2>
+        <p style="color: var(--text-muted);">В <i>režim</i> (режиме) игры ваша <i>cieľ</i> (цель) — совместить свой график (сплошная линия) с целевым графиком (пунктир), подбирая коэффициенты $k$ и $b$.</p>
+        
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-lin-game" onclick="setLinMode('game')">Игра: Угадай график</div>
+                <div class="process-btn" id="btn-lin-sandbox" onclick="setLinMode('sandbox')">Песочница (Исследование)</div>
+            </div>
+
+            <div class="win-banner" id="lin-success">
+                <i data-lucide="check-circle" style="vertical-align: middle; margin-right: 5px;"></i> Поздравляем! Графики совпали!
+            </div>
+
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--brand-green);">Коэффициент k: <span id="val-lin-k" style="font-weight: bold;">1.0</span></label>
+                    <input type="range" id="sim-lin-k" min="-5" max="5" value="1" step="0.5" style="accent-color: var(--brand-green);">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--warn-text);">Коэффициент b: <span id="val-lin-b" style="font-weight: bold;">2.0</span></label>
+                    <input type="range" id="sim-lin-b" min="-5" max="5" value="2" step="1" style="accent-color: var(--warn-text);">
+                </div>
+            </div>
+
+            <button class="btn btn-outline" id="lin-new-game" onclick="initLinGame()" style="margin-bottom: 20px;">Сгенерировать новую цель</button>
+
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: center;">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Уравнение вашей прямой</div>
+                    <div class="dashboard-value" id="dash-lin-eq" style="color: var(--accent);">$y = 1x + 2$</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Пересечение с осью Y</div>
+                    <div class="dashboard-value" id="dash-lin-y" style="color: var(--error-text);">(0; 2)</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Корень (пересечение с X)</div>
+                    <div class="dashboard-value" id="dash-lin-x" style="color: var(--info-text);">(-2; 0)</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-linear" width="600" height="300"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="share-2"></i> 3. Квадратичная функция (Парабола)</h2>
+        <div class="card">
+            <div class="formula-box" style="border-color: var(--brand-purple);">
+                $$y = ax^2 + bx + c \quad (a \neq 0)$$
+            </div>
+            <p>Графиком является <b>парабола</b>. Её форма и положение зависят от трех коэффициентов.</p>
+
+            <div class="props-grid">
+                <div class="prop-card">
+                    <div class="prop-title" style="color: var(--brand-green);">Коэффициент $a$</div>
+                    <ul style="margin:0; padding-left: 15px; font-size: 0.9rem;">
+                        <li>$a > 0 \implies$ ветви параболы направлены <b>вверх</b> $\cup$.</li>
+                        <li>$a < 0 \implies$ ветви направлены <b>вниз</b> $\cap$.</li>
+                        <li>Чем больше $|a|$, тем парабола уже (ближе к оси Y). Чем меньше — тем шире.</li>
+                    </ul>
+                </div>
+                <div class="prop-card">
+                    <div class="prop-title" style="color: var(--warn-text);">Свободный член $c$</div>
+                    <ul style="margin:0; padding-left: 15px; font-size: 0.9rem;">
+                        <li>Как и у прямой, $c$ отвечает за <b>пересечение с осью Y</b>.</li>
+                        <li>Координаты точки пересечения всегда: $(0; c)$.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 25px;">Ключевые точки параболы</h3>
+            
+            <div class="alert-box alert-warning">
+                <div class="icon-box"><i data-lucide="zap"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Вершина параболы (Самая важная точка!)</strong><br>
+                    <span style="color: var(--text-muted);">Координата X вершины вычисляется по формуле: 
+                    <span style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; color: #fff;">$x_0 = -\frac{b}{2a}$</span>. <br>
+                    Чтобы найти координату Y ($y_0$), нужно просто подставить найденный $x_0$ обратно в уравнение параболы. Через вершину проходит ось симметрии параболы.</span>
+                </div>
+            </div>
+
+            <p style="color: var(--text-muted);"><b>Корни (пересечения с осью X):</b> Чтобы найти, где парабола пересекает ось X, нужно приравнять $y$ к нулю ($ax^2 + bx + c = 0$) и решить квадратное уравнение через Дискриминант ($D = b^2 - 4ac$). Если $D > 0$ — две точки пересечения, $D = 0$ — одна (вершина касается оси), $D < 0$ — парабола не пересекает ось X.</p>
+        </div>
+
+        <h2><i data-lucide="sliders"></i> 4. Лаборатория: Квадратичная функция</h2>
+        <p style="color: var(--text-muted);">В <i>režim</i> (режиме) игры подберите $a, b, c$, чтобы ваша парабола совпала с пунктирной целью. Обращайте внимание на вершину и пересечение с осью Y ($c$).</p>
+        
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-quad-game" onclick="setQuadMode('game')">Игра: Угадай график</div>
+                <div class="process-btn" id="btn-quad-sandbox" onclick="setQuadMode('sandbox')">Песочница (Исследование)</div>
+            </div>
+
+            <div class="win-banner" id="quad-success">
+                <i data-lucide="check-circle" style="vertical-align: middle; margin-right: 5px;"></i> Поздравляем! Графики совпали!
+            </div>
+
+            <div class="sim-controls" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                <div class="control-group">
+                    <label style="color: var(--brand-green);">Коэфф. a: <span id="val-quad-a" style="font-weight: bold;">1.0</span></label>
+                    <input type="range" id="sim-quad-a" min="-3" max="3" value="1" step="0.5" style="accent-color: var(--brand-green);">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--text-main);">Коэфф. b: <span id="val-quad-b" style="font-weight: bold;">0.0</span></label>
+                    <input type="range" id="sim-quad-b" min="-5" max="5" value="0" step="1" style="accent-color: #aaa;">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--warn-text);">Коэфф. c: <span id="val-quad-c" style="font-weight: bold;">0.0</span></label>
+                    <input type="range" id="sim-quad-c" min="-5" max="5" value="0" step="1" style="accent-color: var(--warn-text);">
+                </div>
+            </div>
+
+            <button class="btn btn-outline" id="quad-new-game" onclick="initQuadGame()" style="margin-bottom: 20px;">Сгенерировать новую цель</button>
+
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Уравнение вашей параболы</div>
+                    <div class="dashboard-value" id="dash-quad-eq" style="color: var(--brand-purple);">$y = 1x^2 + 0x + 0$</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Вершина $(x_0; y_0)$</div>
+                    <div class="dashboard-value" id="dash-quad-vertex" style="color: var(--warn-text);">(0.0; 0.0)</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Дискриминант ($D = b^2 - 4ac$)</div>
+                    <div class="dashboard-value" id="dash-quad-d" style="color: #fff;">0</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Корни ($x_1, x_2$)</div>
+                    <div class="dashboard-value" id="dash-quad-roots" style="color: var(--info-text);">x = 0</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-quad" width="600" height="350"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика (Задание ОГЭ/ЕГЭ)</h2>
+        
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Поиск коэффициентов по графику</h3>
+            <p>На рисунке изображен график функции $f(x) = ax^2 + bx + c$. Найдите значение $f(8)$.</p>
+            
+            <div style="background: #1a1a1a; border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin: 15px 0; overflow: hidden; display: flex; justify-content: center;">
+                <canvas id="canvas-practice" width="400" height="300" style="max-width: 100%;"></canvas>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. Вершина параболы (зеленая точка) находится в координатах $(1; -4)$. Это значит, что $x_0 = 1, y_0 = -4$.</p>
+                
+                <p>2. Вспомним формулу вершины: $x_0 = -\frac{b}{2a} \implies 1 = -\frac{b}{2a} \implies b = -2a$.</p>
+                
+                <p>3. Парабола пересекает ось Y в точке $(0; -3)$ (красная точка). Это означает, что свободный член $c = -3$.</p>
+                
+                <p>4. Подставим известную точку (например, вершину) в уравнение $y = ax^2 + bx + c$:<br>
+                $-4 = a(1)^2 + b(1) - 3 \implies -4 = a + b - 3 \implies a + b = -1$.</p>
+
+                <p>5. Мы знаем, что $b = -2a$. Подставим: <br>
+                $a - 2a = -1 \implies -a = -1 \implies a = 1$.<br>
+                Тогда $b = -2(1) = -2$.</p>
+
+                <p>6. Функция полностью восстановлена: $f(x) = x^2 - 2x - 3$. Найдем $f(8)$:<br>
+                $f(8) = 8^2 - 2 \cdot 8 - 3 = 64 - 16 - 3 = 45$.</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 45</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            function drawGrid(ctx, w, h, originX, originY, scaleX, scaleY) {
+                ctx.clearRect(0, 0, w, h);
+                
+                ctx.strokeStyle = '#2a2a2a';
+                ctx.lineWidth = 1;
+                let startX = originX % scaleX;
+                for(let x = startX; x < w; x += scaleX) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                }
+                let startY = originY % scaleY;
+                for(let y = startY; y < h; y += scaleY) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                ctx.strokeStyle = '#888';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke();
+
+                ctx.fillStyle = '#888';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                
+                for(let x = startX; x < w; x += scaleX) {
+                    let val = Math.round((x - originX) / scaleX);
+                    if (val !== 0 && Math.abs(x - originX) > 1) {
+                        ctx.beginPath(); ctx.moveTo(x, originY - 3); ctx.lineTo(x, originY + 3); ctx.stroke();
+                        ctx.fillText(val, x, originY + 6);
+                    }
+                }
+                
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                for(let y = startY; y < h; y += scaleY) {
+                    let val = Math.round(-(y - originY) / scaleY);
+                    if (val !== 0 && Math.abs(y - originY) > 1) {
+                        ctx.beginPath(); ctx.moveTo(originX - 3, y); ctx.lineTo(originX + 3, y); ctx.stroke();
+                        ctx.fillText(val, originX - 6, y);
+                    }
+                }
+
+                ctx.fillText('x', w - 10, originY - 10);
+                ctx.fillText('y', originX + 15, 10);
+                ctx.fillText('0', originX - 8, originY + 8);
+            }
+
+            /* --- СИМУЛЯТОР ЛИНЕЙНОЙ ФУНКЦИИ --- */
+            const canvasLin = document.getElementById('canvas-linear');
+            const ctxLin = canvasLin.getContext('2d');
+            const inLinK = document.getElementById('sim-lin-k');
+            const inLinB = document.getElementById('sim-lin-b');
+            const valLinK = document.getElementById('val-lin-k');
+            const valLinB = document.getElementById('val-lin-b');
+            const dashLinEq = document.getElementById('dash-lin-eq');
+            const dashLinY = document.getElementById('dash-lin-y');
+            const dashLinX = document.getElementById('dash-lin-x');
+            const linSuccess = document.getElementById('lin-success');
+
+            let linMode = 'game';
+            let linTargetK = 2.0;
+            let linTargetB = -1.0;
+
+            window.setLinMode = function(mode) {
+                linMode = mode;
+                document.getElementById('btn-lin-game').classList.toggle('active', mode === 'game');
+                document.getElementById('btn-lin-sandbox').classList.toggle('active', mode === 'sandbox');
+                document.getElementById('lin-new-game').style.display = mode === 'game' ? 'block' : 'none';
+                if (mode === 'game') window.initLinGame();
+                else updateLinear();
+            };
+
+            window.initLinGame = function() {
+                linTargetK = (Math.floor(Math.random() * 21) - 10) * 0.5; // -5 to 5, step 0.5
+                linTargetB = Math.floor(Math.random() * 11) - 5; // -5 to 5, step 1
+                linSuccess.style.display = 'none';
+                updateLinear();
+            };
+
+            function updateLinear() {
+                const rect = canvasLin.parentElement.getBoundingClientRect();
+                if (rect.width > 0) canvasLin.width = rect.width;
+
+                const k = parseFloat(inLinK.value);
+                const b = parseFloat(inLinB.value);
+
+                valLinK.textContent = k.toFixed(1);
+                valLinB.textContent = b.toFixed(1);
+
+                let eqStr = `$y = ${k}x ${b >= 0 ? '+ '+b : '- '+Math.abs(b)}$`;
+                if (k === 1) eqStr = `$y = x ${b >= 0 ? '+ '+b : '- '+Math.abs(b)}$`;
+                if (k === -1) eqStr = `$y = -x ${b >= 0 ? '+ '+b : '- '+Math.abs(b)}$`;
+                if (k === 0) eqStr = `$y = ${b}$`;
+                if (b === 0) eqStr = eqStr.replace('+ 0', '').replace('- 0', '');
+                
+                dashLinEq.innerHTML = eqStr;
+                dashLinY.textContent = `(0; ${b})`;
+                
+                let rootStr = '—';
+                if (k !== 0) {
+                    const rootX = -b / k;
+                    rootStr = `(${rootX.toFixed(1)}; 0)`;
+                } else if (b === 0) {
+                    rootStr = 'Любое x (совпадает с осью X)';
+                } else {
+                    rootStr = 'Нет пересечений';
+                }
+                dashLinX.textContent = rootStr;
+
+                safeMathRender([dashLinEq]);
+
+                const w = canvasLin.width;
+                const h = canvasLin.height;
+                const originX = w / 2;
+                const originY = h / 2;
+                const scale = 30;
+
+                drawGrid(ctxLin, w, h, originX, originY, scale, scale);
+
+                // Отрисовка цели в режиме игры
+                if (linMode === 'game') {
+                    ctxLin.beginPath();
+                    ctxLin.strokeStyle = 'rgba(245, 158, 11, 0.8)'; // Оранжевый пунктир
+                    ctxLin.lineWidth = 3;
+                    ctxLin.setLineDash([8, 8]);
+                    let firstTarget = true;
+                    for (let px = 0; px <= w; px += 5) {
+                        let x = (px - originX) / scale;
+                        let y = linTargetK * x + linTargetB;
+                        let py = originY - y * scale;
+                        if (firstTarget) { ctxLin.moveTo(px, py); firstTarget = false; } 
+                        else { ctxLin.lineTo(px, py); }
+                    }
+                    ctxLin.stroke();
+                    ctxLin.setLineDash([]);
+                }
+
+                // Отрисовка графика пользователя
+                ctxLin.beginPath();
+                ctxLin.strokeStyle = '#06B6D4'; // Бирюзовый
+                ctxLin.lineWidth = 3;
+                let firstPoint = true;
+                for (let px = 0; px <= w; px += 2) {
+                    let x = (px - originX) / scale;
+                    let y = k * x + b;
+                    let py = originY - y * scale;
+                    if (firstPoint) { ctxLin.moveTo(px, py); firstPoint = false; } 
+                    else { ctxLin.lineTo(px, py); }
+                }
+                ctxLin.stroke();
+
+                ctxLin.beginPath();
+                ctxLin.arc(originX, originY - b * scale, 6, 0, Math.PI*2);
+                ctxLin.fillStyle = '#EF4444';
+                ctxLin.fill();
+                ctxLin.strokeStyle = '#fff';
+                ctxLin.lineWidth = 2;
+                ctxLin.stroke();
+
+                if (k !== 0) {
+                    const rootX = -b / k;
+                    ctxLin.beginPath();
+                    ctxLin.arc(originX + rootX * scale, originY, 6, 0, Math.PI*2);
+                    ctxLin.fillStyle = '#3B82F6';
+                    ctxLin.fill();
+                    ctxLin.stroke();
+                }
+
+                if (linMode === 'game') {
+                    if (k === linTargetK && b === linTargetB) {
+                        linSuccess.style.display = 'block';
+                    } else {
+                        linSuccess.style.display = 'none';
+                    }
+                }
+            }
+
+            inLinK.addEventListener('input', updateLinear);
+            inLinB.addEventListener('input', updateLinear);
+
+            /* --- СИМУЛЯТОР КВАДРАТИЧНОЙ ФУНКЦИИ --- */
+            const canvasQuad = document.getElementById('canvas-quad');
+            const ctxQuad = canvasQuad.getContext('2d');
+            const inQuadA = document.getElementById('sim-quad-a');
+            const inQuadB = document.getElementById('sim-quad-b');
+            const inQuadC = document.getElementById('sim-quad-c');
+            const valQuadA = document.getElementById('val-quad-a');
+            const valQuadB = document.getElementById('val-quad-b');
+            const valQuadC = document.getElementById('val-quad-c');
+            const dashQuadEq = document.getElementById('dash-quad-eq');
+            const dashQuadVertex = document.getElementById('dash-quad-vertex');
+            const dashQuadD = document.getElementById('dash-quad-d');
+            const dashQuadRoots = document.getElementById('dash-quad-roots');
+            const quadSuccess = document.getElementById('quad-success');
+
+            let quadMode = 'game';
+            let quadTargetA = -1.0;
+            let quadTargetB = 2.0;
+            let quadTargetC = 1.0;
+
+            window.setQuadMode = function(mode) {
+                quadMode = mode;
+                document.getElementById('btn-quad-game').classList.toggle('active', mode === 'game');
+                document.getElementById('btn-quad-sandbox').classList.toggle('active', mode === 'sandbox');
+                document.getElementById('quad-new-game').style.display = mode === 'game' ? 'block' : 'none';
+                if (mode === 'game') window.initQuadGame();
+                else updateQuadratic();
+            };
+
+            window.initQuadGame = function() {
+                quadTargetA = (Math.floor(Math.random() * 13) - 6) * 0.5; // -3 to 3, step 0.5
+                if (quadTargetA === 0) quadTargetA = 1.0; // Парабола не может быть прямой
+                quadTargetB = Math.floor(Math.random() * 11) - 5; // -5 to 5, step 1
+                quadTargetC = Math.floor(Math.random() * 11) - 5; // -5 to 5, step 1
+                quadSuccess.style.display = 'none';
+                updateQuadratic();
+            };
+
+            function updateQuadratic() {
+                const rect = canvasQuad.parentElement.getBoundingClientRect();
+                if (rect.width > 0) canvasQuad.width = rect.width;
+
+                let a = parseFloat(inQuadA.value);
+                if (Math.abs(a) < 0.1) { a = 0.5; inQuadA.value = 0.5; }
+                
+                const b = parseFloat(inQuadB.value);
+                const c = parseFloat(inQuadC.value);
+
+                valQuadA.textContent = a.toFixed(1);
+                valQuadB.textContent = b.toFixed(1);
+                valQuadC.textContent = c.toFixed(1);
+
+                const x0 = -b / (2 * a);
+                const y0 = a * x0 * x0 + b * x0 + c;
+                const D = b * b - 4 * a * c;
+
+                let eqStr = `$y = ${a}x^2 ${b >= 0 ? '+ '+b : '- '+Math.abs(b)}x ${c >= 0 ? '+ '+c : '- '+Math.abs(c)}$`;
+                dashQuadEq.innerHTML = eqStr;
+                dashQuadVertex.textContent = `(${x0.toFixed(2)}; ${y0.toFixed(2)})`;
+                dashQuadD.textContent = D.toFixed(2);
+                
+                let rootsStr = '';
+                let roots = [];
+                if (D > 0) {
+                    const x1 = (-b + Math.sqrt(D)) / (2 * a);
+                    const x2 = (-b - Math.sqrt(D)) / (2 * a);
+                    rootsStr = `x₁ = ${x1.toFixed(2)}, x₂ = ${x2.toFixed(2)}`;
+                    roots.push(x1, x2);
+                } else if (D === 0) {
+                    const x1 = -b / (2 * a);
+                    rootsStr = `Один корень x = ${x1.toFixed(2)}`;
+                    roots.push(x1);
+                } else {
+                    rootsStr = `Нет корней (D < 0)`;
+                }
+                dashQuadRoots.textContent = rootsStr;
+
+                safeMathRender([dashQuadEq]);
+
+                const w = canvasQuad.width;
+                const h = canvasQuad.height;
+                const originX = w / 2;
+                const originY = h / 2 + 50; 
+                const scale = 30;
+
+                drawGrid(ctxQuad, w, h, originX, originY, scale, scale);
+
+                // Отрисовка цели в режиме игры
+                if (quadMode === 'game') {
+                    ctxQuad.beginPath();
+                    ctxQuad.strokeStyle = 'rgba(245, 158, 11, 0.8)'; // Оранжевый пунктир
+                    ctxQuad.lineWidth = 3;
+                    ctxQuad.setLineDash([8, 8]);
+                    let firstTarget = true;
+                    for (let px = 0; px <= w; px += 5) {
+                        let x = (px - originX) / scale;
+                        let y = quadTargetA * x * x + quadTargetB * x + quadTargetC;
+                        let py = originY - y * scale;
+                        if (py > h + 200 || py < -200) { firstTarget = true; continue; }
+                        if (firstTarget) { ctxQuad.moveTo(px, py); firstTarget = false; } 
+                        else { ctxQuad.lineTo(px, py); }
+                    }
+                    ctxQuad.stroke();
+                    ctxQuad.setLineDash([]);
+                }
+
+                // Ось симметрии пользовательского графика
+                ctxQuad.beginPath();
+                ctxQuad.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctxQuad.lineWidth = 1;
+                ctxQuad.setLineDash([5, 5]);
+                const symX = originX + x0 * scale;
+                ctxQuad.moveTo(symX, 0);
+                ctxQuad.lineTo(symX, h);
+                ctxQuad.stroke();
+                ctxQuad.setLineDash([]);
+
+                // График пользователя
+                ctxQuad.beginPath();
+                ctxQuad.strokeStyle = '#8B5CF6';
+                ctxQuad.lineWidth = 3;
+                let firstPoint = true;
+                for (let px = 0; px <= w; px += 2) {
+                    let x = (px - originX) / scale;
+                    let y = a * x * x + b * x + c;
+                    let py = originY - y * scale;
+                    if (py > h + 200 || py < -200) { firstPoint = true; continue; }
+                    if (firstPoint) { ctxQuad.moveTo(px, py); firstPoint = false; } 
+                    else { ctxQuad.lineTo(px, py); }
+                }
+                ctxQuad.stroke();
+
+                roots.forEach(rootX => {
+                    ctxQuad.beginPath();
+                    ctxQuad.arc(originX + rootX * scale, originY, 5, 0, Math.PI*2);
+                    ctxQuad.fillStyle = '#3B82F6';
+                    ctxQuad.fill();
+                    ctxQuad.strokeStyle = '#fff';
+                    ctxQuad.lineWidth = 2;
+                    ctxQuad.stroke();
+                });
+
+                ctxQuad.beginPath();
+                ctxQuad.arc(originX, originY - c * scale, 5, 0, Math.PI*2);
+                ctxQuad.fillStyle = '#EF4444';
+                ctxQuad.fill();
+                ctxQuad.stroke();
+
+                ctxQuad.beginPath();
+                ctxQuad.arc(originX + x0 * scale, originY - y0 * scale, 6, 0, Math.PI*2);
+                ctxQuad.fillStyle = '#F59E0B';
+                ctxQuad.fill();
+                ctxQuad.stroke();
+
+                if (quadMode === 'game') {
+                    if (a === quadTargetA && b === quadTargetB && c === quadTargetC) {
+                        quadSuccess.style.display = 'block';
+                    } else {
+                        quadSuccess.style.display = 'none';
+                    }
+                }
+            }
+
+            inQuadA.addEventListener('input', updateQuadratic);
+            inQuadB.addEventListener('input', updateQuadratic);
+            inQuadC.addEventListener('input', updateQuadratic);
+
+            function drawPracticeGraph() {
+                const canvas = document.getElementById('canvas-practice');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const w = canvas.width;
+                const h = canvas.height;
+                const originX = w / 2;
+                const originY = h / 2 + 50;
+                const scale = 25;
+
+                drawGrid(ctx, w, h, originX, originY, scale, scale);
+
+                ctx.beginPath();
+                ctx.strokeStyle = '#06B6D4';
+                ctx.lineWidth = 3;
+                let firstPoint = true;
+                for (let px = 0; px <= w; px += 2) {
+                    let x = (px - originX) / scale;
+                    let y = x * x - 2 * x - 3;
+                    let py = originY - y * scale;
+                    if (py > h + 100 || py < -100) { firstPoint = true; continue; }
+                    if (firstPoint) { ctx.moveTo(px, py); firstPoint = false; } 
+                    else { ctx.lineTo(px, py); }
+                }
+                ctx.stroke();
+
+                const drawPoint = (x, y, color) => {
+                    const px = originX + x * scale;
+                    const py = originY - y * scale;
+                    ctx.beginPath();
+                    ctx.arc(px, py, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = '#fff';
+                    ctx.stroke();
+                };
+
+                drawPoint(1, -4, '#4CAF50'); 
+                drawPoint(0, -3, '#EF4444'); 
+                drawPoint(3, 0, '#111');
+                drawPoint(-1, 0, '#111');
+            }
+
+            // Инициализация
+            window.initLinGame();
+            window.initQuadGame();
+            drawPracticeGraph();
+
+            window.addEventListener('resize', () => {
+                updateLinear();
+                updateQuadratic();
+                drawPracticeGraph();
+            });
+        });
+    </script>
+</body>
+</html>
