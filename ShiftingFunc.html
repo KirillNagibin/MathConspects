@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Геометрические преобразования графиков</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --green: #4CAF50;
+            --purple: #8B5CF6;
+            --pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        .table-container { overflow-x: auto; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: middle;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
+        .data-table td { color: var(--text-muted); }
+
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap; margin: 15px 0;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        select { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 8px; border-radius: 6px; outline: none; font-family: inherit; font-size: 1rem; width: 100%; cursor: pointer;}
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px; }
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.1rem; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        .win-banner {
+            background-color: rgba(76, 175, 80, 0.2); border: 1px solid var(--green);
+            color: var(--green); padding: 10px; border-radius: 8px; text-align: center;
+            font-weight: bold; margin-bottom: 15px; display: none;
+        }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Сдвиги и деформации графиков</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Универсальный инструмент</strong><br>
+                <span style="color: var(--text-muted);">Чтобы построить сложный график, не нужно вычислять десятки точек. Достаточно знать, как выглядит базовая функция (например, $y = x^2$ или $y = \sqrt{x}$), и применить к ней геометрические преобразования: сдвиги по осям, растяжения или отражения. Правила этих преобразований <b>одинаковы для абсолютно любой функции</b>!</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="move"></i> 1. Главная формула сдвигов</h2>
+        <div class="card">
+            <p>Любую базовую функцию $f(x)$ можно преобразовать с помощью трех главных коэффициентов ($A, B, C$):</p>
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$y = A \cdot f(x - B) + C$$
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Параметр</th>
+                            <th>Как влияет на график?</th>
+                            <th>Пример</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: var(--info-text); font-size: 1.2rem;">$+ C$</strong></td>
+                            <td>Сдвиг <b>по оси Y</b> (вверх или вниз).<br> Если $C>0$ — сдвиг вверх.<br> Если $C<0$ — сдвиг вниз.</td>
+                            <td>$y = x^2 \color{#3B82F6}{\mathbf{+ 3}}$<br><span style="font-size: 0.85rem;">(парабола поднята на 3 вверх)</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--warn-text); font-size: 1.2rem;">$- B$</strong></td>
+                            <td>Сдвиг <b>по оси X</b> (влево или вправо).<br> <span style="color: var(--error-text);">ВНИМАНИЕ: Знак работает наоборот!</span><br> Минус $(x - 3)$ сдвигает <b>вправо</b>.<br> Плюс $(x + 2)$ сдвигает <b>влево</b>.</td>
+                            <td>$y = \sqrt{x \color{#F59E0B}{\mathbf{- 4}}}$<br><span style="font-size: 0.85rem;">(корень сдвинут на 4 вправо)</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--green); font-size: 1.2rem;">$A$</strong></td>
+                            <td>Растяжение/сжатие вдоль оси Y.<br> Если $A < 0$, график дополнительно <b>зеркально отражается</b> относительно оси X.</td>
+                            <td>$y = \color{#4CAF50}{\mathbf{-2}}|x|$<br><span style="font-size: 0.85rem;">(галочка модуля перевернута вниз и стала в 2 раза ýже)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2><i data-lucide="library"></i> 2. Элементарные функции в виде сдвигов</h2>
+        <div class="card table-container">
+            <p style="color: var(--text-muted); margin-top: 0;">В школе мы часто учим функции в "раскрытом" виде (например, $ax^2+bx+c$). Чтобы использовать сдвиги, формулу нужно свернуть (например, выделить полный квадрат).</p>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Функция</th>
+                        <th>Базовый вид</th>
+                        <th>Вид со сдвигами</th>
+                        <th>Что такое $(B; C)$?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Парабола</strong></td>
+                        <td>$y = ax^2 + bx + c$</td>
+                        <td style="color: var(--accent); font-weight: bold;">$y = a(x - B)^2 + C$</td>
+                        <td>Координаты <b>вершины</b> параболы.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Гипербола</strong></td>
+                        <td>$y = \frac{kx + m}{cx + d}$</td>
+                        <td style="color: var(--accent); font-weight: bold;">$y = \frac{A}{x - B} + C$</td>
+                        <td>Точка пересечения <b>асимптот</b>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Корень</strong></td>
+                        <td>—</td>
+                        <td style="color: var(--accent); font-weight: bold;">$y = A\sqrt{x - B} + C$</td>
+                        <td>Начало (стартовая точка) ветви.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Модуль</strong></td>
+                        <td>—</td>
+                        <td style="color: var(--accent); font-weight: bold;">$y = A|x - B| + C$</td>
+                        <td>Вершина "галочки".</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Показательная</strong></td>
+                        <td>$y = a^x$</td>
+                        <td style="color: var(--accent); font-weight: bold;">$y = A \cdot a^{x - B} + C$</td>
+                        <td>$C$ задает горизонтальную асимптоту ($y = C$).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Логарифм</strong></td>
+                        <td>$y = \log_a x$</td>
+                        <td style="color: var(--accent); font-weight: bold;">$y = A \cdot \log_a (x - B) + C$</td>
+                        <td>$B$ задает вертикальную асимптоту ($x = B$).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2><i data-lucide="sliders"></i> 3. Лаборатория: Универсальный конструктор</h2>
+        <p style="color: var(--text-muted);">Выберите базовую функцию. Двигайте ползунки, чтобы увидеть, как параметры $A$, $B$ и $C$ деформируют и перемещают график по координатной плоскости.</p>
+
+        <div class="simulator">
+            <div style="margin-bottom: 20px;">
+                <select id="const-type" onchange="changeConstType()">
+                    <option value="quad">Парабола: y = A(x - B)² + C</option>
+                    <option value="hyper">Гипербола: y = A / (x - B) + C</option>
+                    <option value="root">Корень: y = A√(x - B) + C</option>
+                    <option value="abs">Модуль: y = A|x - B| + C</option>
+                    <option value="exp">Экспонента: y = A · 2^(x - B) + C</option>
+                    <option value="log">Логарифм: y = A · log₂(x - B) + C</option>
+                </select>
+            </div>
+
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--green);"><span>Растяжение (A):</span> <span id="val-1">1.0</span></label>
+                    <input type="range" id="sim-1" min="-3" max="3" value="1" step="0.5" style="accent-color: var(--green);" oninput="updateConstructor()">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--warn-text);"><span>Сдвиг по X (B):</span> <span id="val-2">0.0</span></label>
+                    <input type="range" id="sim-2" min="-5" max="5" value="0" step="1" style="accent-color: var(--warn-text);" oninput="updateConstructor()">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--info-text);"><span>Сдвиг по Y (C):</span> <span id="val-3">0.0</span></label>
+                    <input type="range" id="sim-3" min="-5" max="5" value="0" step="1" style="accent-color: var(--info-text);" oninput="updateConstructor()">
+                </div>
+            </div>
+
+            <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+                <div class="dashboard-item" style="align-items: center; text-align: center;">
+                    <div class="dashboard-label">Функция со сдвигами</div>
+                    <div class="dashboard-value" id="dash-const-equation" style="color: var(--accent); font-size: 1.3rem;">$y = 1 \cdot (x - 0)^2 + 0$</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-constructor" width="600" height="350"></canvas>
+            </div>
+            <button class="btn btn-outline" style="width: 100%; margin-top: 15px;" onclick="resetConstructor()"><i data-lucide="rotate-ccw" style="width: 16px;"></i> Сбросить трансформации</button>
+        </div>
+
+        <h2><i data-lucide="gamepad-2"></i> 4. Лаборатория: Тренажер "Угадай сдвиги"</h2>
+        <p style="color: var(--text-muted);">На экране сгенерирован случайный <strong style="color: #F59E0B;">желтый график</strong> (Цель). Подберите коэффициенты $A, B$ и $C$, чтобы ваш <strong style="color: var(--green);">пунктирный зеленый график</strong> полностью совпал с целью. Это лучшая тренировка для 11 задания ЕГЭ!</p>
+
+        <div class="simulator" style="border-color: var(--warn-text);">
+            <div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                <select id="game-type" onchange="generateNewTarget()" style="width: auto; flex-grow: 1;">
+                    <option value="quad" selected>Парабола</option>
+                    <option value="hyper">Гипербола</option>
+                    <option value="root">Корень</option>
+                    <option value="abs">Модуль</option>
+                </select>
+                <button class="btn" style="background: var(--warn-text); color: #000;" onclick="generateNewTarget()"><i data-lucide="refresh-cw" style="width: 16px;"></i> Новая цель</button>
+            </div>
+
+            <div class="win-banner" id="game-success">
+                <i data-lucide="party-popper" style="vertical-align: middle; margin-right: 5px;"></i> Поздравляем! Вы подобрали верные сдвиги!
+            </div>
+
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--green);"><span>Множитель (A):</span> <span id="val-game-a">1.0</span></label>
+                    <input type="range" id="sim-game-a" min="-3" max="3" value="1" step="0.5" style="accent-color: var(--green);" oninput="updateGame()">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--warn-text);"><span>Сдвиг по X (B):</span> <span id="val-game-b">0.0</span></label>
+                    <input type="range" id="sim-game-b" min="-5" max="5" value="0" step="1" style="accent-color: var(--warn-text);" oninput="updateGame()">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--info-text);"><span>Сдвиг по Y (C):</span> <span id="val-game-c">0.0</span></label>
+                    <input type="range" id="sim-game-c" min="-5" max="5" value="0" step="1" style="accent-color: var(--info-text);" oninput="updateGame()">
+                </div>
+            </div>
+
+            <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+                <div class="dashboard-item" style="align-items: center; text-align: center;">
+                    <div class="dashboard-label">Ваша функция</div>
+                    <div class="dashboard-value" id="dash-game-equation" style="color: var(--green); font-size: 1.3rem;">$y = 1 \cdot (x - 0)^2 + 0$</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-game" width="600" height="350"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика (Задание ЕГЭ: Графики функций)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Поиск асимптот гиперболы</h3>
+            <p>На рисунке изображен график функции $f(x) = \frac{k}{x + a} + b$. Найдите значение $f(-8)$.</p>
+            
+            <div style="background: #1a1a1a; border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin: 15px 0; overflow: hidden; display: flex; justify-content: center;">
+                <canvas id="canvas-practice" width="400" height="300" style="display: block; margin: 0 auto; max-width: 100%;"></canvas>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение (через сдвиги):</strong></p>
+                <p>1. Вертикальная и горизонтальная асимптоты (пунктирные линии) пересекаются в точке $(-2; -1)$. Это значит, что график базовой гиперболы $\frac{k}{x}$ сдвинули на 2 влево и на 1 вниз.</p>
+                
+                <p>2. Значит, знаменатель равен $(x + 2)$ — это сдвиг влево на 2, то есть $a = 2$. Свободный член $b = -1$ (сдвиг вниз на 1).</p>
+                
+                <p>3. Наше уравнение принимает вид: $f(x) = \frac{k}{x + 2} - 1$.</p>
+                
+                <p>4. Чтобы найти $k$, возьмем любую точку на графике, например, $(-1; -3)$ и подставим в уравнение:<br>
+                $$-3 = \frac{k}{-1 + 2} - 1 \implies -3 = \frac{k}{1} - 1 \implies k = -2$$</p>
+
+                <p>5. Итоговая функция: $f(x) = \frac{-2}{x + 2} - 1$. Найдем $f(-8)$:<br>
+                $$f(-8) = \frac{-2}{-8 + 2} - 1 = \frac{-2}{-6} - 1 = \frac{1}{3} - 1 = -\frac{2}{3}$$</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: -2/3</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            function drawGrid(ctx, w, h, originX, originY, scaleX, scaleY) {
+                ctx.clearRect(0, 0, w, h);
+                ctx.strokeStyle = '#2a2a2a';
+                ctx.lineWidth = 1;
+                let startX = originX % scaleX;
+                for(let x = startX; x < w; x += scaleX) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                }
+                let startY = originY % scaleY;
+                for(let y = startY; y < h; y += scaleY) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                ctx.strokeStyle = '#888';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke();
+
+                ctx.fillStyle = '#888';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                
+                for(let x = startX; x < w; x += scaleX) {
+                    let val = Math.round((x - originX) / scaleX);
+                    if (val !== 0 && Math.abs(x - originX) > 1) {
+                        ctx.beginPath(); ctx.moveTo(x, originY - 3); ctx.lineTo(x, originY + 3); ctx.stroke();
+                        ctx.fillText(val, x, originY + 6);
+                    }
+                }
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                for(let y = startY; y < h; y += scaleY) {
+                    let val = Math.round(-(y - originY) / scaleY);
+                    if (val !== 0 && Math.abs(y - originY) > 1) {
+                        ctx.beginPath(); ctx.moveTo(originX - 3, y); ctx.lineTo(originX + 3, y); ctx.stroke();
+                        ctx.fillText(val, originX - 6, y);
+                    }
+                }
+                ctx.fillText('x', w - 10, originY - 10);
+                ctx.fillText('y', originX + 15, 10);
+                ctx.fillText('0', originX - 8, originY + 8);
+            }
+
+            // --- Расчет функций со сдвигами ---
+            function calcFunction(type, x, A, B, C) {
+                let inner = x - B;
+                let val = null;
+
+                if (type === 'quad') {
+                    val = inner * inner;
+                } else if (type === 'hyper') {
+                    if (Math.abs(inner) > 0.05) val = 1 / inner;
+                } else if (type === 'root') {
+                    if (inner >= 0) val = Math.sqrt(inner);
+                } else if (type === 'abs') {
+                    val = Math.abs(inner);
+                } else if (type === 'exp') {
+                    val = Math.pow(2, inner);
+                } else if (type === 'log') {
+                    if (inner > 0) val = Math.log(inner) / Math.log(2);
+                }
+
+                if (val !== null) return A * val + C;
+                return null;
+            }
+
+            function drawFunction(ctx, w, h, originX, originY, scale, type, A, B, C, color, isDashed = false) {
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                if (isDashed) ctx.setLineDash([8, 8]);
+                else ctx.setLineDash([]);
+
+                let firstPoint = true;
+                for (let px = 0; px <= w; px += 2) {
+                    let x = (px - originX) / scale;
+                    let y = calcFunction(type, x, A, B, C);
+
+                    if (y !== null && !isNaN(y) && isFinite(y)) {
+                        let py = originY - y * scale;
+                        if (py > h + 200 || py < -200) {
+                            firstPoint = true; 
+                            continue;
+                        }
+
+                        if (firstPoint) {
+                            ctx.moveTo(px, py);
+                            firstPoint = false;
+                        } else {
+                            ctx.lineTo(px, py);
+                        }
+                    } else {
+                        firstPoint = true; 
+                    }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Отрисовка асимптот или ключевых точек
+                ctx.beginPath();
+                ctx.fillStyle = color;
+                if (type === 'quad' || type === 'root' || type === 'abs') {
+                    ctx.arc(originX + B * scale, originY - C * scale, 5, 0, Math.PI*2);
+                    ctx.fill();
+                } else if (type === 'hyper') {
+                    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([5, 5]);
+                    ctx.moveTo(originX + B * scale, 0); ctx.lineTo(originX + B * scale, h);
+                    ctx.moveTo(0, originY - C * scale); ctx.lineTo(w, originY - C * scale);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            }
+
+            function formatShiftEq(type, A, B, C) {
+                let aStr = '';
+                if (A !== 1) {
+                    aStr = (A === -1) ? '-' : (Number.isInteger(A) ? A : A.toFixed(1)) + ' \\cdot ';
+                }
+                
+                let bStr = B === 0 ? 'x' : (B > 0 ? `(x - ${B})` : `(x + ${Math.abs(B)})`);
+                let cStr = C === 0 ? '' : (C > 0 ? ` + ${C}` : ` - ${Math.abs(C)}`);
+                
+                let fStr = '';
+                if (type === 'quad') fStr = B === 0 ? 'x^2' : `${bStr}^2`;
+                else if (type === 'root') fStr = `\\sqrt{${B===0?'x':bStr}}`;
+                else if (type === 'hyper') {
+                    let denom = B === 0 ? 'x' : bStr;
+                    if (A === 1) fStr = `\\frac{1}{${denom}}`;
+                    else if (A === -1) { aStr = '-'; fStr = `\\frac{1}{${denom}}`; }
+                    else { aStr = ''; fStr = `\\frac{${A}}{${denom}}`; }
+                }
+                else if (type === 'abs') fStr = `|${B===0?'x':bStr}|`;
+                else if (type === 'exp') fStr = `2^{${B===0?'x':bStr}}`;
+                else if (type === 'log') fStr = `\\log_2 ${B===0?'x':bStr}`;
+                
+                return `$y = ${aStr}${fStr}${cStr}$`;
+            }
+
+            // ---------------------------------------------------------
+            // ЛАБОРАТОРИЯ 1: КОНСТРУКТОР
+            // ---------------------------------------------------------
+            const canvasConst = document.getElementById('canvas-constructor');
+            const ctxConst = canvasConst.getContext('2d');
+            let mathRenderTimeout = null;
+
+            window.changeConstType = function() {
+                updateConstructor();
+            }
+
+            window.updateConstructor = function() {
+                const type = document.getElementById('const-type').value;
+                let A = parseFloat(document.getElementById('sim-1').value);
+                let B = parseFloat(document.getElementById('sim-2').value);
+                let C = parseFloat(document.getElementById('sim-3').value);
+
+                // Защита от A=0
+                if (Math.abs(A) < 0.1) { A = 0.5; document.getElementById('sim-1').value = A; }
+
+                document.getElementById('val-1').textContent = A.toFixed(1);
+                document.getElementById('val-2').textContent = B.toFixed(1);
+                document.getElementById('val-3').textContent = C.toFixed(1);
+
+                const eqElement = document.getElementById('dash-const-equation');
+                eqElement.innerHTML = formatShiftEq(type, A, B, C);
+                
+                if (mathRenderTimeout) clearTimeout(mathRenderTimeout);
+                mathRenderTimeout = setTimeout(() => {
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        MathJax.typesetPromise([eqElement]).catch(err => console.error(err));
+                    }
+                }, 100);
+
+                const w = canvasConst.width;
+                const h = canvasConst.height;
+                const originX = w / 2;
+                const originY = h / 2;
+                const scale = 30;
+
+                drawGrid(ctxConst, w, h, originX, originY, scale, scale);
+                drawFunction(ctxConst, w, h, originX, originY, scale, type, A, B, C, '#06B6D4');
+            }
+
+            window.resetConstructor = function() {
+                document.getElementById('sim-1').value = 1;
+                document.getElementById('sim-2').value = 0;
+                document.getElementById('sim-3').value = 0;
+                updateConstructor();
+            }
+
+            // ---------------------------------------------------------
+            // ЛАБОРАТОРИЯ 2: ИГРА
+            // ---------------------------------------------------------
+            const canvasGame = document.getElementById('canvas-game');
+            const ctxGame = canvasGame.getContext('2d');
+            const statusBox = document.getElementById('game-success');
+            
+            let target = { type: 'quad', A: 1, B: 0, C: 0 };
+            const possibleA = [-2, -1, -0.5, 0.5, 1, 2];
+
+            window.generateNewTarget = function() {
+                target.type = document.getElementById('game-type').value;
+                target.A = possibleA[Math.floor(Math.random() * possibleA.length)];
+                target.B = Math.floor(Math.random() * 9) - 4; // -4 to 4
+                target.C = Math.floor(Math.random() * 9) - 4; // -4 to 4
+
+                document.getElementById('sim-game-a').value = 1;
+                document.getElementById('sim-game-b').value = 0;
+                document.getElementById('sim-game-c').value = 0;
+                
+                statusBox.style.display = 'none';
+                updateGame();
+            }
+
+            window.updateGame = function() {
+                let uA = parseFloat(document.getElementById('sim-game-a').value);
+                const uB = parseFloat(document.getElementById('sim-game-b').value);
+                const uC = parseFloat(document.getElementById('sim-game-c').value);
+
+                if (Math.abs(uA) < 0.1) { uA = 0.5; document.getElementById('sim-game-a').value = 0.5; }
+
+                document.getElementById('val-game-a').textContent = uA.toFixed(1);
+                document.getElementById('val-game-b').textContent = uB.toFixed(1);
+                document.getElementById('val-game-c').textContent = uC.toFixed(1);
+
+                const eqElement = document.getElementById('dash-game-equation');
+                eqElement.innerHTML = formatShiftEq(target.type, uA, uB, uC);
+                
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    MathJax.typesetPromise([eqElement]).catch(err => console.error(err));
+                }
+
+                const w = canvasGame.width;
+                const h = canvasGame.height;
+                const originX = w / 2;
+                const originY = h / 2;
+                const scale = 30;
+
+                drawGrid(ctxGame, w, h, originX, originY, scale, scale);
+                
+                // Отрисовка цели (Желтый)
+                drawFunction(ctxGame, w, h, originX, originY, scale, target.type, target.A, target.B, target.C, '#F59E0B', false);
+                // Отрисовка пользователя (Зеленый, пунктир)
+                drawFunction(ctxGame, w, h, originX, originY, scale, target.type, uA, uB, uC, '#4CAF50', true);
+
+                if (Math.abs(uA - target.A) < 0.1 && Math.abs(uB - target.B) < 0.1 && Math.abs(uC - target.C) < 0.1) {
+                    statusBox.style.display = 'block';
+                    drawFunction(ctxGame, w, h, originX, originY, scale, target.type, uA, uB, uC, '#4CAF50', false); // Solid fill
+                } else {
+                    statusBox.style.display = 'none';
+                }
+            }
+
+            // ---------------------------------------------------------
+            // Отрисовка графика для практики ЕГЭ
+            // ---------------------------------------------------------
+            function drawPracticeGraph() {
+                const canvas = document.getElementById('canvas-practice');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const w = canvas.width;
+                const h = canvas.height;
+                const originX = w / 2;
+                const originY = h / 2;
+                const scale = 25;
+
+                drawGrid(ctx, w, h, originX, originY, scale, scale);
+
+                // Асимптоты x=-2, y=-1
+                ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath(); ctx.moveTo(originX - 2*scale, 0); ctx.lineTo(originX - 2*scale, h); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, originY + scale); ctx.lineTo(w, originY + scale); ctx.stroke();
+                ctx.setLineDash([]);
+
+                // График y = -2/(x+2) - 1
+                ctx.beginPath();
+                ctx.strokeStyle = '#06B6D4';
+                ctx.lineWidth = 3;
+                let firstPoint = true;
+                for (let px = 0; px <= w; px += 2) {
+                    let x = (px - originX) / scale;
+                    let inner = x + 2;
+                    if (Math.abs(inner) < 0.1) { firstPoint = true; continue; }
+                    
+                    let y = -2 / inner - 1;
+                    let py = originY - y * scale;
+                    if (py > h + 100 || py < -100) { firstPoint = true; continue; }
+                    if (firstPoint) { ctx.moveTo(px, py); firstPoint = false; } 
+                    else { ctx.lineTo(px, py); }
+                }
+                ctx.stroke();
+
+                // Точки
+                const drawPoint = (x, y) => {
+                    const px = originX + x * scale;
+                    const py = originY - y * scale;
+                    ctx.beginPath(); ctx.arc(px, py, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#EF4444'; ctx.fill();
+                    ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke();
+                };
+
+                drawPoint(-1, -3);
+                drawPoint(0, -2);
+                drawPoint(-3, 1);
+            }
+
+            // Инициализация всего
+            window.addEventListener('load', () => {
+                changeConstType();
+                generateNewTarget();
+                drawPracticeGraph();
+            });
+
+            window.addEventListener('resize', () => {
+                updateConstructor();
+                updateGame();
+                drawPracticeGraph();
+            });
+        });
+    </script>
+</body>
+</html>
