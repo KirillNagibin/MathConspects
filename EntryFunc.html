@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Что такое функция и где она обитает</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --purple: #8B5CF6;
+            --green: #4CAF50;
+            --pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        .table-container { overflow-x: auto; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
+        .data-table td { color: var(--text-muted); }
+
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .sim-controls { margin-bottom: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;}
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px; }
+        canvas { max-width: 100%; display: block; touch-action: none; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.1rem; }
+
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 10px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 150px; text-align: center; font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .process-btn.active {
+            background: rgba(6, 182, 212, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+            .process-selector { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Введение в функции: Свойства и реальный мир</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Что такое функция?</strong><br>
+                <span style="color: var(--text-muted);">Математика не придумывает формулы ради формул. <b>Функция — это закон связи</b>. Это черный ящик, в который мы загружаем одну переменную (Причину, Независимый $x$), а на выходе получаем другую переменную (Следствие, Зависимый $y$). <i>Например: $x$ — это цена товара, а $y$ — ваша прибыль. Или $x$ — время, а $y$ — пройденный путь.</i></span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="book-open"></i> 1. Основные свойства (Паспорт функции)</h2>
+        <div class="card table-container">
+            <p style="color: var(--text-muted); margin-top: 0;">У каждой функции есть свои характеристики. Если вы научитесь читать эти свойства по графику, вы сможете анализировать любые процессы в жизни.</p>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Свойство</th>
+                        <th>Обозначение</th>
+                        <th>Смысл (простым языком)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Область определения</strong></td>
+                        <td style="color: var(--info-text);">$D(f)$ или ОДЗ</td>
+                        <td>Все значения, которые мы имеем право "скормить" нашей функции по оси X. <i>(Например: время не может быть отрицательным $x \ge 0$).</i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Область значений</strong></td>
+                        <td style="color: var(--warn-text);">$E(f)$</td>
+                        <td>Все значения, которые функция может "выплюнуть" нам в ответ по оси Y. <i>(Например: квадрат любого числа всегда $\ge 0$).</i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Нули функции</strong></td>
+                        <td>$f(x) = 0$</td>
+                        <td>Точки, где график пробивает ось X. Значение функции здесь равно нулю. <i>(Например: момент, когда прибыль равна нулю — точка безубыточности).</i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Монотонность</strong></td>
+                        <td>Возрастает / Убывает</td>
+                        <td>Идет ли график в гору (растет) или катится под гору (убывает).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Экстремумы</strong></td>
+                        <td>$x_{min}$ / $x_{max}$</td>
+                        <td>Вершины холмов и дно впадин. Точки, где функция перестает расти и начинает падать (или наоборот).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Асимптота</strong></td>
+                        <td>—</td>
+                        <td>Невидимая линия (стена), к которой график бесконечно приближается, но <b>никогда её не касается</b>. <i>(Например, эффективность брони в игре).</i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2><i data-lucide="joystick"></i> 2. Лаборатория: Математика в реальной жизни</h2>
+        <p style="color: var(--text-muted);">Выберите сферу и посмотрите, как математические функции управляют реальными процессами под капотом.</p>
+        
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-mode-game" onclick="setSimMode('game')">
+                    <i data-lucide="shield" style="width: 16px; display: inline-block; vertical-align: middle; margin-right: 5px;"></i> Геймдев (Броня)
+                </div>
+                <div class="process-btn" id="btn-mode-econ" onclick="setSimMode('econ')">
+                    <i data-lucide="briefcase" style="width: 16px; display: inline-block; vertical-align: middle; margin-right: 5px;"></i> Экономика (Прибыль)
+                </div>
+                <div class="process-btn" id="btn-mode-phys" onclick="setSimMode('phys')">
+                    <i data-lucide="car" style="width: 16px; display: inline-block; vertical-align: middle; margin-right: 5px;"></i> Физика (Торможение)
+                </div>
+            </div>
+
+            <!-- Элементы управления -->
+            <div class="sim-controls" id="controls">
+                <!-- Генерируются через JS -->
+            </div>
+
+            <div class="dashboard-grid" id="dashboards">
+                <!-- Генерируются через JS -->
+            </div>
+
+            <div class="canvas-container" style="padding: 0;">
+                <canvas id="canvas-sim" width="700" height="350" style="background: #111;"></canvas>
+            </div>
+            
+            <p id="sim-explanation" style="margin-top: 15px; color: var(--text-muted); font-size: 0.95rem; border-left: 3px solid var(--accent); padding-left: 15px;"></p>
+        </div>
+
+        <h2><i data-lucide="target"></i> 3. Практика (Анализ функции по графику)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Чтение графика прибыли</h3>
+            <p>На рисунке представлен график зависимости ежемесячной прибыли магазина $y$ (в тыс. рублей) от цены на один товар $x$ (в рублях). Функция имеет вид параболы $y = -2x^2 + 160x - 2400$. Ответьте на вопросы: <br>
+            1. При какой цене магазин не получает ни прибыли, ни убытка (точки безубыточности)? <br>
+            2. Какую цену нужно установить, чтобы получить максимальную прибыль?</p>
+            
+            <div style="background: #1a1a1a; border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin: 15px 0; overflow: hidden; display: flex; justify-content: center;">
+                <canvas id="canvas-practice" width="400" height="250" style="max-width: 100%;"></canvas>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение (Связь теории с реальностью):</strong></p>
+                <p>1. <b>Точки безубыточности</b> — это моменты, когда прибыль $y = 0$. В теории функций это называется <b>нули функции</b> (точки пересечения с осью X).<br>
+                Решаем уравнение: $-2x^2 + 160x - 2400 = 0$. <br>
+                Разделим на $-2$: $x^2 - 80x + 1200 = 0$. <br>
+                По теореме Виета: $x_1 = 20$ руб, $x_2 = 60$ руб.<br>
+                <i>(Если продавать слишком дешево — не окупится себестоимость. Если слишком дорого — никто не купит).</i></p>
+                
+                <p>2. <b>Максимальная прибыль</b> — это наивысшая точка графика. В теории это называется <b>Экстремум (Максимум)</b>. У параболы он находится в вершине.<br>
+                Формула координаты X вершины: $x_0 = -\frac{b}{2a}$.<br>
+                $x_0 = -\frac{160}{2 \cdot (-2)} = \frac{-160}{-4} = 40$ руб.<br>
+                <i>(Оптимальная цена, при которой баланс спроса и наценки идеален).</i></p>
+
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 1. При 20 руб и 60 руб. 2. Оптимальная цена 40 руб.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            // Общая функция отрисовки сетки
+            function drawGrid(ctx, w, h, originX, originY, scaleX, scaleY, xAxisLabel = 'x', yAxisLabel = 'y', stepX = 1) {
+                // Grid
+                ctx.strokeStyle = '#2a2a2a';
+                ctx.lineWidth = 1;
+                
+                // Vertical lines
+                let startX = originX % scaleX;
+                for(let x = startX; x < w; x += scaleX) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                }
+                // Horizontal lines
+                let startY = originY % scaleY;
+                for(let y = startY; y < h; y += scaleY) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                // Axes
+                ctx.strokeStyle = '#888';
+                ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke(); // X
+                ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke(); // Y
+
+                // Ticks X
+                ctx.fillStyle = '#888';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                
+                for(let x = originX + scaleX; x < w; x += scaleX) {
+                    let val = Math.round((x - originX) / scaleX) * stepX;
+                    ctx.beginPath(); ctx.moveTo(x, originY - 3); ctx.lineTo(x, originY + 3); ctx.stroke();
+                    ctx.fillText(val, x, originY + 6);
+                }
+                for(let x = originX - scaleX; x > 0; x -= scaleX) {
+                    let val = Math.round((x - originX) / scaleX) * stepX;
+                    ctx.beginPath(); ctx.moveTo(x, originY - 3); ctx.lineTo(x, originY + 3); ctx.stroke();
+                    ctx.fillText(val, x, originY + 6);
+                }
+
+                // Labels
+                ctx.fillText(xAxisLabel, w - 20, originY - 15);
+                ctx.textAlign = 'left';
+                ctx.fillText(yAxisLabel, originX + 10, 10);
+                ctx.textAlign = 'right';
+                ctx.fillText('0', originX - 5, originY + 5);
+            }
+
+            /* --- СИМУЛЯТОР: РЕАЛЬНЫЙ МИР --- */
+            const canvasSim = document.getElementById('canvas-sim');
+            const ctxSim = canvasSim.getContext('2d');
+            const controlsDiv = document.getElementById('controls');
+            const dashboardDiv = document.getElementById('dashboards');
+            const explanationEl = document.getElementById('sim-explanation');
+
+            let currentMode = 'game'; // 'game', 'econ', 'phys'
+
+            // Data models for each mode
+            const simData = {
+                'game': {
+                    // Rational Function: Damage Taken % = 100 / (100 + Armor)
+                    color: 'var(--brand-purple)',
+                    icon: 'shield',
+                    controls: `
+                        <div class="control-group">
+                            <label style="color: var(--brand-purple);"><span>Броня персонажа (x):</span> <span id="val-armor" style="font-weight: bold;">50</span></label>
+                            <input type="range" id="sim-armor" min="0" max="300" value="50" step="10" style="accent-color: var(--brand-purple);">
+                        </div>
+                    `,
+                    dashboards: `
+                        <div class="dashboard-item">
+                            <div class="dashboard-label">Функция</div>
+                            <div class="dashboard-value" id="dash-eq" style="color: var(--brand-purple);">$$y = \\frac{100}{100+x}$$</div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dashboard-label">Получаемый урон (y)</div>
+                            <div class="dashboard-value" id="dash-val1" style="color: var(--error-text);">100%</div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dashboard-label">Снижение урона</div>
+                            <div class="dashboard-value" id="dash-val2" style="color: var(--green);">0%</div>
+                        </div>
+                    `,
+                    explanation: "<b>Дробно-рациональная функция</b>. Разработчики игр используют её, чтобы сделать баланс. Обратите внимание: первые 50 единиц брони дают огромный бонус к выживаемости. Но покупка брони от 250 до 300 почти ничего не меняет. График имеет <b>горизонтальную асимптоту $y=0$</b>: урон никогда не станет нулевым, персонаж не станет бессмертным.",
+                    update: function() {
+                        const armor = parseFloat(document.getElementById('sim-armor').value);
+                        document.getElementById('val-armor').textContent = armor;
+                        
+                        const dmgMultiplier = 100 / (100 + armor); // 0 to 1
+                        const dmgTakenPct = dmgMultiplier * 100;
+                        const dmgReducedPct = 100 - dmgTakenPct;
+
+                        document.getElementById('dash-val1').textContent = dmgTakenPct.toFixed(1) + '%';
+                        document.getElementById('dash-val2').textContent = dmgReducedPct.toFixed(1) + '%';
+
+                        const w = canvasSim.width;
+                        const h = canvasSim.height;
+                        ctxSim.clearRect(0, 0, w, h);
+
+                        // Layout: Left graph, Right visualization
+                        const splitX = w * 0.6;
+                        
+                        // Graph
+                        const originX = 40;
+                        const originY = h - 30;
+                        const scaleX = (splitX - 60) / 300; // max armor 300
+                        const scaleY = (h - 60) / 100; // max pct 100
+
+                        drawGrid(ctxSim, splitX, h, originX, originY, scaleX * 50, scaleY * 20, 'Броня', 'Урон %', 50);
+
+                        // The Asymptote (y=0) is the X axis.
+                        // The Curve
+                        ctxSim.beginPath();
+                        ctxSim.strokeStyle = '#8B5CF6';
+                        ctxSim.lineWidth = 3;
+                        let first = true;
+                        for(let x=0; x<=300; x+=5) {
+                            let y = (100 / (100 + x)) * 100;
+                            let px = originX + x * scaleX;
+                            let py = originY - y * scaleY;
+                            if(first) { ctxSim.moveTo(px, py); first=false; }
+                            else { ctxSim.lineTo(px, py); }
+                        }
+                        ctxSim.stroke();
+
+                        // Current point
+                        const px = originX + armor * scaleX;
+                        const py = originY - dmgTakenPct * scaleY;
+                        
+                        // Dashed lines to point
+                        ctxSim.beginPath();
+                        ctxSim.strokeStyle = 'rgba(255,255,255,0.3)';
+                        ctxSim.setLineDash([5,5]);
+                        ctxSim.moveTo(px, originY); ctxSim.lineTo(px, py); ctxSim.lineTo(originX, py);
+                        ctxSim.stroke();
+                        ctxSim.setLineDash([]);
+
+                        ctxSim.beginPath(); ctxSim.arc(px, py, 6, 0, Math.PI*2);
+                        ctxSim.fillStyle = '#fff'; ctxSim.fill();
+                        ctxSim.strokeStyle = '#8B5CF6'; ctxSim.lineWidth = 2; ctxSim.stroke();
+
+                        // Visuals on right
+                        const cx = splitX + (w - splitX)/2;
+                        const cy = h/2;
+                        
+                        // Shield
+                        ctxSim.fillStyle = '#444';
+                        ctxSim.beginPath();
+                        ctxSim.moveTo(cx - 40, cy - 60);
+                        ctxSim.lineTo(cx + 40, cy - 60);
+                        ctxSim.lineTo(cx + 40, cy + 20);
+                        ctxSim.lineTo(cx, cy + 80);
+                        ctxSim.lineTo(cx - 40, cy + 20);
+                        ctxSim.fill();
+                        ctxSim.strokeStyle = `rgba(139, 92, 246, ${armor/300})`; // Glow based on armor
+                        ctxSim.lineWidth = 5 + armor/20;
+                        ctxSim.stroke();
+                        
+                        ctxSim.fillStyle = '#fff';
+                        ctxSim.font = 'bold 20px sans-serif';
+                        ctxSim.textAlign = 'center';
+                        ctxSim.fillText(armor, cx, cy);
+                        ctxSim.font = '12px sans-serif';
+                        ctxSim.fillText('Броня', cx, cy - 20);
+
+                        // Incoming Damage (Sword/Arrow)
+                        ctxSim.strokeStyle = '#EF4444';
+                        ctxSim.lineWidth = 4;
+                        ctxSim.beginPath();
+                        ctxSim.moveTo(cx + 100, cy - 60);
+                        ctxSim.lineTo(cx + 45, cy - 10);
+                        ctxSim.stroke();
+                        
+                        // Damage taken text
+                        ctxSim.fillStyle = '#EF4444';
+                        ctxSim.font = 'bold 24px sans-serif';
+                        ctxSim.fillText(`-${dmgTakenPct.toFixed(0)} HP`, cx, cy + 120);
+                    }
+                },
+                'econ': {
+                    // Quadratic Function: Profit = (Price - Cost) * (100 - Price). Let Cost = 20.
+                    // y = (x - 20) * (100 - x) = -x^2 + 120x - 2000
+                    color: 'var(--accent)',
+                    icon: 'briefcase',
+                    controls: `
+                        <div class="control-group">
+                            <label style="color: var(--accent);"><span>Цена за товар (x):</span> <span id="val-price" style="font-weight: bold;">60 руб.</span></label>
+                            <input type="range" id="sim-price" min="0" max="120" value="60" step="5" style="accent-color: var(--accent);">
+                        </div>
+                    `,
+                    dashboards: `
+                        <div class="dashboard-item">
+                            <div class="dashboard-label">Функция</div>
+                            <div class="dashboard-value" id="dash-eq" style="color: var(--accent);">$$y = -x^2 + 120x - 2000$$</div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dashboard-label">Кол-во продаж</div>
+                            <div class="dashboard-value" id="dash-sales" style="color: #fff;">40 шт.</div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dashboard-label">Итоговая Прибыль (y)</div>
+                            <div class="dashboard-value" id="dash-profit" style="color: var(--green);">1600 руб.</div>
+                        </div>
+                    `,
+                    explanation: "<b>Квадратичная функция (Парабола)</b>. Ветви направлены вниз ($a < 0$). У нее есть <b>нули функции</b> (точки безубыточности при $x=20$ и $x=100$) и <b>экстремум</b> в вершине параболы. Найти координату $x_0$ вершины — значит найти идеальную цену, при которой бизнес заработает максимум денег.",
+                    update: function() {
+                        const price = parseFloat(document.getElementById('sim-price').value);
+                        document.getElementById('val-price').textContent = price + ' руб.';
+                        
+                        const cost = 20;
+                        const sales = Math.max(0, 100 - price); // Demand drops as price increases
+                        const profit = (price - cost) * sales;
+
+                        document.getElementById('dash-sales').textContent = sales + ' шт.';
+                        document.getElementById('dash-profit').textContent = profit + ' руб.';
+                        document.getElementById('dash-profit').style.color = profit >= 0 ? 'var(--green)' : 'var(--error-text)';
+
+                        const w = canvasSim.width;
+                        const h = canvasSim.height;
+                        ctxSim.clearRect(0, 0, w, h);
+
+                        const originX = 40;
+                        const originY = h - 60; // Leave room for negative profit
+                        const scaleX = (w - 80) / 120; 
+                        const scaleY = (h - 100) / 1600; // max profit is 1600 at price 60
+
+                        drawGrid(ctxSim, w, h, originX, originY, scaleX * 20, scaleY * 400, 'Цена (x)', 'Прибыль (y)', 20);
+
+                        // Draw X axis strictly
+                        ctxSim.strokeStyle = '#fff';
+                        ctxSim.lineWidth = 2;
+                        ctxSim.beginPath(); ctxSim.moveTo(0, originY); ctxSim.lineTo(w, originY); ctxSim.stroke();
+
+                        // The Curve
+                        ctxSim.beginPath();
+                        ctxSim.strokeStyle = '#06B6D4';
+                        ctxSim.lineWidth = 3;
+                        let first = true;
+                        for(let x=0; x<=120; x+=2) {
+                            let y = (x - cost) * (100 - x);
+                            let px = originX + x * scaleX;
+                            let py = originY - y * scaleY;
+                            if(first) { ctxSim.moveTo(px, py); first=false; }
+                            else { ctxSim.lineTo(px, py); }
+                        }
+                        ctxSim.stroke();
+
+                        // Current point
+                        const px = originX + price * scaleX;
+                        const py = originY - profit * scaleY;
+                        
+                        ctxSim.beginPath();
+                        ctxSim.strokeStyle = 'rgba(255,255,255,0.3)';
+                        ctxSim.setLineDash([5,5]);
+                        ctxSim.moveTo(px, originY); ctxSim.lineTo(px, py); ctxSim.lineTo(originX, py);
+                        ctxSim.stroke();
+                        ctxSim.setLineDash([]);
+
+                        ctxSim.beginPath(); ctxSim.arc(px, py, 6, 0, Math.PI*2);
+                        ctxSim.fillStyle = profit >= 0 ? '#4CAF50' : '#EF4444'; ctxSim.fill();
+                        ctxSim.strokeStyle = '#fff'; ctxSim.lineWidth = 2; ctxSim.stroke();
+
+                        // Highlight Zeroes
+                        ctxSim.fillStyle = '#F59E0B';
+                        ctxSim.beginPath(); ctxSim.arc(originX + 20*scaleX, originY, 4, 0, Math.PI*2); ctxSim.fill();
+                        ctxSim.beginPath(); ctxSim.arc(originX + 100*scaleX, originY, 4, 0, Math.PI*2); ctxSim.fill();
+                    }
+                },
+                'phys': {
+                    // Root function (or Quadratic): Braking distance S = v^2 / (2*mu*g)
+                    // Let's plot V vs S. It's a parabola y = k * x^2
+                    // Let 2*mu*g = 10 for simplicity. S = v^2 / 10.
+                    color: 'var(--brand-green)',
+                    icon: 'car',
+                    controls: `
+                        <div class="control-group">
+                            <label style="color: var(--brand-green);"><span>Скорость авто (x):</span> <span id="val-speed" style="font-weight: bold;">60 км/ч</span></label>
+                            <input type="range" id="sim-speed" min="0" max="150" value="60" step="10" style="accent-color: var(--brand-green);">
+                        </div>
+                    `,
+                    dashboards: `
+                        <div class="dashboard-item">
+                            <div class="dashboard-label">Функция</div>
+                            <div class="dashboard-value" id="dash-eq" style="color: var(--brand-green);">$$y = k \cdot x^2$$</div>
+                        </div>
+                        <div class="dashboard-item">
+                            <div class="dashboard-label">Тормозной путь (y)</div>
+                            <div class="dashboard-value" id="dash-dist" style="color: var(--error-text);">36.0 м</div>
+                        </div>
+                    `,
+                    explanation: "<b>Квадратичная зависимость</b>. Тормозной путь пропорционален <b>квадрату</b> скорости. Это значит, что если вы превысите скорость всего в 2 раза (с 50 до 100 км/ч), тормозной путь увеличится не в 2, а в <b>4 раза</b>! Вот почему знаки ограничения скорости так важны — график уходит резко вверх.",
+                    update: function() {
+                        const speed = parseFloat(document.getElementById('sim-speed').value);
+                        document.getElementById('val-speed').textContent = speed + ' км/ч';
+                        
+                        const k = 0.01; // Scale factor for visuals
+                        const distance = k * speed * speed; // S = k * v^2
+
+                        document.getElementById('dash-dist').textContent = distance.toFixed(1) + ' м';
+
+                        const w = canvasSim.width;
+                        const h = canvasSim.height;
+                        ctxSim.clearRect(0, 0, w, h);
+
+                        // Layout: Left graph, Right visualization
+                        const splitX = w * 0.5;
+                        
+                        // Graph
+                        const originX = 40;
+                        const originY = h - 30;
+                        const scaleX = (splitX - 60) / 150; 
+                        const scaleY = (h - 60) / 250; // max distance is ~225m at 150kmh
+
+                        drawGrid(ctxSim, splitX, h, originX, originY, scaleX * 50, scaleY * 50, 'v (км/ч)', 'S (м)', 50);
+
+                        // The Curve
+                        ctxSim.beginPath();
+                        ctxSim.strokeStyle = '#4CAF50';
+                        ctxSim.lineWidth = 3;
+                        let first = true;
+                        for(let x=0; x<=150; x+=5) {
+                            let y = k * x * x;
+                            let px = originX + x * scaleX;
+                            let py = originY - y * scaleY;
+                            if(first) { ctxSim.moveTo(px, py); first=false; }
+                            else { ctxSim.lineTo(px, py); }
+                        }
+                        ctxSim.stroke();
+
+                        // Current point
+                        const px = originX + speed * scaleX;
+                        const py = originY - distance * scaleY;
+                        
+                        ctxSim.beginPath();
+                        ctxSim.strokeStyle = 'rgba(255,255,255,0.3)';
+                        ctxSim.setLineDash([5,5]);
+                        ctxSim.moveTo(px, originY); ctxSim.lineTo(px, py); ctxSim.lineTo(originX, py);
+                        ctxSim.stroke();
+                        ctxSim.setLineDash([]);
+
+                        ctxSim.beginPath(); ctxSim.arc(px, py, 6, 0, Math.PI*2);
+                        ctxSim.fillStyle = '#EF4444'; ctxSim.fill();
+                        ctxSim.strokeStyle = '#fff'; ctxSim.lineWidth = 2; ctxSim.stroke();
+
+                        // Visuals on right (Car braking)
+                        const roadY = h / 2 + 50;
+                        const roadStartX = splitX + 20;
+                        
+                        // Road
+                        ctxSim.fillStyle = '#333';
+                        ctxSim.fillRect(roadStartX, roadY, w - roadStartX, 40);
+                        
+                        // Stop sign (Obstacle)
+                        ctxSim.fillStyle = '#EF4444';
+                        ctxSim.fillRect(w - 40, roadY - 40, 20, 40);
+                        ctxSim.fillStyle = '#fff';
+                        ctxSim.font = '10px sans-serif';
+                        ctxSim.fillText('СТОП', w - 30, roadY - 20);
+
+                        // Car Position based on distance
+                        // Max distance is 225m. We have (w - roadStartX - 60) pixels to show it.
+                        const visScale = (w - roadStartX - 80) / 250;
+                        const carX = w - 40 - distance * visScale - 40; // 40 is car width
+                        
+                        // Draw Braking Trail
+                        ctxSim.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                        ctxSim.fillRect(carX + 20, roadY + 30, distance * visScale, 4);
+
+                        // Draw Car
+                        ctxSim.fillStyle = '#3B82F6';
+                        ctxSim.fillRect(carX, roadY - 20, 40, 20);
+                        ctxSim.fillStyle = '#111'; // wheels
+                        ctxSim.beginPath(); ctxSim.arc(carX + 10, roadY, 8, 0, Math.PI*2); ctxSim.fill();
+                        ctxSim.beginPath(); ctxSim.arc(carX + 30, roadY, 8, 0, Math.PI*2); ctxSim.fill();
+                        
+                        // Crash warning
+                        if (distance > 200) {
+                            ctxSim.fillStyle = '#EF4444';
+                            ctxSim.font = 'bold 24px sans-serif';
+                            ctxSim.textAlign = 'center';
+                            ctxSim.fillText('АВАРИЯ!', w - 60, roadY - 60);
+                        }
+                    }
+                }
+            };
+
+            window.setSimMode = function(mode) {
+                currentMode = mode;
+                
+                // Update UI Buttons
+                document.querySelectorAll('.process-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.borderColor = "var(--border)";
+                });
+                const activeBtn = document.getElementById(`btn-mode-${mode}`);
+                activeBtn.classList.add('active');
+                activeBtn.style.borderColor = simData[mode].color;
+                activeBtn.style.color = simData[mode].color;
+                activeBtn.style.backgroundColor = `rgba(255, 255, 255, 0.05)`; // subtle bg
+
+                // Load HTML
+                controlsDiv.innerHTML = simData[mode].controls;
+                dashboardDiv.innerHTML = simData[mode].dashboards;
+                explanationEl.innerHTML = simData[mode].explanation;
+                explanationEl.style.borderLeftColor = simData[mode].color;
+
+                // Re-render math
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    MathJax.typesetPromise([dashboardDiv]);
+                }
+
+                // Add event listeners dynamically to the new inputs
+                const inputs = controlsDiv.querySelectorAll('input');
+                inputs.forEach(inp => {
+                    inp.addEventListener('input', () => simData[currentMode].update());
+                });
+
+                // Force layout update before canvas draw (mobile fix)
+                setTimeout(() => {
+                    simData[currentMode].update();
+                }, 10);
+            };
+
+            // Init default
+            setSimMode('game');
+
+            // Resize handling
+            window.addEventListener('resize', () => {
+                const rect = canvasSim.parentElement.getBoundingClientRect();
+                if (rect.width > 0 && rect.width < 800) {
+                    // Responsive canvas adjustment could go here. 
+                    // For now, it scales via CSS. 
+                    // Let's force a redraw to ensure internal scales are correct.
+                    simData[currentMode].update();
+                }
+                drawPracticeGraph();
+            });
+
+            // ---------------------------------------------------------
+            // Практика (График)
+            // ---------------------------------------------------------
+            function drawPracticeGraph() {
+                const canvasP = document.getElementById('canvas-practice');
+                if (!canvasP) return;
+                const ctxP = canvasP.getContext('2d');
+                const w = canvasP.width;
+                const h = canvasP.height;
+                
+                const originX = 40;
+                const originY = h - 30;
+                // x from 0 to 100
+                const scaleX = (w - 60) / 100;
+                // y from -500 to 1500 (2000 total range)
+                const scaleY = (h - 50) / 2000;
+
+                ctxP.clearRect(0, 0, w, h);
+
+                // Custom grid
+                ctxP.strokeStyle = '#333';
+                ctxP.lineWidth = 1;
+                for(let x=0; x<=100; x+=20) { ctxP.beginPath(); ctxP.moveTo(originX + x*scaleX, 0); ctxP.lineTo(originX + x*scaleX, h); ctxP.stroke(); }
+                // Y grid: -500, 0, 500, 1000, 1500
+                for(let y=-500; y<=1500; y+=500) { 
+                    let py = originY - (y + 500) * scaleY;
+                    ctxP.beginPath(); ctxP.moveTo(0, py); ctxP.lineTo(w, py); ctxP.stroke(); 
+                }
+
+                // Axes
+                const xAxisY = originY - 500 * scaleY; // y=0 line
+                ctxP.strokeStyle = '#888';
+                ctxP.lineWidth = 2;
+                ctxP.beginPath(); ctxP.moveTo(originX, 0); ctxP.lineTo(originX, h); ctxP.stroke(); // Y axis
+                ctxP.beginPath(); ctxP.moveTo(0, xAxisY); ctxP.lineTo(w, xAxisY); ctxP.stroke(); // X axis
+
+                ctxP.fillStyle = '#888';
+                ctxP.font = '10px sans-serif';
+                ctxP.textAlign = 'center';
+                ctxP.fillText('Цена x', w - 20, xAxisY - 10);
+                ctxP.textAlign = 'right';
+                ctxP.fillText('Прибыль y', originX - 5, 20);
+                
+                for(let x=20; x<=80; x+=20) {
+                    ctxP.fillText(x, originX + x*scaleX, xAxisY + 15);
+                }
+
+                // Curve y = -2x^2 + 160x - 2400
+                ctxP.beginPath();
+                ctxP.strokeStyle = '#06B6D4';
+                ctxP.lineWidth = 3;
+                let first = true;
+                for (let x = 15; x <= 65; x += 1) {
+                    let y = -2*x*x + 160*x - 2400;
+                    let px = originX + x * scaleX;
+                    let py = originY - (y + 500) * scaleY;
+                    
+                    if (py > h || py < 0) continue;
+
+                    if (first) { ctxP.moveTo(px, py); first = false; } 
+                    else { ctxP.lineTo(px, py); }
+                }
+                ctxP.stroke();
+
+                // Highlight Vertex (40, 800)
+                const vx = originX + 40 * scaleX;
+                const vy = originY - (800 + 500) * scaleY;
+                ctxP.beginPath(); ctxP.arc(vx, vy, 5, 0, Math.PI*2);
+                ctxP.fillStyle = '#4CAF50'; ctxP.fill(); ctxP.strokeStyle='#fff'; ctxP.lineWidth=2; ctxP.stroke();
+            }
+
+            drawPracticeGraph();
+        });
+    </script>
+</body>
+</html>
