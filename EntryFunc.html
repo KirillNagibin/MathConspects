@@ -115,7 +115,7 @@
             display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
             margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
         }
-        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; text-align: left; }
         .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
         .dashboard-value { font-size: 1.1rem; }
 
@@ -346,19 +346,18 @@
             // Data models for each mode
             const simData = {
                 'game': {
-                    // Rational Function: Damage Taken % = 100 / (100 + Armor)
-                    color: 'var(--brand-purple)',
+                    color: '#8B5CF6', // brand-purple
                     icon: 'shield',
                     controls: `
                         <div class="control-group">
-                            <label style="color: var(--brand-purple);"><span>Броня персонажа (x):</span> <span id="val-armor" style="font-weight: bold;">50</span></label>
-                            <input type="range" id="sim-armor" min="0" max="300" value="50" step="10" style="accent-color: var(--brand-purple);">
+                            <label style="color: #8B5CF6;"><span>Броня персонажа (x):</span> <span id="val-armor" style="font-weight: bold;">50</span></label>
+                            <input type="range" id="sim-armor" min="0" max="300" value="50" step="10" style="accent-color: #8B5CF6;">
                         </div>
                     `,
                     dashboards: `
                         <div class="dashboard-item">
                             <div class="dashboard-label">Функция</div>
-                            <div class="dashboard-value" id="dash-eq" style="color: var(--brand-purple);">$$y = \\frac{100}{100+x}$$</div>
+                            <div class="dashboard-value" id="dash-eq" style="color: #8B5CF6; font-size: 1.2rem;">$y = \\frac{100}{100+x}$</div>
                         </div>
                         <div class="dashboard-item">
                             <div class="dashboard-label">Получаемый урон (y)</div>
@@ -369,7 +368,7 @@
                             <div class="dashboard-value" id="dash-val2" style="color: var(--green);">0%</div>
                         </div>
                     `,
-                    explanation: "<b>Дробно-рациональная функция</b>. Разработчики игр используют её, чтобы сделать баланс. Обратите внимание: первые 50 единиц брони дают огромный бонус к выживаемости. Но покупка брони от 250 до 300 почти ничего не меняет. График имеет <b>горизонтальную асимптоту $y=0$</b>: урон никогда не станет нулевым, персонаж не станет бессмертным.",
+                    explanation: "<b>Дробно-рациональная функция</b>. Разработчики игр используют её, чтобы создать баланс. Чем больше у вас брони, тем сложнее получить следующий процент защиты. Если бы бонус был линейным, игрок легко достиг бы 100% защиты и стал бессмертным. А с такой функцией (график имеет горизонтальную асимптоту $y=0$) урон никогда не станет нулевым.",
                     update: function() {
                         const armor = parseFloat(document.getElementById('sim-armor').value);
                         document.getElementById('val-armor').textContent = armor;
@@ -386,7 +385,7 @@
                         ctxSim.clearRect(0, 0, w, h);
 
                         // Layout: Left graph, Right visualization
-                        const splitX = w * 0.6;
+                        const splitX = w * 0.55;
                         
                         // Graph
                         const originX = 40;
@@ -396,7 +395,6 @@
 
                         drawGrid(ctxSim, splitX, h, originX, originY, scaleX * 50, scaleY * 20, 'Броня', 'Урон %', 50);
 
-                        // The Asymptote (y=0) is the X axis.
                         // The Curve
                         ctxSim.beginPath();
                         ctxSim.strokeStyle = '#8B5CF6';
@@ -415,7 +413,6 @@
                         const px = originX + armor * scaleX;
                         const py = originY - dmgTakenPct * scaleY;
                         
-                        // Dashed lines to point
                         ctxSim.beginPath();
                         ctxSim.strokeStyle = 'rgba(255,255,255,0.3)';
                         ctxSim.setLineDash([5,5]);
@@ -431,55 +428,61 @@
                         const cx = splitX + (w - splitX)/2;
                         const cy = h/2;
                         
-                        // Shield
-                        ctxSim.fillStyle = '#444';
+                        // Shield Forcefield (Aura)
+                        const auraR = 50 + armor/15;
+                        const grad = ctxSim.createRadialGradient(cx, cy, 30, cx, cy, auraR);
+                        grad.addColorStop(0, 'rgba(139, 92, 246, 0)');
+                        grad.addColorStop(1, `rgba(139, 92, 246, ${Math.min(0.8, armor/150)})`);
+                        ctxSim.fillStyle = grad;
+                        ctxSim.beginPath(); ctxSim.arc(cx, cy, auraR, 0, Math.PI*2); ctxSim.fill();
+
+                        // Metallic Shield
+                        ctxSim.fillStyle = '#333';
+                        ctxSim.strokeStyle = '#555';
+                        ctxSim.lineWidth = 4;
                         ctxSim.beginPath();
-                        ctxSim.moveTo(cx - 40, cy - 60);
-                        ctxSim.lineTo(cx + 40, cy - 60);
-                        ctxSim.lineTo(cx + 40, cy + 20);
-                        ctxSim.lineTo(cx, cy + 80);
-                        ctxSim.lineTo(cx - 40, cy + 20);
-                        ctxSim.fill();
-                        ctxSim.strokeStyle = `rgba(139, 92, 246, ${armor/300})`; // Glow based on armor
-                        ctxSim.lineWidth = 5 + armor/20;
-                        ctxSim.stroke();
+                        ctxSim.moveTo(cx - 30, cy - 40); ctxSim.lineTo(cx + 30, cy - 40);
+                        ctxSim.lineTo(cx + 40, cy); ctxSim.lineTo(cx, cy + 50);
+                        ctxSim.lineTo(cx - 40, cy); ctxSim.closePath();
+                        ctxSim.fill(); ctxSim.stroke();
                         
+                        // Text on shield
                         ctxSim.fillStyle = '#fff';
                         ctxSim.font = 'bold 20px sans-serif';
-                        ctxSim.textAlign = 'center';
-                        ctxSim.fillText(armor, cx, cy);
-                        ctxSim.font = '12px sans-serif';
-                        ctxSim.fillText('Броня', cx, cy - 20);
+                        ctxSim.textAlign = 'center'; ctxSim.textBaseline = 'middle';
+                        ctxSim.fillText(armor, cx, cy - 5);
 
-                        // Incoming Damage (Sword/Arrow)
+                        // Incoming Damage (Laser/Arrow)
                         ctxSim.strokeStyle = '#EF4444';
                         ctxSim.lineWidth = 4;
                         ctxSim.beginPath();
-                        ctxSim.moveTo(cx + 100, cy - 60);
-                        ctxSim.lineTo(cx + 45, cy - 10);
+                        ctxSim.moveTo(cx + 120, cy - 40);
+                        ctxSim.lineTo(cx + auraR, cy - 10);
                         ctxSim.stroke();
+                        
+                        // Impact spark
+                        ctxSim.fillStyle = '#F59E0B';
+                        ctxSim.beginPath(); ctxSim.arc(cx + auraR, cy - 10, 6, 0, Math.PI*2); ctxSim.fill();
                         
                         // Damage taken text
                         ctxSim.fillStyle = '#EF4444';
-                        ctxSim.font = 'bold 24px sans-serif';
-                        ctxSim.fillText(`-${dmgTakenPct.toFixed(0)} HP`, cx, cy + 120);
+                        ctxSim.font = 'bold 22px sans-serif';
+                        ctxSim.fillText(`Урон: ${dmgTakenPct.toFixed(1)}%`, cx, cy + 90);
                     }
                 },
                 'econ': {
-                    // Quadratic Function: Profit = (Price - Cost) * (100 - Price). Let Cost = 20.
-                    // y = (x - 20) * (100 - x) = -x^2 + 120x - 2000
-                    color: 'var(--accent)',
+                    color: '#06B6D4', // accent
                     icon: 'briefcase',
                     controls: `
                         <div class="control-group">
-                            <label style="color: var(--accent);"><span>Цена за товар (x):</span> <span id="val-price" style="font-weight: bold;">60 руб.</span></label>
-                            <input type="range" id="sim-price" min="0" max="120" value="60" step="5" style="accent-color: var(--accent);">
+                            <label style="color: #06B6D4;"><span>Цена за товар (x):</span> <span id="val-price" style="font-weight: bold;">60 руб.</span></label>
+                            <input type="range" id="sim-price" min="0" max="120" value="60" step="5" style="accent-color: #06B6D4;">
                         </div>
                     `,
                     dashboards: `
                         <div class="dashboard-item">
                             <div class="dashboard-label">Функция</div>
-                            <div class="dashboard-value" id="dash-eq" style="color: var(--accent);">$$y = -x^2 + 120x - 2000$$</div>
+                            <div class="dashboard-value" id="dash-eq" style="color: #06B6D4; font-size: 1.2rem;">$y = -x^2 + 120x - 2000$</div>
                         </div>
                         <div class="dashboard-item">
                             <div class="dashboard-label">Кол-во продаж</div>
@@ -490,7 +493,7 @@
                             <div class="dashboard-value" id="dash-profit" style="color: var(--green);">1600 руб.</div>
                         </div>
                     `,
-                    explanation: "<b>Квадратичная функция (Парабола)</b>. Ветви направлены вниз ($a < 0$). У нее есть <b>нули функции</b> (точки безубыточности при $x=20$ и $x=100$) и <b>экстремум</b> в вершине параболы. Найти координату $x_0$ вершины — значит найти идеальную цену, при которой бизнес заработает максимум денег.",
+                    explanation: "<b>Квадратичная функция (Парабола)</b>. Почему продаж становится меньше? Это закон спроса: чем дороже товар, тем меньше людей готовы его купить. Мы умножаем растущую наценку на падающее количество покупателей, и в результате получается парабола. Найти её вершину — значит найти идеальную цену для максимальной прибыли.",
                     update: function() {
                         const price = parseFloat(document.getElementById('sim-price').value);
                         document.getElementById('val-price').textContent = price + ' руб.';
@@ -548,35 +551,40 @@
                         ctxSim.fillStyle = profit >= 0 ? '#4CAF50' : '#EF4444'; ctxSim.fill();
                         ctxSim.strokeStyle = '#fff'; ctxSim.lineWidth = 2; ctxSim.stroke();
 
-                        // Highlight Zeroes
+                        // Highlight Zeroes & Vertex
                         ctxSim.fillStyle = '#F59E0B';
                         ctxSim.beginPath(); ctxSim.arc(originX + 20*scaleX, originY, 4, 0, Math.PI*2); ctxSim.fill();
                         ctxSim.beginPath(); ctxSim.arc(originX + 100*scaleX, originY, 4, 0, Math.PI*2); ctxSim.fill();
+                        
+                        // Vertex marker
+                        const vx = originX + 60*scaleX;
+                        const vy = originY - 1600*scaleY;
+                        ctxSim.fillStyle = '#06B6D4';
+                        ctxSim.beginPath(); ctxSim.arc(vx, vy, 4, 0, Math.PI*2); ctxSim.fill();
+                        ctxSim.font = '11px sans-serif'; ctxSim.textAlign = 'center'; ctxSim.textBaseline = 'bottom';
+                        ctxSim.fillText('Максимум', vx, vy - 8);
                     }
                 },
                 'phys': {
-                    // Root function (or Quadratic): Braking distance S = v^2 / (2*mu*g)
-                    // Let's plot V vs S. It's a parabola y = k * x^2
-                    // Let 2*mu*g = 10 for simplicity. S = v^2 / 10.
-                    color: 'var(--brand-green)',
+                    color: '#4CAF50', // brand-green
                     icon: 'car',
                     controls: `
                         <div class="control-group">
-                            <label style="color: var(--brand-green);"><span>Скорость авто (x):</span> <span id="val-speed" style="font-weight: bold;">60 км/ч</span></label>
-                            <input type="range" id="sim-speed" min="0" max="150" value="60" step="10" style="accent-color: var(--brand-green);">
+                            <label style="color: #4CAF50;"><span>Скорость авто (x):</span> <span id="val-speed" style="font-weight: bold;">60 км/ч</span></label>
+                            <input type="range" id="sim-speed" min="0" max="150" value="60" step="10" style="accent-color: #4CAF50;">
                         </div>
                     `,
                     dashboards: `
                         <div class="dashboard-item">
                             <div class="dashboard-label">Функция</div>
-                            <div class="dashboard-value" id="dash-eq" style="color: var(--brand-green);">$$y = k \cdot x^2$$</div>
+                            <div class="dashboard-value" id="dash-eq" style="color: #4CAF50; font-size: 1.2rem;">$y = k \\cdot x^2$</div>
                         </div>
                         <div class="dashboard-item">
                             <div class="dashboard-label">Тормозной путь (y)</div>
                             <div class="dashboard-value" id="dash-dist" style="color: var(--error-text);">36.0 м</div>
                         </div>
                     `,
-                    explanation: "<b>Квадратичная зависимость</b>. Тормозной путь пропорционален <b>квадрату</b> скорости. Это значит, что если вы превысите скорость всего в 2 раза (с 50 до 100 км/ч), тормозной путь увеличится не в 2, а в <b>4 раза</b>! Вот почему знаки ограничения скорости так важны — график уходит резко вверх.",
+                    explanation: "<b>Квадратичная зависимость</b>. Тормозной путь зависит от кинетической энергии автомобиля, а она вычисляется через квадрат скорости ($E = mv^2/2$). Именно поэтому, если скорость превысить всего в 2 раза, тормозной путь увеличится в 4 раза! Это главная причина ограничения скорости в городах.",
                     update: function() {
                         const speed = parseFloat(document.getElementById('sim-speed').value);
                         document.getElementById('val-speed').textContent = speed + ' км/ч';
@@ -642,24 +650,45 @@
                         ctxSim.fillStyle = '#EF4444';
                         ctxSim.fillRect(w - 40, roadY - 40, 20, 40);
                         ctxSim.fillStyle = '#fff';
-                        ctxSim.font = '10px sans-serif';
-                        ctxSim.fillText('СТОП', w - 30, roadY - 20);
+                        ctxSim.font = '10px sans-serif'; ctxSim.textAlign = 'center'; ctxSim.textBaseline = 'bottom';
+                        ctxSim.fillText('СТОП', w - 30, roadY - 42);
 
                         // Car Position based on distance
-                        // Max distance is 225m. We have (w - roadStartX - 60) pixels to show it.
                         const visScale = (w - roadStartX - 80) / 250;
-                        const carX = w - 40 - distance * visScale - 40; // 40 is car width
+                        const carX = w - 40 - distance * visScale - 50; // 50 is car width
                         
-                        // Draw Braking Trail
-                        ctxSim.fillStyle = 'rgba(255, 255, 255, 0.2)';
-                        ctxSim.fillRect(carX + 20, roadY + 30, distance * visScale, 4);
+                        // Draw Braking Trail (Skid marks)
+                        ctxSim.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                        ctxSim.fillRect(carX + 40, roadY + 30, distance * visScale, 5);
 
-                        // Draw Car
+                        // Draw Car (Modern silhouette)
                         ctxSim.fillStyle = '#3B82F6';
-                        ctxSim.fillRect(carX, roadY - 20, 40, 20);
-                        ctxSim.fillStyle = '#111'; // wheels
-                        ctxSim.beginPath(); ctxSim.arc(carX + 10, roadY, 8, 0, Math.PI*2); ctxSim.fill();
-                        ctxSim.beginPath(); ctxSim.arc(carX + 30, roadY, 8, 0, Math.PI*2); ctxSim.fill();
+                        ctxSim.beginPath();
+                        if (ctxSim.roundRect) {
+                            ctxSim.roundRect(carX + 5, roadY - 20, 35, 12, 4); // Roof
+                            ctxSim.fill();
+                            ctxSim.fillStyle = '#2563EB';
+                            ctxSim.beginPath();
+                            ctxSim.roundRect(carX - 10, roadY - 8, 65, 14, 4); // Body
+                            ctxSim.fill();
+                        } else {
+                            ctxSim.fillRect(carX + 5, roadY - 20, 35, 12);
+                            ctxSim.fillStyle = '#2563EB';
+                            ctxSim.fillRect(carX - 10, roadY - 8, 65, 14);
+                        }
+                        
+                        // Windows
+                        ctxSim.fillStyle = '#93C5FD';
+                        ctxSim.beginPath(); ctxSim.moveTo(carX+25, roadY-20); ctxSim.lineTo(carX+40, roadY-8); ctxSim.lineTo(carX+20, roadY-8); ctxSim.fill();
+                        ctxSim.beginPath(); ctxSim.moveTo(carX+15, roadY-20); ctxSim.lineTo(carX-5, roadY-8); ctxSim.lineTo(carX+15, roadY-8); ctxSim.fill();
+
+                        // Wheels
+                        ctxSim.fillStyle = '#111';
+                        ctxSim.beginPath(); ctxSim.arc(carX + 5, roadY + 6, 7, 0, Math.PI*2); ctxSim.fill();
+                        ctxSim.beginPath(); ctxSim.arc(carX + 40, roadY + 6, 7, 0, Math.PI*2); ctxSim.fill();
+                        ctxSim.fillStyle = '#ccc';
+                        ctxSim.beginPath(); ctxSim.arc(carX + 5, roadY + 6, 3, 0, Math.PI*2); ctxSim.fill();
+                        ctxSim.beginPath(); ctxSim.arc(carX + 40, roadY + 6, 3, 0, Math.PI*2); ctxSim.fill();
                         
                         // Crash warning
                         if (distance > 200) {
@@ -692,9 +721,9 @@
                 explanationEl.innerHTML = simData[mode].explanation;
                 explanationEl.style.borderLeftColor = simData[mode].color;
 
-                // Re-render math
+                // Re-render math in dashboards AND explanation
                 if (window.MathJax && window.MathJax.typesetPromise) {
-                    MathJax.typesetPromise([dashboardDiv]);
+                    MathJax.typesetPromise([dashboardDiv, explanationEl]).catch(e => console.error(e));
                 }
 
                 // Add event listeners dynamically to the new inputs
