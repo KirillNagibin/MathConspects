@@ -374,20 +374,20 @@
                     dashObj.textContent = "Прямая AB";
                     dashObj.style.color = colors.line;
                     dashStart.textContent = "Нет ни начала, ни конца";
-                    dashLength.innerHTML = "$\infty$";
-                    dashLength.style.fontSize = "2rem";
+                    dashLength.innerHTML = "Бесконечность";
+                    dashLength.style.fontSize = "1.1rem";
                 } else if (mode === 'rayAB') {
                     dashObj.textContent = "Луч AB";
                     dashObj.style.color = colors.rayAB;
                     dashStart.textContent = "Начало в точке A";
-                    dashLength.innerHTML = "$\infty$";
-                    dashLength.style.fontSize = "2rem";
+                    dashLength.innerHTML = "Бесконечность";
+                    dashLength.style.fontSize = "1.1rem";
                 } else if (mode === 'rayBA') {
                     dashObj.textContent = "Луч BA";
                     dashObj.style.color = colors.rayBA;
                     dashStart.textContent = "Начало в точке B";
-                    dashLength.innerHTML = "$\infty$";
-                    dashLength.style.fontSize = "2rem";
+                    dashLength.innerHTML = "Бесконечность";
+                    dashLength.style.fontSize = "1.1rem";
                 }
                 
                 safeMathRender([dashLength]);
