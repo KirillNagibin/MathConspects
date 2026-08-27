@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Введение в геометрию. Базовые объекты</title>
+    
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #4CAF50; /* Зеленый акцент для геометрии */
+            --accent-hover: #45a049;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(255, 193, 7, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-cyan: #06B6D4;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px; text-align: left;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1.1rem; color: var(--accent); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px;}
+        .prop-desc { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
+
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        /* Симулятор */
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 10px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 140px; text-align: center; font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .process-btn.active {
+            background: rgba(76, 175, 80, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; }
+        canvas { max-width: 100%; display: block; touch-action: none; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(76, 175, 80, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .props-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Введение в геометрию. Базовые объекты</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Что такое геометрия?</strong><br>
+                <span style="color: var(--text-muted);">Геометрия переводится как «землемерие». Это наука о фигурах, их свойствах и взаимном расположении. Планиметрия изучает фигуры на плоском листе бумаги. Все сложные фигуры (квадраты, круги) состоят из самых простейших, "неделимых" объектов: точек и линий.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="shapes"></i> 1. Алфавит геометрии (Базовые объекты)</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">В геометрии есть идеальные объекты, которых в реальном мире не существует. Например, у нарисованной ручкой точки есть размер, а у настоящей геометрической точки размера нет!</p>
+            
+            <div class="props-grid">
+                <div class="prop-card" style="border-left: 4px solid var(--info-text);">
+                    <div class="prop-title" style="color: var(--info-text);">Точка</div>
+                    <div class="prop-desc">
+                        Самый простой объект. Не имеет ни длины, ни ширины. Обозначается заглавными латинскими буквами: $A, B, C$.
+                    </div>
+                </div>
+                <div class="prop-card" style="border-left: 4px solid var(--accent);">
+                    <div class="prop-title" style="color: var(--accent);">Прямая</div>
+                    <div class="prop-desc">
+                        Линия, которая <b>не имеет ни начала, ни конца</b>. Она бесконечна в обе стороны. Обозначается одной строчной буквой ($a, b$) или двумя точками на ней ($AB$).
+                    </div>
+                </div>
+                <div class="prop-card" style="border-left: 4px solid var(--warn-text);">
+                    <div class="prop-title" style="color: var(--warn-text);">Луч (Полупрямая)</div>
+                    <div class="prop-desc">
+                        Часть прямой, ограниченная <b>только с одной стороны</b>. Имеет начало, но не имеет конца. Обозначается двумя буквами, где первая — всегда начало!
+                    </div>
+                </div>
+                <div class="prop-card" style="border-left: 4px solid var(--error-text);">
+                    <div class="prop-title" style="color: var(--error-text);">Отрезок</div>
+                    <div class="prop-desc">
+                        Часть прямой, ограниченная <b>с двух сторон</b> точками (концами отрезка). Только у отрезка можно измерить длину.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="book-open"></i> 2. Аксиомы: Правила игры</h2>
+        <div class="card">
+            <p style="color: var(--text-muted);">В математике нельзя просто взять и что-то придумать. Всё нужно доказывать (это теоремы). Но чтобы было от чего отталкиваться, математики договорились принять несколько самых базовых и очевидных утверждений без доказательств. Они называются <b>аксиомами</b>.</p>
+            
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border-left: 4px solid var(--brand-purple); margin-bottom: 15px;">
+                <strong style="color: var(--brand-purple);">Аксиома 1 (О прямой):</strong><br>
+                Через любые две точки можно провести прямую, и притом <b>только одну</b>.
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border-left: 4px solid var(--brand-cyan); margin-bottom: 15px;">
+                <strong style="color: var(--brand-cyan);">Аксиома 2 (Об измерении отрезков):</strong><br>
+                Каждый отрезок имеет определенную длину, большую нуля. Длина отрезка равна сумме длин частей, на которые он разбивается любой его внутренней точкой.<br>
+                <span style="font-size: 0.9rem; color: var(--text-muted);">(Если точка $B$ лежит между $A$ и $C$, то $AC = AB + BC$)</span>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border-left: 4px solid var(--brand-orange);">
+                <strong style="color: var(--brand-orange);">Аксиома 3 (О разбиении прямой):</strong><br>
+                Любая точка на прямой разбивает эту прямую на два луча (противоположные лучи).
+            </div>
+        </div>
+
+        <h2><i data-lucide="mouse-pointer-click"></i> 3. Лаборатория: "Размерности"</h2>
+        <p style="color: var(--text-muted);">Перетаскивайте точки $A$ и $B$ на холсте. Переключайте режимы отображения, чтобы наглядно увидеть разницу между прямой, лучами и отрезком. Обратите внимание, что прямая через эти точки всегда только одна (Аксиома 1)!</p>
+
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-mode-segment" onclick="setDrawMode('segment', this)">Отрезок AB</div>
+                <div class="process-btn" id="btn-mode-rayAB" onclick="setDrawMode('rayAB', this)">Луч AB</div>
+                <div class="process-btn" id="btn-mode-rayBA" onclick="setDrawMode('rayBA', this)">Луч BA</div>
+                <div class="process-btn" id="btn-mode-line" onclick="setDrawMode('line', this)">Прямая AB</div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-geom" width="700" height="350"></canvas>
+            </div>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <span style="color: var(--text-muted);">Длина отрезка AB: </span>
+                <strong id="dash-length" style="color: var(--accent); font-family: monospace; font-size: 1.2rem;">0.0</strong> <span style="color: var(--text-muted);">ед.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="alert-triangle"></i> 4. Секреты и Ловушки</h2>
+        <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            
+            <div class="alert-box alert-warning" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--warn-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="zap" style="width: 18px;"></i> Полезные фишки
+                </strong>
+                <ul style="margin: 10px 0 0 0; padding-left: 15px;">
+                    <li><strong>Запись имеет значение:</strong> Отрезок $AB$ и отрезок $BA$ — это одно и то же. Прямая $AB$ и прямая $BA$ — одно и то же. А вот луч $AB$ и луч $BA$ — это <b>два совершенно разных луча</b>, летящих в разные стороны!</li>
+                    <li><strong>Точка пересечения:</strong> Две прямые могут либо пересекаться ровно в ОДНОЙ точке, либо не пересекаться вообще (параллельны).</li>
+                </ul>
+            </div>
+
+            <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="x-circle" style="width: 18px;"></i> Главная ловушка (ВПР/ОГЭ)
+                </strong>
+                <ul style="margin: 10px 0 0 0; padding-left: 15px;">
+                    <li>В задачах часто пишут: <i>"На прямой отмечены три точки A, B и C"</i>. Школьники сразу рисуют их по порядку: $A \rightarrow B \rightarrow C$. Но в условии этого не сказано! Точка $C$ может лежать между $A$ и $B$, а может лежать за точкой $B$. Всегда рассматривайте <b>два варианта чертежа</b>!</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика</h2>
+        
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Расположение точек на прямой</h3>
+            <p>На прямой отмечены три точки $A$, $B$ и $C$. Известно, что расстояние $AB = 12\text{ см}$, а расстояние $BC = 5\text{ см}$. Найдите расстояние между точками $A$ и $C$. Укажите все возможные варианты.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')"><i data-lucide="help-circle" style="width: 16px;"></i> Подсказка</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+            
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Вспомните ловушку из пункта 4. Нарисуйте прямую и поставьте точки $A$ и $B$ на расстоянии 12 см. Куда можно поставить точку $C$, чтобы она была на расстоянии 5 см от $B$? Есть два направления!
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>Так как порядок точек на прямой не указан, у нас есть два возможных случая расположения.</p>
+                
+                <p><strong>Случай 1:</strong> Точка $B$ лежит между точками $A$ и $C$ (порядок $A-B-C$).<br>
+                По аксиоме измерения отрезков, весь отрезок равен сумме его частей:<br>
+                $$AC = AB + BC$$
+                $$AC = 12 + 5 = 17\text{ см}$$</p>
+                
+                <p><strong>Случай 2:</strong> Точка $C$ лежит между точками $A$ и $B$ (порядок $A-C-B$).<br>
+                Тогда самый большой отрезок — это $AB$, и он равен сумме частей:<br>
+                $$AB = AC + CB$$
+                Выразим отсюда искомый отрезок $AC$:<br>
+                $$AC = AB - CB$$
+                $$AC = 12 - 5 = 7\text{ см}$$</p>
+                
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 17 см или 7 см</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* ==========================================
+               СИМУЛЯТОР: ЛИНИИ И ТОЧКИ
+               ========================================== */
+            const canvas = document.getElementById('canvas-geom');
+            const ctx = canvas.getContext('2d');
+            const dashLength = document.getElementById('dash-length');
+
+            let currentMode = 'segment'; // 'segment', 'line', 'rayAB', 'rayBA'
+
+            // Точки
+            let points = [
+                { id: 'A', x: 200, y: 175, radius: 10, isDragging: false, color: '#EF4444' }, // Красная
+                { id: 'B', x: 500, y: 175, radius: 10, isDragging: false, color: '#3B82F6' }  // Синяя
+            ];
+
+            let dragTarget = null;
+
+            window.setDrawMode = function(mode, btnElement) {
+                currentMode = mode;
+                document.querySelectorAll('.process-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                btnElement.classList.add('active');
+                drawCanvas();
+            };
+
+            // Обработка событий мыши и касаний
+            function getPointerPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: (clientX - rect.left) * (canvas.width / rect.width),
+                    y: (clientY - rect.top) * (canvas.height / rect.height)
+                };
+            }
+
+            function handlePointerDown(e) {
+                const pos = getPointerPos(e);
+                for (let i = 0; i < points.length; i++) {
+                    const p = points[i];
+                    const dx = pos.x - p.x;
+                    const dy = pos.y - p.y;
+                    if (dx*dx + dy*dy <= p.radius*p.radius * 4) { 
+                        dragTarget = p;
+                        dragTarget.isDragging = true;
+                        e.preventDefault();
+                        break;
+                    }
+                }
+            }
+
+            function handlePointerMove(e) {
+                if (!dragTarget) return;
+                const pos = getPointerPos(e);
+                
+                // Ограничиваем внутри холста с небольшим отступом
+                dragTarget.x = Math.max(20, Math.min(canvas.
