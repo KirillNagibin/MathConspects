@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Углы и параллельные прямые</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #4CAF50;
+            --accent-hover: #45a049;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-cyan: #06B6D4;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px; text-align: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .prop-title { font-size: 1.1rem; color: var(--text-main); font-weight: 600; margin-bottom: 5px; }
+        .prop-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        .table-container { overflow-x: auto; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
+        .data-table td { color: var(--text-muted); }
+
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap; margin-bottom: 20px;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        /* Симулятор */
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 12px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 130px; text-align: center; font-size: 0.9rem;
+            transition: all 0.2s; user-select: none;
+        }
+        .process-btn.active {
+            background: rgba(76, 175, 80, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+        
+        .sim-controls { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; }
+        canvas { max-width: 100%; display: block; touch-action: none; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.2rem; font-family: monospace; font-weight: bold; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(76, 175, 80, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .svg-icon { width: 60px; height: 60px; margin-bottom: 10px; }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Углы и параллельные прямые</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="scissors" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Что такое угол?</strong><br>
+                <span style="color: var(--text-muted);">Угол — это геометрическая фигура, образованная двумя лучами, выходящими из одной точки (вершины угла). Измеряются углы в градусах ($^\circ$), от $0^\circ$ до $360^\circ$. В 7 классе мы учимся находить углы при пересечении прямых — это фундамент для всех будущих задач.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="pie-chart"></i> 1. Виды углов</h2>
+        <div class="card">
+            <div class="props-grid">
+                <div class="prop-card">
+                    <svg class="svg-icon" viewBox="0 0 100 100">
+                        <path d="M 20 80 L 80 80 L 20 40 Z" fill="rgba(59, 130, 246, 0.2)" stroke="var(--info-text)" stroke-width="2" stroke-linejoin="round"/>
+                        <path d="M 35 80 A 15 15 0 0 0 26 68" fill="none" stroke="var(--info-text)" stroke-width="2"/>
+                    </svg>
+                    <div class="prop-title">Острый</div>
+                    <div class="prop-desc">Меньше $90^\circ$.<br>$(0^\circ < \alpha < 90^\circ)$</div>
+                </div>
+                <div class="prop-card">
+                    <svg class="svg-icon" viewBox="0 0 100 100">
+                        <path d="M 30 80 L 80 80 M 30 80 L 30 30" fill="none" stroke="var(--error-text)" stroke-width="3" stroke-linecap="round"/>
+                        <rect x="30" y="65" width="15" height="15" fill="rgba(239, 68, 68, 0.2)" stroke="var(--error-text)" stroke-width="2"/>
+                    </svg>
+                    <div class="prop-title">Прямой</div>
+                    <div class="prop-desc">Ровно $90^\circ$. Обозначается квадратиком.</div>
+                </div>
+                <div class="prop-card">
+                    <svg class="svg-icon" viewBox="0 0 100 100">
+                        <path d="M 50 80 L 90 80 L 10 30 Z" fill="rgba(245, 158, 11, 0.2)" stroke="var(--warn-text)" stroke-width="2" stroke-linejoin="round"/>
+                        <path d="M 70 80 A 20 20 0 0 0 35 62" fill="none" stroke="var(--warn-text)" stroke-width="2"/>
+                    </svg>
+                    <div class="prop-title">Тупой</div>
+                    <div class="prop-desc">Больше $90^\circ$, но меньше $180^\circ$.</div>
+                </div>
+                <div class="prop-card">
+                    <svg class="svg-icon" viewBox="0 0 100 100">
+                        <path d="M 10 60 L 90 60" fill="none" stroke="var(--brand-purple)" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="50" cy="60" r="4" fill="#fff"/>
+                        <path d="M 70 60 A 20 20 0 0 0 30 60" fill="rgba(139, 92, 246, 0.2)" stroke="var(--brand-purple)" stroke-width="2"/>
+                    </svg>
+                    <div class="prop-title">Развернутый</div>
+                    <div class="prop-desc">Ровно $180^\circ$. Представляет собой прямую линию.</div>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="move-diagonal"></i> 2. Пересечение двух прямых</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Когда две прямые пересекаются (как ножницы), образуется 4 угла. Они образуют особые пары.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 15px;">
+                <div style="background: rgba(59, 130, 246, 0.05); padding: 15px; border-radius: 8px; border-left: 4px solid var(--info-text);">
+                    <strong style="color: var(--info-text); font-size: 1.1rem;">Смежные углы</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Имеют одну общую сторону, а две другие лежат на одной прямой (образуют развернутый угол).</p>
+                    <div style="text-align: center; font-size: 1.1rem; margin-top: 10px; color: #fff;">
+                        $$\angle 1 + \angle 2 = 180^\circ$$
+                    </div>
+                </div>
+                
+                <div style="background: rgba(239, 68, 68, 0.05); padding: 15px; border-radius: 8px; border-left: 4px solid var(--error-text);">
+                    <strong style="color: var(--error-text); font-size: 1.1rem;">Вертикальные углы</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Лежат друг напротив друга. Стороны одного угла являются продолжениями сторон другого.</p>
+                    <div style="text-align: center; font-size: 1.1rem; margin-top: 10px; color: #fff;">
+                        $$\angle 1 = \angle 3$$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="align-justify"></i> 3. Параллельные прямые и Секущая</h2>
+        <div class="card table-container">
+            <p>Если две параллельные прямые ($a \parallel b$) пересечь третьей прямой ($c$ - секущей), образуется 8 углов. Между ними есть строгие закономерности.</p>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Название пары</th>
+                        <th>Расположение</th>
+                        <th>Свойство (если $a \parallel b$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong style="color: var(--brand-cyan);">Накрест лежащие</strong></td>
+                        <td>Лежат по <b>разные</b> стороны от секущей, внутри между параллельными прямыми.</td>
+                        <td>Они <b>равны</b>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--brand-pink);">Соответственные</strong></td>
+                        <td>Лежат по <b>одну</b> сторону от секущей: один внутри, другой снаружи (похожи по позиции).</td>
+                        <td>Они <b>равны</b>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--warn-text);">Односторонние</strong></td>
+                        <td>Лежат по <b>одну</b> сторону от секущей <b>внутри</b> между параллельными прямыми.</td>
+                        <td>Их <b>сумма равна $180^\circ$</b>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2><i data-lucide="monitor-play"></i> 4. Лаборатория: Закономерности углов</h2>
+        <p style="color: var(--text-muted);">Двигайте белую точку, чтобы изменить наклон секущей $c$. Переключайте режимы подсветки, чтобы увидеть, где находятся накрест лежащие, соответственные и односторонние углы. Убедитесь сами: <b>острый угол всегда равен острому, тупой — тупому, а сумма острого и тупого всегда равна $180^\circ$</b>.</p>
+
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-mode-all" onclick="setAngleMode('all')">Все углы</div>
+                <div class="process-btn" id="btn-mode-alt" onclick="setAngleMode('alt')">Накрест лежащие (=)</div>
+                <div class="process-btn" id="btn-mode-corr" onclick="setAngleMode('corr')">Соответственные (=)</div>
+                <div class="process-btn" id="btn-mode-cons" onclick="setAngleMode('cons')">Односторонние ($180^\circ$)</div>
+                <div class="process-btn" id="btn-mode-vert" onclick="setAngleMode('vert')">Вертикальные (=)</div>
+                <div class="process-btn" id="btn-mode-adj" onclick="setAngleMode('adj')">Смежные ($180^\circ$)</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Острый угол ($\alpha$)</div>
+                    <div class="dashboard-value" id="dash-acute" style="color: var(--accent);">0°</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Тупой угол ($\beta$)</div>
+                    <div class="dashboard-value" id="dash-obtuse" style="color: var(--error-text);">0°</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Сумма ($\alpha + \beta$)</div>
+                    <div class="dashboard-value" id="dash-sum" style="color: #fff;">180°</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-angles" width="700" height="350"></canvas>
+            </div>
+            
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 15px;">
+                <i>* Захватите белую точку на наклонной прямой (секущей) и потяните влево-вправо.</i>
+            </p>
+        </div>
+
+        <h2><i data-lucide="lightbulb"></i> 5. Секреты и Лайфхаки (Правило букв)</h2>
+        <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="alert-box alert-warning" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--warn-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="search" style="width: 18px;"></i> Как быстро найти нужные углы?
+                </strong>
+                <p style="margin: 10px 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Представьте себе английские буквы:</p>
+                <ul style="margin: 5px 0 0 0; padding-left: 15px; font-size: 0.9rem;">
+                    <li><strong>Буква Z:</strong> Нарисуйте Z вдоль параллельных прямых и секущей. Углы внутри "сгибов" буквы Z — это <b>накрест лежащие</b> углы. Они равны.</li>
+                    <li><strong>Буква F:</strong> Углы под "перекладинами" буквы F — это <b>соответственные</b> углы. Они равны.</li>
+                    <li><strong>Буква C (или скобка [ ):</strong> Углы внутри скобки — это <b>односторонние</b>. Вместе они дают $180^\circ$.</li>
+                </ul>
+            </div>
+            
+            <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="alert-triangle" style="width: 18px;"></i> Типичные ошибки
+                </strong>
+                <ul style="margin: 10px 0 0 0; padding-left: 15px; font-size: 0.9rem;">
+                    <li><strong>Путают, когда равны, а когда 180°:</strong> Запомните простое правило для параллельных прямых: если углы выглядят одинаково (оба острые или оба тупые), то они <b>равны</b>. Если один выглядит острым, а другой тупым, то их сумма <b>$180^\circ$</b>.</li>
+                    <li><strong>Обратная теорема:</strong> Если в задаче просят <i>доказать</i>, что прямые параллельны, нужно сначала найти равные накрест лежащие (или соответственные) углы.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 6. Практика</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Поиск всех углов</h3>
+            <p>Две параллельные прямые пересечены секущей. Разность двух односторонних углов равна $40^\circ$. Найдите больший из этих углов.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')"><i data-lucide="help-circle" style="width: 16px;"></i> Подсказка</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+            
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Односторонние углы в сумме дают $180^\circ$. Пусть меньший угол равен $x$. Тогда больший угол равен $x + 40^\circ$. Составьте уравнение: $x + (x + 40^\circ) = 180^\circ$.
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. Сумма односторонних углов при параллельных прямых равна $180^\circ$. Пусть меньший угол равен $\alpha$, а больший $\beta$.</p>
+                
+                <p>2. Запишем систему уравнений по условию задачи:<br>
+                $\alpha + \beta = 180^\circ$<br>
+                $\beta - \alpha = 40^\circ$</p>
+                
+                <p>3. Выразим $\beta$ из второго уравнения: $\beta = \alpha + 40^\circ$. Подставим в первое уравнение:<br>
+                $\alpha + (\alpha + 40^\circ) = 180^\circ$<br>
+                $2\alpha + 40^\circ = 180^\circ$<br>
+                $2\alpha = 140^\circ$<br>
+                $\alpha = 70^\circ$ (меньший угол).</p>
+
+                <p>4. Найдем больший угол $\beta$:<br>
+                $\beta = 70^\circ + 40^\circ = 110^\circ$.</p>
+                
+                <p style="font-size: 0.9rem; color: var(--text-muted);">*Проверка: $110^\circ + 70^\circ = 180^\circ$; $110^\circ - 70^\circ = 40^\circ$. Всё верно!*</p>
+                
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 110°</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* ==========================================
+               СИМУЛЯТОР: ПАРАЛЛЕЛЬНЫЕ ПРЯМЫЕ
+               ========================================== */
+            const canvas = document.getElementById('canvas-angles');
+            const ctx = canvas.getContext('2d');
+            
+            const dashAcute = document.getElementById('dash-acute');
+            const dashObtuse = document.getElementById('dash-obtuse');
+
+            let currentMode = 'all'; // 'all', 'alt', 'corr', 'cons', 'vert', 'adj'
+
+            // Геометрия холста
+            const y1 = 120; // Прямая a
+            const y2 = 230; // Прямая b
+            const cx = 350; // Центр холста (пересечение между прямыми)
+            const cy = (y1 + y2) / 2;
+            
+            // Управляющая точка секущей
+            let controlP = { x: 450, y: 50, radius: 12, isDragging: false };
+
+            window.setAngleMode = function(mode) {
+                currentMode = mode;
+                document.querySelectorAll('.process-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.borderColor = "var(--border)";
+                });
+                
+                const activeBtn = document.getElementById(`btn-mode-${mode}`);
+                activeBtn.classList.add('active');
+                
+                if(mode === 'alt') activeBtn.style.borderColor = "var(--brand-cyan)";
+                else if(mode === 'corr') activeBtn.style.borderColor = "var(--brand-pink)";
+                else if(mode === 'cons') activeBtn.style.borderColor = "var(--warn-text)";
+                else if(mode === 'vert' || mode === 'adj') activeBtn.style.borderColor = "var(--accent)";
+                
+                drawCanvas();
+            };
+
+            // Обработка событий мыши и касаний
+            function getPointerPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: (clientX - rect.left) * (canvas.width / rect.width),
+                    y: (clientY - rect.top) * (canvas.height / rect.height)
+                };
+            }
+
+            function handlePointerDown(e) {
+                const pos = getPointerPos(e);
+                const dx = pos.x - controlP.x;
+                const dy = pos.y - controlP.y;
+                if (dx*dx + dy*dy <= controlP.radius*controlP.radius * 4) { // Увеличенная зона
+                    controlP.isDragging = true;
+                    e.preventDefault();
+                }
+            }
+
+            function handlePointerMove(e) {
+                if (!controlP.isDragging) return;
+                const pos = getPointerPos(e);
+                
+                // Ограничиваем Y, чтобы секущая не стала горизонтальной
+                let newY = Math.min(pos.y, y1 - 20); 
+                
+                // Ограничиваем X, чтобы не вылезала за края
+                let newX = Math.max(50, Math.min(canvas.width - 50, pos.x));
+                
+                controlP.x = newX;
+                controlP.y = newY;
+                
+                drawCanvas();
+                e.preventDefault();
+            }
+
+            function handlePointerUp(e) {
+                if (controlP.isDragging) {
+                    controlP.isDragging = false;
+                    drawCanvas();
+                }
+            }
+
+            canvas.addEventListener('mousedown', handlePointerDown);
+            canvas.addEventListener('mousemove', handlePointerMove);
+            window.addEventListener('mouseup', handlePointerUp);
+            canvas.addEventListener('touchstart', handlePointerDown, {passive: false});
+            canvas.addEventListener('touchmove', handlePointerMove, {passive: false});
+            window.addEventListener('touchend', handlePointerUp);
+
+            function drawArc(ctx, x, y, radius, startAngle, endAngle, color, label, isObtuse) {
+                ctx.beginPath();
+                ctx.arc(x, y, radius, startAngle, endAngle, false); // false means clockwise
+                
+                // Для тупого угла рисуем двойную дугу
+                if (isObtuse) {
+                    ctx.arc(x, y, radius + 5, endAngle, startAngle, true); 
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius - 5, startAngle, endAngle, false);
+                }
+                
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Заливка сектора
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.arc(x, y, radius, startAngle, endAngle, false);
+                ctx.lineTo(x, y);
+                ctx.fillStyle = color.replace('1.0', '0.2').replace('rgb', 'rgba'); // Make transparent
+                if(ctx.fillStyle === color) ctx.fillStyle = 'rgba(255,255,255,0.1)'; // fallback
+                ctx.fill();
+
+                // Текст
+                if (label) {
+                    const midAngle = (startAngle + endAngle) / 2;
+                    const textRad = radius + 15;
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 14px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(label, x + Math.cos(midAngle) * textRad, y + Math.sin(midAngle) * textRad);
+                }
+            }
+
+            function drawCanvas() {
+                const w = canvas.width;
+                const h = canvas.height;
+                ctx.clearRect(0, 0, w, h);
+                
+                // Рисуем параллельные прямые
+                ctx.strokeStyle = '#888';
+                ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.moveTo(50, y1); ctx.lineTo(w - 50, y1); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(50, y2); ctx.lineTo(w - 50, y2); ctx.stroke();
+                
+                ctx.fillStyle = '#888';
+                ctx.font = 'italic 16px serif';
+                ctx.fillText('a', w - 40, y1 - 10);
+                ctx.fillText('b', w - 40, y2 - 10);
+
+                // Вычисляем уравнение секущей (проходит через controlP и центр cy)
+                const dx = cx - controlP.x;
+                const dy = cy - controlP.y;
+                const angleRad = Math.atan2(dy, dx); // Угол наклона секущей
+                
+                // Рисуем секущую
+                ctx.strokeStyle = '#fff';
+                ctx.beginPath();
+                ctx.moveTo(controlP.x, controlP.y);
+                // Продлеваем секущую вниз
+                const extLen = 300;
+                ctx.lineTo(cx + Math.cos(angleRad)*extLen, cy + Math.sin(angleRad)*extLen);
+                ctx.stroke();
+
+                ctx.fillText('c', controlP.x + 15, controlP.y - 10);
+
+                // Отрисовка контрольной точки
+                ctx.beginPath();
+                ctx.arc(controlP.x, controlP.y, controlP.radius, 0, Math.PI * 2);
+                ctx.fillStyle = controlP.isDragging ? '#fff' : '#ccc';
+                ctx.fill();
+                if (controlP.isDragging) {
+                    ctx.shadowColor = '#fff'; ctx.shadowBlur = 10; ctx.fill(); ctx.shadowBlur = 0;
+                }
+                ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
+
+                // Вычисление точек пересечения
+                // Уравнение: y - cy = (dy/dx)*(x - cx) => x = cx + (y - cy)*(dx/dy)
+                const ix1 = cx + (y1 - cy) * (dx / dy);
+                const ix2 = cx + (y2 - cy) * (dx / dy);
+
+                // Определение углов
+                // Угол секущей с положительным направлением оси X
+                let lineAngle = Math.atan2(-dy, -dx); 
+                if (lineAngle < 0) lineAngle += Math.PI * 2;
+                
+                let acuteRad, obtuseRad;
+                if (lineAngle < Math.PI / 2) {
+                    acuteRad = lineAngle;
+                    obtuseRad = Math.PI - acuteRad;
+                } else {
+                    obtuseRad = lineAngle;
+                    acuteRad = Math.PI - obtuseRad;
+                }
+                
+                const acuteDeg = Math.round(acuteRad * 180 / Math.PI);
+                const obtuseDeg = 180 - acuteDeg;
+
+                // Обновляем дашборд
+                dashAcute.textContent = acuteDeg + '°';
+                dashObtuse.textContent = obtuseDeg + '°';
+
+                // Массив из 8 углов: { intersection: 1 or 2, startA, endA, isAcute, label }
+                // Canvas angles: 0 is Right, PI/2 is Down, PI is Left, -PI/2 is Up
+                const lineAngleCanvas = Math.atan2(dy, dx); 
+                const oppLineAngle = lineAngleCanvas + Math.PI;
+
+                const angles = [
+                    // Верхнее пересечение (1)
+                    { id: 1, x: ix1, y: y1, startA: Math.PI, endA: oppLineAngle, isAcute: !isAcutePos(Math.PI, oppLineAngle), label: '1' }, // Top-Left
+                    { id: 2, x: ix1, y: y1, startA: oppLineAngle, endA: 0, isAcute: isAcutePos(oppLineAngle, 0), label: '2' }, // Top-Right
+                    { id: 3, x: ix1, y: y1, startA: 0, endA: lineAngleCanvas, isAcute: !isAcutePos(0, lineAngleCanvas), label: '3' }, // Bottom-Right
+                    { id: 4, x: ix1, y: y1, startA: lineAngleCanvas, endA: Math.PI, isAcute: isAcutePos(lineAngleCanvas, Math.PI), label: '4' }, // Bottom-Left
+                    
+                    // Нижнее пересечение (2)
+                    { id: 5, x: ix2, y: y2, startA: Math.PI, endA: oppLineAngle, isAcute: !isAcutePos(Math.PI, oppLineAngle), label: '5' }, // Top-Left
+                    { id: 6, x: ix2, y: y2, startA: oppLineAngle, endA: 0, isAcute: isAcutePos(oppLineAngle, 0), label: '6' }, // Top-Right
+                    { id: 7, x: ix2, y: y2, startA: 0, endA: lineAngleCanvas, isAcute: !isAcutePos(0, lineAngleCanvas), label: '7' }, // Bottom-Right
+                    { id: 8, x: ix2, y: y2, startA: lineAngleCanvas, endA: Math.PI, isAcute: isAcutePos(lineAngleCanvas, Math.PI), label: '8' }  // Bottom-Left
+                ];
+
+                function isAcutePos(a1, a2) {
+                    let diff = a2 - a1;
+                    while(diff < 0) diff += Math.PI * 2;
+                    return diff < Math.PI/2 + 0.1;
+                }
+
+                // Логика подсветки
+                let highlightedIds = [];
+                let highlightColor = '#4CAF50';
+
+                if (currentMode === 'all') {
+                    highlightedIds = [1,2,3,4,5,6,7,8];
+                } else if (currentMode === 'alt') { // Накрест лежащие: 4 и 6, 3 и 5
+                    highlightedIds = [4, 6]; 
+                    highlightColor = 'rgb(6, 182, 212)'; // Cyan
+                } else if (currentMode === 'corr') { // Соответственные: 1 и 5, 2 и 6, 3 и 7, 4 и 8
+                    highlightedIds = [2, 6];
+                    highlightColor = 'rgb(236, 72, 153)'; // Pink
+                } else if (currentMode === 'cons') { // Односторонние: 4 и 5, 3 и 6
+                    highlightedIds = [4, 5];
+                    highlightColor = 'rgb(245, 158, 11)'; // Amber
+                } else if (currentMode === 'vert') { // Вертикальные: 1 и 3, 2 и 4
+                    highlightedIds = [2, 4];
+                    highlightColor = 'rgb(76, 175, 80)'; // Green
+                } else if (currentMode === 'adj') { // Смежные: 1 и 2
+                    highlightedIds = [1, 2];
+                    highlightColor = 'rgb(76, 175, 80)'; // Green
+                }
+
+                // Отрисовка дуг
+                const radius = 35;
+                angles.forEach(ang => {
+                    let color = 'rgba(255, 255, 255, 0.15)'; // Dimmed by default
+                    let isHighlighted = highlightedIds.includes(ang.id) || currentMode === 'all';
+                    
+                    if (isHighlighted) {
+                        if (currentMode === 'all') {
+                            color = ang.isAcute ? 'rgba(76, 175, 80, 1.0)' : 'rgba(239, 68, 68, 1.0)';
+                        } else {
+                            color = highlightColor;
+                        }
+                    }
+
+                    drawArc(ctx, ang.x, ang.y, radius, ang.startA, ang.endA, color, ang.label, !ang.isAcute);
+                });
+            }
+
+            // Инициализация
+            setAngleMode('all');
+
+        });
+    </script>
+</body>
+</html>
