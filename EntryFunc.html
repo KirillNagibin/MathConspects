@@ -384,16 +384,13 @@
                         const h = canvasSim.height;
                         ctxSim.clearRect(0, 0, w, h);
 
-                        // Layout: Left graph, Right visualization
-                        const splitX = w * 0.55;
-                        
-                        // Graph
+                        // Graph only (Visuals removed)
                         const originX = 40;
                         const originY = h - 30;
-                        const scaleX = (splitX - 60) / 300; // max armor 300
+                        const scaleX = (w - 60) / 300; // max armor 300
                         const scaleY = (h - 60) / 100; // max pct 100
 
-                        drawGrid(ctxSim, splitX, h, originX, originY, scaleX * 50, scaleY * 20, 'Броня', 'Урон %', 50);
+                        drawGrid(ctxSim, w, h, originX, originY, scaleX * 50, scaleY * 20, 'Броня', 'Урон %', 50);
 
                         // The Curve
                         ctxSim.beginPath();
@@ -423,51 +420,6 @@
                         ctxSim.beginPath(); ctxSim.arc(px, py, 6, 0, Math.PI*2);
                         ctxSim.fillStyle = '#fff'; ctxSim.fill();
                         ctxSim.strokeStyle = '#8B5CF6'; ctxSim.lineWidth = 2; ctxSim.stroke();
-
-                        // Visuals on right
-                        const cx = splitX + (w - splitX)/2;
-                        const cy = h/2;
-                        
-                        // Shield Forcefield (Aura)
-                        const auraR = 50 + armor/15;
-                        const grad = ctxSim.createRadialGradient(cx, cy, 30, cx, cy, auraR);
-                        grad.addColorStop(0, 'rgba(139, 92, 246, 0)');
-                        grad.addColorStop(1, `rgba(139, 92, 246, ${Math.min(0.8, armor/150)})`);
-                        ctxSim.fillStyle = grad;
-                        ctxSim.beginPath(); ctxSim.arc(cx, cy, auraR, 0, Math.PI*2); ctxSim.fill();
-
-                        // Metallic Shield
-                        ctxSim.fillStyle = '#333';
-                        ctxSim.strokeStyle = '#555';
-                        ctxSim.lineWidth = 4;
-                        ctxSim.beginPath();
-                        ctxSim.moveTo(cx - 30, cy - 40); ctxSim.lineTo(cx + 30, cy - 40);
-                        ctxSim.lineTo(cx + 40, cy); ctxSim.lineTo(cx, cy + 50);
-                        ctxSim.lineTo(cx - 40, cy); ctxSim.closePath();
-                        ctxSim.fill(); ctxSim.stroke();
-                        
-                        // Text on shield
-                        ctxSim.fillStyle = '#fff';
-                        ctxSim.font = 'bold 20px sans-serif';
-                        ctxSim.textAlign = 'center'; ctxSim.textBaseline = 'middle';
-                        ctxSim.fillText(armor, cx, cy - 5);
-
-                        // Incoming Damage (Laser/Arrow)
-                        ctxSim.strokeStyle = '#EF4444';
-                        ctxSim.lineWidth = 4;
-                        ctxSim.beginPath();
-                        ctxSim.moveTo(cx + 120, cy - 40);
-                        ctxSim.lineTo(cx + auraR, cy - 10);
-                        ctxSim.stroke();
-                        
-                        // Impact spark
-                        ctxSim.fillStyle = '#F59E0B';
-                        ctxSim.beginPath(); ctxSim.arc(cx + auraR, cy - 10, 6, 0, Math.PI*2); ctxSim.fill();
-                        
-                        // Damage taken text
-                        ctxSim.fillStyle = '#EF4444';
-                        ctxSim.font = 'bold 22px sans-serif';
-                        ctxSim.fillText(`Урон: ${dmgTakenPct.toFixed(1)}%`, cx, cy + 90);
                     }
                 },
                 'econ': {
@@ -598,16 +550,13 @@
                         const h = canvasSim.height;
                         ctxSim.clearRect(0, 0, w, h);
 
-                        // Layout: Left graph, Right visualization
-                        const splitX = w * 0.5;
-                        
-                        // Graph
+                        // Graph only (Visuals removed)
                         const originX = 40;
                         const originY = h - 30;
-                        const scaleX = (splitX - 60) / 150; 
+                        const scaleX = (w - 60) / 150; 
                         const scaleY = (h - 60) / 250; // max distance is ~225m at 150kmh
 
-                        drawGrid(ctxSim, splitX, h, originX, originY, scaleX * 50, scaleY * 50, 'v (км/ч)', 'S (м)', 50);
+                        drawGrid(ctxSim, w, h, originX, originY, scaleX * 50, scaleY * 50, 'v (км/ч)', 'S (м)', 50);
 
                         // The Curve
                         ctxSim.beginPath();
@@ -637,66 +586,6 @@
                         ctxSim.beginPath(); ctxSim.arc(px, py, 6, 0, Math.PI*2);
                         ctxSim.fillStyle = '#EF4444'; ctxSim.fill();
                         ctxSim.strokeStyle = '#fff'; ctxSim.lineWidth = 2; ctxSim.stroke();
-
-                        // Visuals on right (Car braking)
-                        const roadY = h / 2 + 50;
-                        const roadStartX = splitX + 20;
-                        
-                        // Road
-                        ctxSim.fillStyle = '#333';
-                        ctxSim.fillRect(roadStartX, roadY, w - roadStartX, 40);
-                        
-                        // Stop sign (Obstacle)
-                        ctxSim.fillStyle = '#EF4444';
-                        ctxSim.fillRect(w - 40, roadY - 40, 20, 40);
-                        ctxSim.fillStyle = '#fff';
-                        ctxSim.font = '10px sans-serif'; ctxSim.textAlign = 'center'; ctxSim.textBaseline = 'bottom';
-                        ctxSim.fillText('СТОП', w - 30, roadY - 42);
-
-                        // Car Position based on distance
-                        const visScale = (w - roadStartX - 80) / 250;
-                        const carX = w - 40 - distance * visScale - 50; // 50 is car width
-                        
-                        // Draw Braking Trail (Skid marks)
-                        ctxSim.fillStyle = 'rgba(0, 0, 0, 0.4)';
-                        ctxSim.fillRect(carX + 40, roadY + 30, distance * visScale, 5);
-
-                        // Draw Car (Modern silhouette)
-                        ctxSim.fillStyle = '#3B82F6';
-                        ctxSim.beginPath();
-                        if (ctxSim.roundRect) {
-                            ctxSim.roundRect(carX + 5, roadY - 20, 35, 12, 4); // Roof
-                            ctxSim.fill();
-                            ctxSim.fillStyle = '#2563EB';
-                            ctxSim.beginPath();
-                            ctxSim.roundRect(carX - 10, roadY - 8, 65, 14, 4); // Body
-                            ctxSim.fill();
-                        } else {
-                            ctxSim.fillRect(carX + 5, roadY - 20, 35, 12);
-                            ctxSim.fillStyle = '#2563EB';
-                            ctxSim.fillRect(carX - 10, roadY - 8, 65, 14);
-                        }
-                        
-                        // Windows
-                        ctxSim.fillStyle = '#93C5FD';
-                        ctxSim.beginPath(); ctxSim.moveTo(carX+25, roadY-20); ctxSim.lineTo(carX+40, roadY-8); ctxSim.lineTo(carX+20, roadY-8); ctxSim.fill();
-                        ctxSim.beginPath(); ctxSim.moveTo(carX+15, roadY-20); ctxSim.lineTo(carX-5, roadY-8); ctxSim.lineTo(carX+15, roadY-8); ctxSim.fill();
-
-                        // Wheels
-                        ctxSim.fillStyle = '#111';
-                        ctxSim.beginPath(); ctxSim.arc(carX + 5, roadY + 6, 7, 0, Math.PI*2); ctxSim.fill();
-                        ctxSim.beginPath(); ctxSim.arc(carX + 40, roadY + 6, 7, 0, Math.PI*2); ctxSim.fill();
-                        ctxSim.fillStyle = '#ccc';
-                        ctxSim.beginPath(); ctxSim.arc(carX + 5, roadY + 6, 3, 0, Math.PI*2); ctxSim.fill();
-                        ctxSim.beginPath(); ctxSim.arc(carX + 40, roadY + 6, 3, 0, Math.PI*2); ctxSim.fill();
-                        
-                        // Crash warning
-                        if (distance > 200) {
-                            ctxSim.fillStyle = '#EF4444';
-                            ctxSim.font = 'bold 24px sans-serif';
-                            ctxSim.textAlign = 'center';
-                            ctxSim.fillText('АВАРИЯ!', w - 60, roadY - 60);
-                        }
                     }
                 }
             };
@@ -772,10 +661,10 @@
 
                 ctxP.clearRect(0, 0, w, h);
 
-                // Custom grid
+                // Custom grid - измененный шаг сетки, чтобы корни не попадали точно на линии
                 ctxP.strokeStyle = '#333';
                 ctxP.lineWidth = 1;
-                for(let x=0; x<=100; x+=20) { ctxP.beginPath(); ctxP.moveTo(originX + x*scaleX, 0); ctxP.lineTo(originX + x*scaleX, h); ctxP.stroke(); }
+                for(let x=0; x<=100; x+=25) { ctxP.beginPath(); ctxP.moveTo(originX + x*scaleX, 0); ctxP.lineTo(originX + x*scaleX, h); ctxP.stroke(); }
                 // Y grid: -500, 0, 500, 1000, 1500
                 for(let y=-500; y<=1500; y+=500) { 
                     let py = originY - (y + 500) * scaleY;
@@ -796,7 +685,7 @@
                 ctxP.textAlign = 'right';
                 ctxP.fillText('Прибыль y', originX - 5, 20);
                 
-                for(let x=20; x<=80; x+=20) {
+                for(let x=25; x<=75; x+=25) {
                     ctxP.fillText(x, originX + x*scaleX, xAxisY + 15);
                 }
 
@@ -816,12 +705,8 @@
                     else { ctxP.lineTo(px, py); }
                 }
                 ctxP.stroke();
-
-                // Highlight Vertex (40, 800)
-                const vx = originX + 40 * scaleX;
-                const vy = originY - (800 + 500) * scaleY;
-                ctxP.beginPath(); ctxP.arc(vx, vy, 5, 0, Math.PI*2);
-                ctxP.fillStyle = '#4CAF50'; ctxP.fill(); ctxP.strokeStyle='#fff'; ctxP.lineWidth=2; ctxP.stroke();
+                
+                // Вершина больше не выделяется зеленой точкой для усложнения задачи
             }
 
             drawPracticeGraph();
