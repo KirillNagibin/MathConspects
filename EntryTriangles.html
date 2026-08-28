@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Введение в треугольники и признаки равенства</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #4CAF50;
+            --accent-hover: #45a049;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-cyan: #06B6D4;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px; text-align: left;
+        }
+        .prop-title { font-size: 1.1rem; color: var(--text-main); font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;}
+        .prop-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        .table-container { overflow-x: auto; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
+        .data-table td { color: var(--text-muted); }
+
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap; margin-bottom: 20px;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        /* Симулятор */
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        
+        .process-selector { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 12px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 140px; text-align: center; font-size: 0.9rem;
+            transition: all 0.2s; user-select: none;
+        }
+        .process-btn.active {
+            background: rgba(76, 175, 80, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+        
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .control-group { display: flex; flex-direction: column; gap: 5px; }
+        .control-group label { color: var(--text-muted); font-size: 0.9rem; display: flex; justify-content: space-between; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%;}
+
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; }
+        canvas { max-width: 100%; display: block; touch-action: none; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(76, 175, 80, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .svg-icon { width: 40px; height: 40px; }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Треугольники: Элементы и Признаки равенства</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="triangle" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Царь геометрических фигур</strong><br>
+                <span style="color: var(--text-muted);">Треугольник — самая жесткая и важная фигура в геометрии. Любой сложный многоугольник (квадрат, пятиугольник и т.д.) всегда можно разбить на треугольники. Поняв законы треугольника, вы поймете 90% школьной геометрии.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="scan"></i> 1. Анатомия треугольника</h2>
+        <div class="card">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
+                <div style="flex: 1; min-width: 250px;">
+                    <p>Треугольник $\triangle ABC$ состоит из:</p>
+                    <ul>
+                        <li><strong>Вершин:</strong> точки $A, B, C$. Обозначаются заглавными латинскими буквами.</li>
+                        <li><strong>Сторон:</strong> отрезки $AB, BC, CA$. Часто сторону обозначают маленькой буквой, соответствующей противоположной вершине (напротив угла $A$ лежит сторона $a$).</li>
+                        <li><strong>Углов:</strong> $\angle A, \angle B, \angle C$ (или $\alpha, \beta, \gamma$).</li>
+                    </ul>
+                    <p><strong>Периметр ($P$):</strong> сумма длин всех сторон треугольника.<br>
+                    $$P = a + b + c$$</p>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px; text-align: center;">
+                    <svg viewBox="0 0 200 200" style="width: 100%; max-width: 200px;">
+                        <!-- Triangle -->
+                        <path d="M 20 160 L 180 160 L 100 40 Z" fill="rgba(76, 175, 80, 0.1)" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/>
+                        <!-- Vertices labels -->
+                        <text x="5" y="175" fill="#fff" font-size="16" font-family="sans-serif">A</text>
+                        <text x="185" y="175" fill="#fff" font-size="16" font-family="sans-serif">C</text>
+                        <text x="95" y="30" fill="#fff" font-size="16" font-family="sans-serif">B</text>
+                        <!-- Sides labels -->
+                        <text x="100" y="180" fill="var(--brand-cyan)" font-size="16" font-family="sans-serif" font-style="italic">b</text>
+                        <text x="40" y="90" fill="var(--brand-cyan)" font-size="16" font-family="sans-serif" font-style="italic">c</text>
+                        <text x="150" y="90" fill="var(--brand-cyan)" font-size="16" font-family="sans-serif" font-style="italic">a</text>
+                        <!-- Angle Arcs -->
+                        <path d="M 40 160 A 20 20 0 0 0 32 143" fill="none" stroke="var(--brand-pink)" stroke-width="2"/>
+                        <text x="45" y="152" fill="var(--brand-pink)" font-size="14" font-family="sans-serif">α</text>
+                        <path d="M 160 160 A 20 20 0 0 1 168 143" fill="none" stroke="var(--brand-pink)" stroke-width="2"/>
+                        <text x="145" y="152" fill="var(--brand-pink)" font-size="14" font-family="sans-serif">γ</text>
+                        <path d="M 90 55 A 20 20 0 0 1 110 55" fill="none" stroke="var(--brand-pink)" stroke-width="2"/>
+                        <text x="95" y="75" fill="var(--brand-pink)" font-size="14" font-family="sans-serif">β</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="copy-check"></i> 2. Признаки равенства треугольников</h2>
+        <div class="card">
+            <p>Два треугольника называются <b>равными</b>, если их можно совместить наложением. У равных треугольников все соответствующие стороны и углы равны.</p>
+            <p style="color: var(--text-muted);">Но чтобы доказать равенство, не нужно проверять все 6 элементов (3 стороны и 3 угла). Хватит всего <b>трех</b> определенных элементов! Это и есть признаки равенства.</p>
+
+            <div class="props-grid">
+                <div class="prop-card" style="border-top: 4px solid var(--brand-cyan);">
+                    <div class="prop-title"><i data-lucide="ruler" class="svg-icon" style="color: var(--brand-cyan);"></i> I признак (СУС)</div>
+                    <div class="prop-desc">По <b>двум сторонам</b> и <b>углу между ними</b>. Если две стороны и угол между ними одного треугольника соответственно равны двум сторонам и углу между ними другого треугольника.</div>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--brand-pink);">
+                    <div class="prop-title"><i data-lucide="split-square-horizontal" class="svg-icon" style="color: var(--brand-pink);"></i> II признак (УСУ)</div>
+                    <div class="prop-desc">По <b>стороне</b> и двум <b>прилежащим к ней углам</b>. Если сторона и прилежащие к ней углы одного треугольника равны стороне и прилежащим углам другого.</div>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--accent);">
+                    <div class="prop-title"><i data-lucide="box" class="svg-icon" style="color: var(--accent);"></i> III признак (ССС)</div>
+                    <div class="prop-desc">По <b>трем сторонам</b>. Если три стороны одного треугольника соответственно равны трем сторонам другого треугольника, то они равны.</div>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="settings-2"></i> 3. Лаборатория: Конструктор равенства</h2>
+        <p style="color: var(--text-muted);">Выберите один из признаков и задайте три параметра. Посмотрите: если задать ровно 3 правильных параметра, форма треугольника фиксируется намертво! Справа появляется его точная (равная) копия, просто повернутая в пространстве.</p>
+
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-crit-1" onclick="setCriterion(1)">I признак (СУС)</div>
+                <div class="process-btn" id="btn-crit-2" onclick="setCriterion(2)">II признак (УСУ)</div>
+                <div class="process-btn" id="btn-crit-3" onclick="setCriterion(3)">III признак (ССС)</div>
+            </div>
+
+            <!-- Controls dynamically loaded based on criterion -->
+            <div class="sim-controls" id="sim-controls-container">
+                <!-- Injected via JS -->
+            </div>
+
+            <div id="sim-error" style="display: none; text-align: center; color: var(--error-text); font-weight: bold; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--error-text); padding: 10px; border-radius: 6px; margin-bottom: 15px;">
+                Такой треугольник не существует!
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-congruence" width="700" height="300"></canvas>
+            </div>
+            
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 10px;">
+                <i>Цветными линиями и дугами показаны <b>заданные</b> элементы. Серым — элементы, которые получаются автоматически. Два треугольника абсолютно равны!</i>
+            </p>
+        </div>
+
+        <h2><i data-lucide="lightbulb"></i> 4. Лайфхаки и типичные ошибки</h2>
+        <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            
+            <div class="alert-box alert-warning" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--warn-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="zap" style="width: 18px;"></i> Как не запутаться в доказательствах
+                </strong>
+                <ul style="margin: 10px 0 0 0; padding-left: 15px; font-size: 0.9rem;">
+                    <li><strong>Отмечай на чертеже:</strong> Как только нашел равные стороны — перечеркни их одинаковыми черточками (I). Нашел равные углы — отметь одинаковыми дугами. Твой мозг сам увидит нужный признак.</li>
+                    <li><strong>Ищи "спрятанные" элементы:</strong> В задачах редко дают все 3 элемента напрямую. Часто один элемент общий (общая сторона), или углы равны как вертикальные/накрест лежащие.</li>
+                    <li><strong>После доказательства:</strong> Главная цель доказательства равенства треугольников — сказать магическую фразу: <i>"Следовательно, равны и их соответствующие элементы"</i>, и найти нужную для ответа сторону.</li>
+                </ul>
+            </div>
+
+            <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="alert-triangle" style="width: 18px;"></i> Ошибки "Ложных признаков"
+                </strong>
+                <ul style="margin: 10px 0 0 0; padding-left: 15px; font-size: 0.9rem;">
+                    <li><strong>Признака "УУУ" не существует!</strong> Если у двух треугольников равны все три угла, они <i>подобны</i> (разного размера), но не обязательно равны.</li>
+                    <li><strong>Сторона, Сторона и ЛЮБОЙ Угол:</strong> В I признаке (СУС) угол должен быть строго <b>МЕЖДУ</b> двумя известными сторонами! Если угол лежит напротив одной из них, треугольники могут оказаться разными.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Равенство треугольников</h3>
+            <p>Отрезки $AB$ и $CD$ пересекаются в точке $O$, которая является серединой каждого из них. Докажите, что $\triangle AOC = \triangle BOD$, и найдите длину отрезка $AC$, если $BD = 7$ см.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')"><i data-lucide="help-circle" style="width: 16px;"></i> Шаг 1: Анализ условия</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать полное решение</button>
+            </div>
+            
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Нарисуйте два пересекающихся посередине отрезка. Точка $O$ — середина, значит $AO = OB$ и $CO = OD$. Это уже две пары равных сторон! Чего не хватает для I признака (СУС)? Посмотрите на углы при точке $O$.
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. Рассмотрим треугольники $\triangle AOC$ и $\triangle BOD$:</p>
+                <ul style="margin-top: 5px;">
+                    <li>$AO = OB$ (так как точка $O$ — середина отрезка $AB$ по условию).</li>
+                    <li>$CO = OD$ (так как точка $O$ — середина отрезка $CD$ по условию).</li>
+                    <li>$\angle AOC = \angle BOD$ (так как эти углы <b>вертикальные</b>).</li>
+                </ul>
+                
+                <p>2. У нас есть две стороны и угол <b>между ними</b>. Следовательно, $\triangle AOC = \triangle BOD$ по I признаку равенства треугольников (СУС).</p>
+                
+                <p>3. В равных треугольниках против равных углов лежат равные стороны. Значит, сторона $AC$ (которая лежит против угла $AOC$) равна стороне $BD$ (которая лежит против угла $BOD$).</p>
+                
+                <p>4. $AC = BD = 7$ см.</p>
+                
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 7 см</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* ==========================================
+               СИМУЛЯТОР: КОНСТРУКТОР ТРЕУГОЛЬНИКОВ
+               ========================================== */
+            const canvas = document.getElementById('canvas-congruence');
+            const ctx = canvas.getContext('2d');
+            const controlsContainer = document.getElementById('sim-controls-container');
+            const errorBox = document.getElementById('sim-error');
+
+            let currentCrit = 1; // 1: SAS, 2: ASA, 3: SSS
+            
+            // Состояние параметров
+            let params = {
+                sas_c: 150, sas_angle: 60, sas_b: 120,
+                asa_angleB: 45, asa_a: 150, asa_angleC: 60,
+                sss_a: 120, sss_b: 150, sss_c: 100
+            };
+
+            const config = {
+                1: {
+                    html: `
+                        <div class="control-group">
+                            <label style="color: var(--brand-cyan);"><span>Сторона 1 ($c$):</span> <span id="v-c1">150</span></label>
+                            <input type="range" id="i-c1" min="50" max="250" value="150" step="5" style="accent-color: var(--brand-cyan);" oninput="updateSim()">
+                        </div>
+                        <div class="control-group">
+                            <label style="color: var(--brand-pink);"><span>Угол между ними ($\alpha$):</span> <span id="v-a1">60°</span></label>
+                            <input type="range" id="i-a1" min="10" max="150" value="60" step="5" style="accent-color: var(--brand-pink);" oninput="updateSim()">
+                        </div>
+                        <div class="control-group">
+                            <label style="color: var(--brand-cyan);"><span>Сторона 2 ($b$):</span> <span id="v-c2">120</span></label>
+                            <input type="range" id="i-c2" min="50" max="250" value="120" step="5" style="accent-color: var(--brand-cyan);" oninput="updateSim()">
+                        </div>
+                    `
+                },
+                2: {
+                    html: `
+                        <div class="control-group">
+                            <label style="color: var(--brand-pink);"><span>Угол 1 ($\beta$):</span> <span id="v-a1">45°</span></label>
+                            <input type="range" id="i-a1" min="10" max="120" value="45" step="5" style="accent-color: var(--brand-pink);" oninput="updateSim()">
+                        </div>
+                        <div class="control-group">
+                            <label style="color: var(--brand-cyan);"><span>Сторона ($a$):</span> <span id="v-c1">150</span></label>
+                            <input type="range" id="i-c1" min="50" max="250" value="150" step="5" style="accent-color: var(--brand-cyan);" oninput="updateSim()">
+                        </div>
+                        <div class="control-group">
+                            <label style="color: var(--brand-pink);"><span>Угол 2 ($\gamma$):</span> <span id="v-a2">60°</span></label>
+                            <input type="range" id="i-a2" min="10" max="120" value="60" step="5" style="accent-color: var(--brand-pink);" oninput="updateSim()">
+                        </div>
+                    `
+                },
+                3: {
+                    html: `
+                        <div class="control-group">
+                            <label style="color: var(--brand-cyan);"><span>Сторона 1 ($a$):</span> <span id="v-c1">120</span></label>
+                            <input type="range" id="i-c1" min="50" max="250" value="120" step="5" style="accent-color: var(--brand-cyan);" oninput="updateSim()">
+                        </div>
+                        <div class="control-group">
+                            <label style="color: var(--brand-cyan);"><span>Сторона 2 ($b$):</span> <span id="v-c2">150</span></label>
+                            <input type="range" id="i-c2" min="50" max="250" value="150" step="5" style="accent-color: var(--brand-cyan);" oninput="updateSim()">
+                        </div>
+                        <div class="control-group">
+                            <label style="color: var(--brand-cyan);"><span>Сторона 3 ($c$):</span> <span id="v-c3">100</span></label>
+                            <input type="range" id="i-c3" min="50" max="250" value="100" step="5" style="accent-color: var(--brand-cyan);" oninput="updateSim()">
+                        </div>
+                    `
+                }
+            };
+
+            window.setCriterion = function(crit) {
+                currentCrit = crit;
+                document.querySelectorAll('.process-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(`btn-crit-${crit}`).classList.add('active');
+                
+                controlsContainer.innerHTML = config[crit].html;
+                
+                // Set saved values back to sliders
+                if (crit === 1) {
+                    document.getElementById('i-c1').value = params.sas_c;
+                    document.getElementById('i-a1').value = params.sas_angle;
+                    document.getElementById('i-c2').value = params.sas_b;
+                } else if (crit === 2) {
+                    document.getElementById('i-a1').value = params.asa_angleB;
+                    document.getElementById('i-c1').value = params.asa_a;
+                    document.getElementById('i-a2').value = params.asa_angleC;
+                } else if (crit === 3) {
+                    document.getElementById('i-c1').value = params.sss_a;
+                    document.getElementById('i-c2').value = params.sss_b;
+                    document.getElementById('i-c3').value = params.sss_c;
+                }
+                
+                updateSim();
+                if (window.MathJax) {
+                    MathJax.typesetPromise([controlsContainer]).catch(err => console.error(err));
+                }
+            };
+
+            // Математические расчеты для построения
+            function calculateTriangle() {
+                let pts = { A: {x:0, y:0}, B: {x:0, y:0}, C: {x:0, y:0} };
+                let isValid = true;
+                let errorMsg = "";
+
+                if (currentCrit === 1) { // SAS (c, alpha, b)
+                    const c = parseFloat(document.getElementById('i-c1').value);
+                    const alphaDeg = parseFloat(document.getElementById('i-a1').value);
+                    const b = parseFloat(document.getElementById('i-c2').value);
+                    
+                    params.sas_c = c; params.sas_angle = alphaDeg; params.sas_b = b;
+                    document.getElementById('v-c1').textContent = c;
+                    document.getElementById('v-a1').textContent = alphaDeg + '°';
+                    document.getElementById('v-c2').textContent = b;
+
+                    const alphaRad = alphaDeg * Math.PI / 180;
+                    
+                    // Поместим A в (0,0), B на оси X
+                    pts.A = { x: 0, y: 0 };
+                    pts.B = { x: c, y: 0 };
+                    // Точка C
+                    pts.C = { x: b * Math.cos(alphaRad), y: -b * Math.sin(alphaRad) }; // -y чтобы смотрело вверх на canvas
+
+                } else if (currentCrit === 2) { // ASA (beta, a, gamma)
+                    const betaDeg = parseFloat(document.getElementById('i-a1').value);
+                    const a = parseFloat(document.getElementById('i-c1').value);
+                    const gammaDeg = parseFloat(document.getElementById('i-a2').value);
+                    
+                    params.asa_angleB = betaDeg; params.asa_a = a; params.asa_angleC = gammaDeg;
+                    document.getElementById('v-a1').textContent = betaDeg + '°';
+                    document.getElementById('v-c1').textContent = a;
+                    document.getElementById('v-a2').textContent = gammaDeg + '°';
+
+                    if (betaDeg + gammaDeg >= 180) {
+                        isValid = false;
+                        errorMsg = `Сумма углов (${betaDeg} + ${gammaDeg} = ${betaDeg+gammaDeg}) больше или равна 180°! Треугольник не замкнется.`;
+                    } else {
+                        // Поместим B в (0,0), C на оси X. Длина BC = a
+                        pts.B = { x: 0, y: 0 };
+                        pts.C = { x: a, y: 0 };
+                        
+                        // Найдем A через пересечение лучей
+                        const betaRad = betaDeg * Math.PI / 180;
+                        const gammaRad = gammaDeg * Math.PI / 180;
+                        
+                        // Луч из B под углом beta (вверх и вправо) -> y = -x * tan(beta)
+                        // Луч из C под углом gamma (вверх и влево) -> y = (x - a) * tan(gamma)
+                        // Пересечение:
+                        const tanB = Math.tan(betaRad);
+                        const tanC = Math.tan(gammaRad);
+                        
+                        const Ax = (a * tanC) / (tanB + tanC);
+                        const Ay = -Ax * tanB; // Вверх
+                        
+                        pts.A = { x: Ax, y: Ay };
+                    }
+
+                } else if (currentCrit === 3) { // SSS (a, b, c)
+                    const a = parseFloat(document.getElementById('i-c1').value);
+                    const b = parseFloat(document.getElementById('i-c2').value);
+                    const c = parseFloat(document.getElementById('i-c3').value);
+                    
+                    params.sss_a = a; params.sss_b = b; params.sss_c = c;
+                    document.getElementById('v-c1').textContent = a;
+                    document.getElementById('v-c2').textContent = b;
+                    document.getElementById('v-c3').textContent = c;
+
+                    if (a + b <= c || a + c <= b || b + c <= a) {
+                        isValid = false;
+                        errorMsg = "Неравенство треугольника не выполняется (одна сторона больше суммы двух других)!";
+                    } else {
+                        // Поместим A в (0,0), B на оси X (c)
+                        pts.A = { x: 0, y: 0 };
+                        pts.B = { x: c, y: 0 };
+                        
+                        // Найдем угол A по теореме косинусов: a^2 = b^2 + c^2 - 2bc*cosA
+                        const cosA = (b*b + c*c - a*a) / (2*b*c);
+                        const alphaRad = Math.acos(cosA);
+                        
+                        pts.C = { x: b * Math.cos(alphaRad), y: -b * Math.sin(alphaRad) };
+                    }
+                }
+
+                return { pts, isValid, errorMsg };
+            }
+
+            // Отрисовка
+            function drawLineWithTicks(p1, p2, isGiven, ticksCount) {
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                
+                if (isGiven) {
+                    ctx.strokeStyle = 'var(--brand-cyan)';
+                    ctx.lineWidth = 3;
+                } else {
+                    ctx.strokeStyle = '#666';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Штрихи
+                if (isGiven && ticksCount > 0) {
+                    const dx = p2.x - p1.x;
+                    const dy = p2.y - p1.y;
+                    const len = Math.sqrt(dx*dx + dy*dy);
+                    const nx = -dy / len;
+                    const ny = dx / len;
+                    
+                    const midX = (p1.x + p2.x) / 2;
+                    const midY = (p1.y + p2.y) / 2;
+                    const tickLen = 8;
+                    const gap = 5;
+
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 2;
+                    for (let i = 0; i < ticksCount; i++) {
+                        let offset = (i - (ticksCount-1)/2) * gap;
+                        let tx = midX + (dx/len)*offset;
+                        let ty = midY + (dy/len)*offset;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(tx + nx*tickLen, ty + ny*tickLen);
+                        ctx.lineTo(tx - nx*tickLen, ty - ny*tickLen);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            function drawAngleArc(P_center, P1, P2, isGiven, arcCount) {
+                const angle1 = Math.atan2(P1.y - P_center.y, P1.x - P_center.x);
+                const angle2 = Math.atan2(P2.y - P_center.y, P2.x - P_center.x);
+                
+                let startAngle = angle1;
+                let endAngle = angle2;
+                
+                // Убедимся, что рисуем внутренний угол (меньше 180)
+                let diff = endAngle - startAngle;
+                while (diff <= -Math.PI) diff += 2*Math.PI;
+                while (diff > Math.PI) diff -= 2*Math.PI;
+                
+                if (diff < 0) {
+                    startAngle = angle2;
+                    endAngle = angle1;
+                }
+
+                if (isGiven) {
+                    ctx.strokeStyle = 'var(--brand-pink)';
+                    ctx.lineWidth = 3;
+                    const radius = 25;
+                    const gap = 5;
+                    for(let i=0; i<arcCount; i++) {
+                        ctx.beginPath();
+                        ctx.arc(P_center.x, P_center.y, radius + i*gap, startAngle, endAngle);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            function drawTriangle(pts, offsetX, offsetY, rotationRad) {
+                ctx.save();
+                ctx.translate(offsetX, offsetY);
+                ctx.rotate(rotationRad);
+
+                // Рисуем стороны и углы в зависимости от признака
+                let sideGiven = { AB: false, BC: false, CA: false };
+                let angleGiven = { A: false, B: false, C: false };
+
+                if (currentCrit === 1) { // СУС (AB, A, CA)
+                    sideGiven.AB = true; sideGiven.CA = true; angleGiven.A = true;
+                } else if (currentCrit === 2) { // УСУ (B, BC, C)
+                    sideGiven.BC = true; angleGiven.B = true; angleGiven.C = true;
+                } else if (currentCrit === 3) { // ССС
+                    sideGiven.AB = true; sideGiven.BC = true; sideGiven.CA = true;
+                }
+
+                // Заливка
+                ctx.beginPath();
+                ctx.moveTo(pts.A.x, pts.A.y);
+                ctx.lineTo(pts.B.x, pts.B.y);
+                ctx.lineTo(pts.C.x, pts.C.y);
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+                ctx.fill();
+
+                // Стороны
+                drawLineWithTicks(pts.A, pts.B, sideGiven.AB, 1);
+                drawLineWithTicks(pts.B, pts.C, sideGiven.BC, 2);
+                drawLineWithTicks(pts.C, pts.A, sideGiven.CA, 3);
+
+                // Углы
+                drawAngleArc(pts.A, pts.B, pts.C, angleGiven.A, 1);
+                drawAngleArc(pts.B, pts.C, pts.A, angleGiven.B, 2);
+                drawAngleArc(pts.C, pts.A, pts.B, angleGiven.C, 3);
+
+                // Вершины
+                const drawVertex = (p, label) => {
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+                    ctx.fillStyle = '#fff'; ctx.fill();
+                };
+                drawVertex(pts.A);
+                drawVertex(pts.B);
+                drawVertex(pts.C);
+
+                ctx.restore();
+            }
+
+            window.updateSim = function() {
+                const { pts, isValid, errorMsg } = calculateTriangle();
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (!isValid) {
+                    errorBox.textContent = errorMsg;
+                    errorBox.style.display = 'block';
+                    return;
+                } else {
+                    errorBox.style.display = 'none';
+                }
+
+                // Центрируем первый треугольник (левая половина)
+                // Для простоты, найдем bbox
+                const minX = Math.min(pts.A.x, pts.B.x, pts.C.x);
+                const maxX = Math.max(pts.A.x, pts.B.x, pts.C.x);
+                const minY = Math.min(pts.A.y, pts.B.y, pts.C.y);
+                const maxY = Math.max(pts.A.y, pts.B.y, pts.C.y);
+                
+                const wT = maxX - minX;
+                const hT = maxY - minY;
+
+                const off1X = 175 - wT/2 - minX;
+                const off1Y = 150 - hT/2 - minY;
+
+                // Отрисовка оригинала
+                drawTriangle(pts, off1X, off1Y, 0);
+
+                // Отрисовка копии (справа, с поворотом для демонстрации)
+                const off2X = 525 - wT/2 - minX;
+                const off2Y = 150 - hT/2 - minY;
+                
+                // Вращаем копию вокруг её центра масс для красоты
+                const cx = (pts.A.x + pts.B.x + pts.C.x)/3;
+                const cy = (pts.A.y + pts.B.y + pts.C.y)/3;
+                
+                ctx.save();
+                ctx.translate(off2X + cx, off2Y + cy);
+                ctx.rotate(30 * Math.PI / 180); // Поворот на 30 градусов
+                ctx.translate(-(off2X + cx), -(off2Y + cy));
+                
+                drawTriangle(pts, off2X, off2Y, 0);
+                
+                ctx.restore();
+            };
+
+            // Init
+            setCriterion(1);
+        });
+    </script>
+</body>
+</html>
