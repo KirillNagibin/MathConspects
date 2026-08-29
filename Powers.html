@@ -421,21 +421,35 @@
                 
                 // Линии и текст сверху
                 ctxFSU.beginPath();
-                ctxFSU.moveTo(startX, startY - 10); ctxFSU.lineTo(startX + sizeA, startY - 10);
-                ctxFSU.moveTo(startX + sizeA, startY - 10); ctxFSU.lineTo(startX + totalSize, startY - 10);
-                ctxFSU.strokeStyle = '#555'; ctxFSU.lineWidth = 1; ctxFSU.stroke();
+                // Основная горизонтальная линия
+                ctxFSU.moveTo(startX, startY - 15); 
+                ctxFSU.lineTo(startX + totalSize, startY - 15);
+                // Засечки (вертикальные)
+                ctxFSU.moveTo(startX, startY - 20); ctxFSU.lineTo(startX, startY - 10);
+                ctxFSU.moveTo(startX + sizeA, startY - 20); ctxFSU.lineTo(startX + sizeA, startY - 10);
+                ctxFSU.moveTo(startX + totalSize, startY - 20); ctxFSU.lineTo(startX + totalSize, startY - 10);
                 
-                ctxFSU.fillText('a', startX + sizeA/2, startY - 20);
-                ctxFSU.fillText('b', startX + sizeA + sizeB/2, startY - 20);
+                ctxFSU.strokeStyle = '#888'; 
+                ctxFSU.lineWidth = 1.5; 
+                ctxFSU.stroke();
+                
+                ctxFSU.fillText('a', startX + sizeA/2, startY - 25);
+                ctxFSU.fillText('b', startX + sizeA + sizeB/2, startY - 25);
                 
                 // Линии и текст слева
                 ctxFSU.beginPath();
-                ctxFSU.moveTo(startX - 10, startY); ctxFSU.lineTo(startX - 10, startY + sizeA);
-                ctxFSU.moveTo(startX - 10, startY + sizeA); ctxFSU.lineTo(startX - 10, startY + totalSize);
+                // Основная вертикальная линия
+                ctxFSU.moveTo(startX - 15, startY); 
+                ctxFSU.lineTo(startX - 15, startY + totalSize);
+                // Засечки (горизонтальные)
+                ctxFSU.moveTo(startX - 20, startY); ctxFSU.lineTo(startX - 10, startY);
+                ctxFSU.moveTo(startX - 20, startY + sizeA); ctxFSU.lineTo(startX - 10, startY + sizeA);
+                ctxFSU.moveTo(startX - 20, startY + totalSize); ctxFSU.lineTo(startX - 10, startY + totalSize);
+                
                 ctxFSU.stroke();
                 
-                ctxFSU.fillText('a', startX - 20, startY + sizeA/2);
-                ctxFSU.fillText('b', startX - 20, startY + sizeA + sizeB/2);
+                ctxFSU.fillText('a', startX - 25, startY + sizeA/2);
+                ctxFSU.fillText('b', startX - 25, startY + sizeA + sizeB/2);
             }
 
             inA.addEventListener('input', updateFSU);
