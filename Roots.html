@@ -148,9 +148,10 @@
             </div>
         </div>
 
-        <h2><i data-lucide="square-radical"></i> 1. Арифметический корень и ОДЗ</h2>
+        <h2><i data-lucide="square-radical"></i> 1. Четные и нечетные корни</h2>
         <div class="card">
-            <p>В математике мы договорились использовать именно <b>арифметический</b> корень. У него есть два жестких правила, которые спасают нас от путаницы со знаками:</p>
+            <h3 style="margin-top: 0; color: var(--accent);">Арифметический корень (Четные степени)</h3>
+            <p>В математике для четных степеней (квадратный корень $\sqrt{\phantom{x}}$, корень 4-й степени $\sqrt[4]{\phantom{x}}$) мы договорились использовать именно <b>арифметический</b> корень. У него есть два жестких правила, которые спасают нас от путаницы со знаками:</p>
             
             <div class="formula-box" style="border-color: var(--accent);">
                 $$y = \sqrt[n]{a}$$
@@ -159,7 +160,7 @@
             <div class="props-grid">
                 <div class="prop-card" style="border-top: 4px solid var(--brand-orange);">
                     <div class="prop-title" style="color: var(--brand-orange);">Правило 1: Что внутри?</div>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Если корень четной степени (например, $\sqrt{\phantom{x}}$ или $\sqrt[4]{\phantom{x}}$), то подкоренное выражение обязано быть неотрицательным: <b>$a \ge 0$</b>. Это и есть <b>ОДЗ корня</b>.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Подкоренное выражение обязано быть неотрицательным: <b>$a \ge 0$</b>. Нельзя извлечь квадратный корень из $-25$. Это и есть <b>ОДЗ корня четной степени</b>.</p>
                 </div>
                 <div class="prop-card" style="border-top: 4px solid var(--info-text);">
                     <div class="prop-title" style="color: var(--info-text);">Правило 2: Что снаружи?</div>
@@ -167,7 +168,7 @@
                 </div>
             </div>
 
-            <div class="alert-box alert-warning" style="margin-top: 20px; margin-bottom: 0;">
+            <div class="alert-box alert-warning" style="margin-top: 20px;">
                 <div class="icon-box"><i data-lucide="alert-triangle" color="var(--warn-text)"></i></div>
                 <div>
                     <strong style="color: var(--warn-text);">Корень vs Уравнение (Главная путаница)</strong><br>
@@ -175,6 +176,15 @@
                         • Если вас просят просто вычислить корень: $\sqrt{36} = 6$.<br>
                         • Но если вы решаете <b>уравнение</b> $x^2 = 36$, то здесь ДВА ответа: $x_1 = 6$ и $x_2 = -6$. Потому что и $6^2$, и $(-6)^2$ дают 36.
                     </span>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px; border-bottom: 1px solid var(--border); padding-bottom: 5px; color: var(--brand-pink);">А что с нечетными корнями ($\sqrt[3]{x}$, $\sqrt[5]{x}$)?</h3>
+            <p>Здесь наступает полная свобода! Нечетная степень сохраняет знак минус, поэтому для нечетных корней <b>ОДЗ - любое число</b>. Из отрицательного числа прекрасно извлекается нечетный корень.</p>
+            <div class="props-grid">
+                <div class="prop-card" style="border-top: 4px solid var(--brand-pink);">
+                    <div class="prop-title" style="color: var(--brand-pink);">Минус можно выносить</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">$\sqrt[3]{-8} = -2$, потому что $(-2)^3 = -8$. Минус просто "выпрыгивает" наружу: $\mathbf{\sqrt[3]{-x} = -\sqrt[3]{x}}$.</p>
                 </div>
             </div>
         </div>
@@ -204,14 +214,14 @@
             <p style="text-align: center; color: var(--text-muted);"><i>Степень числа ($m$) идет в числитель, а степень корня ($n$) - в знаменатель.</i></p>
         </div>
 
-        <h2><i data-lucide="layout-grid"></i> 3. Лаборатория: Иллюзия сложения корней</h2>
+        <h2><i data-lucide="layout-grid"></i> 3. Иллюзия сложения корней</h2>
         <p style="color: var(--text-muted);">Самая смертельная ошибка на экзамене: попытка извлечь корень из каждого слагаемого по отдельности: <span style="color: var(--error-text); font-weight: bold;">$\sqrt{a + b} \neq \sqrt{a} + \sqrt{b}$</span>. Почему это не работает? Давайте посмотрим на это геометрически через прямоугольный треугольник и теорему Пифагора!</p>
 
         <div class="simulator" style="border-color: var(--brand-orange);">
             <div class="sim-controls">
                 <div class="control-group">
-                    <label style="color: var(--brand-blue);">Катет x: <span id="val-leg-a" style="font-weight: bold;">3</span></label>
-                    <input type="range" id="sim-leg-a" min="1" max="12" value="3" step="1" style="accent-color: var(--brand-blue);">
+                    <label style="color: var(--info-text);">Катет x: <span id="val-leg-a" style="font-weight: bold;">3</span></label>
+                    <input type="range" id="sim-leg-a" min="1" max="12" value="3" step="1" style="accent-color: var(--info-text);">
                 </div>
                 <div class="control-group">
                     <label style="color: var(--brand-purple);">Катет y: <span id="val-leg-b" style="font-weight: bold;">4</span></label>
@@ -239,9 +249,9 @@
             </p>
         </div>
 
-        <h2><i data-lucide="skull"></i> 4. Хитрая ловушка: Корень из квадрата</h2>
+        <h2><i data-lucide="skull"></i> 4. Хтрая ловушка: Корень из квадрата</h2>
         <div class="card" style="border-color: var(--error-text); background: rgba(239, 68, 68, 0.02);">
-            <p>Правило, без которого точно потеряете баллы, работая со сложными конструкциями.</p>
+            <p>Без этого правила не получится полноценнопонимать корни и степени</p>
             
             <div class="formula-box" style="border-color: var(--error-text);">
                 $$\sqrt{x^2} = |x|$$
@@ -255,11 +265,13 @@
             </ul>
             <p>Мы засунули в формулу $-5$, а на выходе получили $5$. Функция "съела" минус! В математике операцией, которая делает любое число положительным, является <b>модуль</b>. Поэтому писать $\sqrt{x^2} = x$ - это грубая ошибка. Это работает только если мы точно знаем, что $x \ge 0$.</p>
             
-            <div class="alert-box alert-info" style="margin-bottom: 0;">
+            <p style="color: var(--brand-pink); font-size: 0.95rem; margin-top: 15px;"><b>Но помните:</b> Для нечетных степеней модуль НЕ нужен! $\sqrt[3]{x^3} = x$ при любом $x$. Минус там никуда не пропадает и легко выносится.</p>
+
+            <div class="alert-box alert-info" style="margin-bottom: 0; margin-top: 15px;">
                 <div class="icon-box"><i data-lucide="check-circle" color="var(--info-text)"></i></div>
                 <div>
                     <strong style="color: var(--info-text);">А вот наоборот можно!</strong><br>
-                    <span style="color: var(--text-muted);">Если квадрат стоит <b>снаружи</b> корня, то модуля нет: $\left(\sqrt{x}\right)^2 = x$. Почему? Потому что если $x$ отрицательный, мы даже не сможем извлечь из него корень (ОДЗ не пустит), так что до возведения в квадрат дело даже не дойдет.</span>
+                    <span style="color: var(--text-muted);">Если квадрат стоит <b>снаружи</b> корня, то модуля нет: $\left(\sqrt{x}\right)^2 = x$. Почему? Потому что если $x$ отрицательный, мы даже не сможем извлечь из него четный корень (ОДЗ не пустит), так что до возведения в квадрат дело даже не дойдет.</span>
                 </div>
             </div>
         </div>
