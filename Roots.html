@@ -210,11 +210,11 @@
         <div class="simulator" style="border-color: var(--brand-orange);">
             <div class="sim-controls">
                 <div class="control-group">
-                    <label style="color: var(--brand-blue);">Катет $x$: <span id="val-leg-a" style="font-weight: bold;">3</span></label>
+                    <label style="color: var(--brand-blue);">Катет x: <span id="val-leg-a" style="font-weight: bold;">3</span></label>
                     <input type="range" id="sim-leg-a" min="1" max="12" value="3" step="1" style="accent-color: var(--brand-blue);">
                 </div>
                 <div class="control-group">
-                    <label style="color: var(--brand-purple);">Катет $y$: <span id="val-leg-b" style="font-weight: bold;">4</span></label>
+                    <label style="color: var(--brand-purple);">Катет y: <span id="val-leg-b" style="font-weight: bold;">4</span></label>
                     <input type="range" id="sim-leg-b" min="1" max="12" value="4" step="1" style="accent-color: var(--brand-purple);">
                 </div>
             </div>
@@ -358,50 +358,60 @@
                 const h = canvasPyth.height;
                 ctxPyth.clearRect(0, 0, w, h);
 
-                // Отрисовка координатной сетки (легкой)
-                const gridScale = 20; // 1 единица = 20 пикселей
-                ctxPyth.strokeStyle = '#222';
+                // Жесткий масштаб: 1 единица = 20 пикселей
+                const scale = 20; 
+                const startX = 130; 
+                const startY = 270;
+
+                // Отрисовка координатной сетки (статичной)
+                ctxPyth.strokeStyle = '#2a2a2a';
                 ctxPyth.lineWidth = 1;
-                for (let i = 0; i < w; i += gridScale) {
+                for (let i = startX % scale; i < w; i += scale) {
                     ctxPyth.beginPath(); ctxPyth.moveTo(i, 0); ctxPyth.lineTo(i, h); ctxPyth.stroke();
                 }
-                for (let i = 0; i < h; i += gridScale) {
+                for (let i = startY % scale; i < h; i += scale) {
                     ctxPyth.beginPath(); ctxPyth.moveTo(0, i); ctxPyth.lineTo(w, i); ctxPyth.stroke();
                 }
 
-                // Динамическое масштабирование, чтобы треугольник всегда влезал
-                const maxDim = Math.max(a, b);
-                // Если a и b маленькие, увеличим scale, если большие - уменьшим.
-                // Максимальный a или b равен 12. Для 12 нужно уместиться в 400x200
-                const drawScale = Math.min((w - 100) / a, (h - 100) / b);
-                
-                const startX = 50;
-                const startY = h - 50;
+                // Оси координат
+                ctxPyth.strokeStyle = '#444';
+                ctxPyth.lineWidth = 2;
+                ctxPyth.beginPath(); ctxPyth.moveTo(startX, 0); ctxPyth.lineTo(startX, h); ctxPyth.stroke();
+                ctxPyth.beginPath(); ctxPyth.moveTo(0, startY); ctxPyth.lineTo(w, startY); ctxPyth.stroke();
 
-                const lenA = a * drawScale;
-                const lenB = b * drawScale;
+                const lenA = a * scale;
+                const lenB = b * scale;
 
-                // Катет X (a)
+                // Заливка треугольника
                 ctxPyth.beginPath();
                 ctxPyth.moveTo(startX, startY);
                 ctxPyth.lineTo(startX + lenA, startY);
-                ctxPyth.strokeStyle = 'var(--brand-blue)';
+                ctxPyth.lineTo(startX, startY - lenB);
+                ctxPyth.closePath();
+                ctxPyth.fillStyle = 'rgba(249, 115, 22, 0.15)'; // Легкий оранжевый фон
+                ctxPyth.fill();
+
+                // Катет X (a) - Горизонтальный
+                ctxPyth.beginPath();
+                ctxPyth.moveTo(startX, startY);
+                ctxPyth.lineTo(startX + lenA, startY);
+                ctxPyth.strokeStyle = '#3B82F6'; // Синий
                 ctxPyth.lineWidth = 4;
                 ctxPyth.stroke();
 
-                // Катет Y (b)
+                // Катет Y (b) - Вертикальный
                 ctxPyth.beginPath();
-                ctxPyth.moveTo(startX + lenA, startY);
-                ctxPyth.lineTo(startX + lenA, startY - lenB);
-                ctxPyth.strokeStyle = 'var(--brand-purple)';
+                ctxPyth.moveTo(startX, startY);
+                ctxPyth.lineTo(startX, startY - lenB);
+                ctxPyth.strokeStyle = '#8B5CF6'; // Фиолетовый
                 ctxPyth.lineWidth = 4;
                 ctxPyth.stroke();
 
                 // Гипотенуза (c)
                 ctxPyth.beginPath();
-                ctxPyth.moveTo(startX, startY);
-                ctxPyth.lineTo(startX + lenA, startY - lenB);
-                ctxPyth.strokeStyle = 'var(--brand-orange)';
+                ctxPyth.moveTo(startX + lenA, startY);
+                ctxPyth.lineTo(startX, startY - lenB);
+                ctxPyth.strokeStyle = '#F97316'; // Оранжевый
                 ctxPyth.lineWidth = 4;
                 ctxPyth.stroke();
 
@@ -409,36 +419,30 @@
                 ctxPyth.strokeStyle = '#fff';
                 ctxPyth.lineWidth = 2;
                 ctxPyth.beginPath();
-                ctxPyth.moveTo(startX + lenA - 15, startY);
-                ctxPyth.lineTo(startX + lenA - 15, startY - 15);
-                ctxPyth.lineTo(startX + lenA, startY - 15);
+                ctxPyth.moveTo(startX + 15, startY);
+                ctxPyth.lineTo(startX + 15, startY - 15);
+                ctxPyth.lineTo(startX, startY - 15);
                 ctxPyth.stroke();
 
                 // Подписи длин
-                ctxPyth.fillStyle = '#fff';
                 ctxPyth.font = 'bold 16px sans-serif';
+                
+                // Подпись x
+                ctxPyth.fillStyle = '#3B82F6';
                 ctxPyth.textAlign = 'center';
+                ctxPyth.textBaseline = 'top';
+                ctxPyth.fillText(`x = ${a}`, startX + lenA / 2, startY + 10);
                 
-                // Подпись a
-                ctxPyth.fillStyle = 'var(--brand-blue)';
-                ctxPyth.fillText(`x = ${a}`, startX + lenA / 2, startY + 25);
-                
-                // Подпись b
-                ctxPyth.fillStyle = 'var(--brand-purple)';
-                ctxPyth.textAlign = 'left';
+                // Подпись y
+                ctxPyth.fillStyle = '#8B5CF6';
+                ctxPyth.textAlign = 'right';
                 ctxPyth.textBaseline = 'middle';
-                ctxPyth.fillText(`y = ${b}`, startX + lenA + 15, startY - lenB / 2);
+                ctxPyth.fillText(`y = ${b}`, startX - 10, startY - lenB / 2);
                 
                 // Подпись c
-                ctxPyth.fillStyle = 'var(--brand-orange)';
-                ctxPyth.textAlign = 'right';
-                // Смещение текста для гипотенузы
-                const midX = startX + lenA / 2;
-                const midY = startY - lenB / 2;
-                ctxPyth.fillText(`c = ${c.toFixed(1)}`, midX - 15, midY - 15);
-
-                // Отрисовка пути "двоечника" (анимация точек)
-                // Для простоты, просто нарисуем пунктирную линию
+                ctxPyth.fillStyle = '#F97316';
+                ctxPyth.textAlign = 'left';
+                ctxPyth.fillText(`c = ${c.toFixed(1)}`, startX + lenA / 2 + 10, startY - lenB / 2 - 10);
             }
 
             inLegA.addEventListener('input', updatePythagoras);
