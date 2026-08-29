@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Корни и их свойства</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+            --brand-orange: #F97316;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); margin-top: 5px; }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1.1rem; color: var(--accent); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.3rem; color: var(--accent); }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Корни и их свойства</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Обратная инженерия степеней</strong><br>
+                <span style="color: var(--text-muted);">Если возведение в степень — это сборка матрешки, то извлечение корня — это попытка узнать, какая матрешка была внутри с самого начала. Корень $n$-ной степени из числа $a$ ($\sqrt[n]{a}$) отвечает на вопрос: «Какое число нужно возвести в степень $n$, чтобы получить $a$?».</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="square-radical"></i> 1. Арифметический корень и ОДЗ</h2>
+        <div class="card">
+            <p>В математике мы договорились использовать именно <b>арифметический</b> корень. У него есть два жестких правила, которые спасают нас от путаницы со знаками:</p>
+            
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$y = \sqrt[n]{a}$$
+            </div>
+            
+            <div class="props-grid">
+                <div class="prop-card" style="border-top: 4px solid var(--brand-orange);">
+                    <div class="prop-title" style="color: var(--brand-orange);">Правило 1: Что внутри?</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Если корень четной степени (например, $\sqrt{\phantom{x}}$ или $\sqrt[4]{\phantom{x}}$), то подкоренное выражение обязано быть неотрицательным: <b>$a \ge 0$</b>. Это и есть <b>ОДЗ корня</b>.</p>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--info-text);">
+                    <div class="prop-title" style="color: var(--info-text);">Правило 2: Что снаружи?</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Результат извлечения корня четной степени <b>всегда неотрицателен</b>. $\sqrt{25} = 5$, и только 5! Никаких $\pm 5$.</p>
+                </div>
+            </div>
+
+            <div class="alert-box alert-warning" style="margin-top: 20px; margin-bottom: 0;">
+                <div class="icon-box"><i data-lucide="alert-triangle" color="var(--warn-text)"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Корень vs Уравнение (Главная путаница)</strong><br>
+                    <span style="color: var(--text-muted);">
+                        • Если вас просят просто вычислить корень: $\sqrt{36} = 6$.<br>
+                        • Но если вы решаете <b>уравнение</b> $x^2 = 36$, то здесь ДВА ответа: $x_1 = 6$ и $x_2 = -6$. Потому что и $6^2$, и $(-6)^2$ дают 36.
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="calculator"></i> 2. Свойства корней (Умножение и Деление)</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Корни дружат только с умножением и делением. Вы можете "сливать" их под одну крышу или разбивать на два отдельных корня (при условии, что $a \ge 0, b \ge 0$).</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--brand-green);">
+                    <div style="font-size: 0.9rem; color: var(--brand-green); margin-bottom: 5px;">Умножение</div>
+                    $$\sqrt{a} \cdot \sqrt{b} = \sqrt{a \cdot b}$$
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;"><i>Например: $\sqrt{2} \cdot \sqrt{8} = \sqrt{16} = 4$</i></div>
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-purple);">
+                    <div style="font-size: 0.9rem; color: var(--brand-purple); margin-bottom: 5px;">Деление</div>
+                    $$\frac{\sqrt{a}}{\sqrt{b}} = \sqrt{\frac{a}{b}}$$
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;"><i>Например: $\frac{\sqrt{50}}{\sqrt{2}} = \sqrt{25} = 5$</i></div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px; color: var(--accent);">Связь корней и степеней</h3>
+            <p>Любой корень можно записать в виде <b>дробной степени</b>. Это очень удобно, когда в выражении намешаны и корни, и степени.</p>
+            <div class="formula-box">
+                $$\sqrt[n]{a^m} = a^{\frac{m}{n}}$$
+            </div>
+            <p style="text-align: center; color: var(--text-muted);"><i>Степень числа ($m$) идет в числитель, а степень корня ($n$) — в знаменатель.</i></p>
+        </div>
+
+        <h2><i data-lucide="layout-grid"></i> 3. Лаборатория: Иллюзия сложения корней</h2>
+        <p style="color: var(--text-muted);">Самая смертельная ошибка на экзамене: попытка извлечь корень из каждого слагаемого по отдельности: <span style="color: var(--error-text); font-weight: bold;">$\sqrt{a + b} \neq \sqrt{a} + \sqrt{b}$</span>. Почему это не работает? Давайте посмотрим на это геометрически через прямоугольный треугольник и теорему Пифагора!</p>
+
+        <div class="simulator" style="border-color: var(--brand-orange);">
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--brand-blue);">Катет $x$: <span id="val-leg-a" style="font-weight: bold;">3</span></label>
+                    <input type="range" id="sim-leg-a" min="1" max="12" value="3" step="1" style="accent-color: var(--brand-blue);">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--brand-purple);">Катет $y$: <span id="val-leg-b" style="font-weight: bold;">4</span></label>
+                    <input type="range" id="sim-leg-b" min="1" max="12" value="4" step="1" style="accent-color: var(--brand-purple);">
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-item" style="border: 1px solid var(--brand-orange); background: rgba(249, 115, 22, 0.1);">
+                    <div class="dashboard-label">Правильно: $\sqrt{x^2 + y^2}$ (Гипотенуза)</div>
+                    <div class="dashboard-value" id="dash-correct" style="color: var(--brand-orange);">5.0</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Мечта двоечника: $\sqrt{x^2} + \sqrt{y^2}$</div>
+                    <div class="dashboard-value" id="dash-error" style="color: var(--error-text);">7.0</div>
+                </div>
+            </div>
+
+            <div class="canvas-container" style="background: transparent; border: none; padding: 0;">
+                <canvas id="canvas-pythagoras" width="500" height="300" style="background: #1a1a1a; border-radius: 8px; border: 1px solid #333; margin: 0 auto; display: block;"></canvas>
+            </div>
+            
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 15px;">
+                Геометрический смысл: $\sqrt{x^2 + y^2}$ — это длина гипотенузы (кратчайший путь). А $\sqrt{x^2} + \sqrt{y^2}$ (то есть $x + y$) — это путь по двум катетам. По неравенству треугольника прямой путь всегда короче, поэтому они <b>никогда не равны</b>!
+            </p>
+        </div>
+
+        <h2><i data-lucide="skull"></i> 4. Главная ловушка всех экзаменов: Корень из квадрата</h2>
+        <div class="card" style="border-color: var(--error-text); background: rgba(239, 68, 68, 0.02);">
+            <p>Выучите это правило как молитву. Именно на нем ловят 90% выпускников.</p>
+            
+            <div class="formula-box" style="border-color: var(--error-text);">
+                $$\sqrt{x^2} = |x|$$
+            </div>
+
+            <p>Почему появляется модуль? Давайте проверим на отрицательном числе:<br>
+            Пусть $x = -5$. Попробуем посчитать $\sqrt{(-5)^2}$.</p>
+            <ul style="color: var(--text-muted);">
+                <li>Сначала возводим в квадрат (минус сгорает): $(-5)^2 = 25$.</li>
+                <li>Затем извлекаем корень: $\sqrt{25} = 5$.</li>
+            </ul>
+            <p>Мы засунули в формулу $-5$, а на выходе получили $5$. Функция "съела" минус! В математике операцией, которая делает любое число положительным, является <b>модуль</b>. Поэтому писать $\sqrt{x^2} = x$ — это грубая ошибка. Это работает только если мы точно знаем, что $x \ge 0$.</p>
+            
+            <div class="alert-box alert-info" style="margin-bottom: 0;">
+                <div class="icon-box"><i data-lucide="check-circle" color="var(--info-text)"></i></div>
+                <div>
+                    <strong style="color: var(--info-text);">А вот наоборот можно!</strong><br>
+                    <span style="color: var(--text-muted);">Если квадрат стоит <b>снаружи</b> корня, то модуля нет: $\left(\sqrt{x}\right)^2 = x$. Почему? Потому что если $x$ отрицательный, мы даже не сможем извлечь из него корень (ОДЗ не пустит), так что до возведения в квадрат дело даже не дойдет.</span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика (Задание ЕГЭ/ОГЭ)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Упрощение выражения с модулем</h3>
+            <p>Упростите выражение: $\sqrt{(x - 5)^2} + \sqrt{(x - 2)^2}$, если известно, что $2 < x < 5$.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')"><i data-lucide="help-circle" style="width: 16px;"></i> Подсказка</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать пошаговое решение</button>
+            </div>
+
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Вспомните главную ловушку! Корень из квадрата — это модуль. Запишите выражение с модулями: $|x - 5| + |x - 2|$. Теперь посмотрите на условие $2 < x < 5$. Подставьте в скобки любое число из этого промежутка (например, $3$) и определите знак внутри каждого модуля. Раскройте модули по правилу.
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. Применим правило $\sqrt{a^2} = |a|$ к каждому корню:<br>
+                $$\sqrt{(x - 5)^2} + \sqrt{(x - 2)^2} = |x - 5| + |x - 2|$$</p>
+                
+                <p>2. Нам дано условие: $2 < x < 5$. Проверим знаки подмодульных выражений, подставив удобное число из интервала, например, $x = 3$.<br>
+                Первый модуль: $3 - 5 = -2 < 0$ (знак минус).<br>
+                Второй модуль: $3 - 2 = 1 > 0$ (знак плюс).</p>
+                
+                <p>3. Раскрываем модули по правилам: если внутри минус, меняем знаки слагаемых на противоположные; если плюс — просто убираем палки модуля.<br>
+                $|x - 5| \rightarrow -(x - 5) = -x + 5$<br>
+                $|x - 2| \rightarrow +(x - 2) = x - 2$</p>
+
+                <p>4. Складываем полученные выражения:<br>
+                $$(-x + 5) + (x - 2) = -x + 5 + x - 2 = 3$$</p>
+                
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Иксы взаимно уничтожились! Результат не зависит от $x$ на данном промежутке.</p>
+
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 3</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            // --- СИМУЛЯТОР: ГЕОМЕТРИЯ КОРНЕЙ (ПИФАГОР И СЛОЖЕНИЕ) ---
+            const canvasPyth = document.getElementById('canvas-pythagoras');
+            const ctxPyth = canvasPyth.getContext('2d');
+            const inLegA = document.getElementById('sim-leg-a');
+            const inLegB = document.getElementById('sim-leg-b');
+            const valLegA = document.getElementById('val-leg-a');
+            const valLegB = document.getElementById('val-leg-b');
+            const dashCorrect = document.getElementById('dash-correct');
+            const dashError = document.getElementById('dash-error');
+
+            function updatePythagoras() {
+                let a = parseInt(inLegA.value);
+                let b = parseInt(inLegB.value);
+
+                valLegA.textContent = a;
+                valLegB.textContent = b;
+
+                let c = Math.sqrt(a * a + b * b);
+                let badSum = a + b;
+
+                dashCorrect.innerHTML = c.toFixed(2);
+                dashError.innerHTML = badSum.toFixed(1);
+
+                drawTriangle(a, b, c);
+            }
+
+            function drawTriangle(a, b, c) {
+                const w = canvasPyth.width;
+                const h = canvasPyth.height;
+                ctxPyth.clearRect(0, 0, w, h);
+
+                // Отрисовка координатной сетки (легкой)
+                const gridScale = 20; // 1 единица = 20 пикселей
+                ctxPyth.strokeStyle = '#222';
+                ctxPyth.lineWidth = 1;
+                for (let i = 0; i < w; i += gridScale) {
+                    ctxPyth.beginPath(); ctxPyth.moveTo(i, 0); ctxPyth.lineTo(i, h); ctxPyth.stroke();
+                }
+                for (let i = 0; i < h; i += gridScale) {
+                    ctxPyth.beginPath(); ctxPyth.moveTo(0, i); ctxPyth.lineTo(w, i); ctxPyth.stroke();
+                }
+
+                // Динамическое масштабирование, чтобы треугольник всегда влезал
+                const maxDim = Math.max(a, b);
+                // Если a и b маленькие, увеличим scale, если большие - уменьшим.
+                // Максимальный a или b равен 12. Для 12 нужно уместиться в 400x200
+                const drawScale = Math.min((w - 100) / a, (h - 100) / b);
+                
+                const startX = 50;
+                const startY = h - 50;
+
+                const lenA = a * drawScale;
+                const lenB = b * drawScale;
+
+                // Катет X (a)
+                ctxPyth.beginPath();
+                ctxPyth.moveTo(startX, startY);
+                ctxPyth.lineTo(startX + lenA, startY);
+                ctxPyth.strokeStyle = 'var(--brand-blue)';
+                ctxPyth.lineWidth = 4;
+                ctxPyth.stroke();
+
+                // Катет Y (b)
+                ctxPyth.beginPath();
+                ctxPyth.moveTo(startX + lenA, startY);
+                ctxPyth.lineTo(startX + lenA, startY - lenB);
+                ctxPyth.strokeStyle = 'var(--brand-purple)';
+                ctxPyth.lineWidth = 4;
+                ctxPyth.stroke();
+
+                // Гипотенуза (c)
+                ctxPyth.beginPath();
+                ctxPyth.moveTo(startX, startY);
+                ctxPyth.lineTo(startX + lenA, startY - lenB);
+                ctxPyth.strokeStyle = 'var(--brand-orange)';
+                ctxPyth.lineWidth = 4;
+                ctxPyth.stroke();
+
+                // Прямой угол
+                ctxPyth.strokeStyle = '#fff';
+                ctxPyth.lineWidth = 2;
+                ctxPyth.beginPath();
+                ctxPyth.moveTo(startX + lenA - 15, startY);
+                ctxPyth.lineTo(startX + lenA - 15, startY - 15);
+                ctxPyth.lineTo(startX + lenA, startY - 15);
+                ctxPyth.stroke();
+
+                // Подписи длин
+                ctxPyth.fillStyle = '#fff';
+                ctxPyth.font = 'bold 16px sans-serif';
+                ctxPyth.textAlign = 'center';
+                
+                // Подпись a
+                ctxPyth.fillStyle = 'var(--brand-blue)';
+                ctxPyth.fillText(`x = ${a}`, startX + lenA / 2, startY + 25);
+                
+                // Подпись b
+                ctxPyth.fillStyle = 'var(--brand-purple)';
+                ctxPyth.textAlign = 'left';
+                ctxPyth.textBaseline = 'middle';
+                ctxPyth.fillText(`y = ${b}`, startX + lenA + 15, startY - lenB / 2);
+                
+                // Подпись c
+                ctxPyth.fillStyle = 'var(--brand-orange)';
+                ctxPyth.textAlign = 'right';
+                // Смещение текста для гипотенузы
+                const midX = startX + lenA / 2;
+                const midY = startY - lenB / 2;
+                ctxPyth.fillText(`c = ${c.toFixed(1)}`, midX - 15, midY - 15);
+
+                // Отрисовка пути "двоечника" (анимация точек)
+                // Для простоты, просто нарисуем пунктирную линию
+            }
+
+            inLegA.addEventListener('input', updatePythagoras);
+            inLegB.addEventListener('input', updatePythagoras);
+
+            // Инициализация при загрузке
+            updatePythagoras();
+        });
+    </script>
+</body>
+</html>
