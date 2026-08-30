@@ -216,34 +216,34 @@
                     <div class="dashboard-value" id="dash-explanation" style="font-size: 0.95rem; font-weight: normal; color: var(--text-muted); min-height: auto; margin-top: 5px;">Подходит хотя бы под одно условие (Логическое ИЛИ).<br>Например: «Берем на работу тех, кто знает Python (A) ИЛИ знает Java (B)». Подойдут и те, кто знает только один язык, и те, кто знает оба.</div>
                 </div>
             </div>
-
-            <div class="canvas-container">
-                <canvas id="canvas-venn" width="600" height="300"></canvas>
-            </div>
-        </div>
-
-        <h2><i data-lucide="alert-triangle"></i> 4. Как это бьет по баллам на ОГЭ/ЕГЭ</h2>
+        <h2><i data-lucide="alert-triangle"></i> 4. Главная ловушка: Двойной счет</h2>
         <div class="card" style="border-color: var(--error-text); background: rgba(239, 68, 68, 0.03);">
-            <p style="margin-top: 0; color: var(--text-main);">В теории вероятностей множества — это события. И здесь кроется главная ловушка сложных задач.</p>
+            <p style="margin-top: 0; color: var(--text-main);">Чаще всего в задачах (особенно текстовых) нас просят посчитать <b>количество элементов</b> в объединении множеств. И тут кроется главная ошибка.</p>
             
-            <div class="alert-box alert-warning" style="margin-bottom: 15px; margin-top: 20px;">
-                <div class="icon-box"><i data-lucide="search" color="var(--warn-text)"></i></div>
+            <div class="alert-box alert-error" style="margin-bottom: 15px; margin-top: 20px;">
+                <div class="icon-box"><i data-lucide="x-circle" color="var(--error-text)"></i></div>
                 <div>
-                    <strong style="color: var(--warn-text);">Связь операций и вероятности</strong><br>
-                    <ul style="color: var(--text-muted); margin: 5px 0 0 0; padding-left: 15px;">
-                        <li>Если в задаче стоит условие <b>"ИЛИ"</b> (выпадет орел ИЛИ решка) — это <strong style="color: var(--accent);">ОБЪЕДИНЕНИЕ</strong> ($A \cup B$). В вероятности объединение часто означает сложение: $P(A \cup B) = P(A) + P(B)$.</li>
-                        <li>Если в задаче стоит условие <b>"И"</b> (выпадет орел И монета блестящая) — это <strong style="color: var(--brand-pink);">ПЕРЕСЕЧЕНИЕ</strong> ($A \cap B$). В вероятности пересечение часто означает умножение.</li>
-                    </ul>
+                    <strong style="color: var(--error-text);">Ошибка "простого сложения"</strong><br>
+                    <span style="color: var(--text-muted);">Представьте, что 10 человек любят кошек (множество $A$), а 10 человек любят собак (множество $B$). Значит ли это, что всего животных любят 20 человек? <b>НЕТ!</b> <br>Что, если 3 человека любят и кошек, и собак одновременно? Если мы просто сложим $10 + 10$, мы посчитаем этих троих людей <b>дважды</b> (и там, и там).</span>
                 </div>
             </div>
 
-            <div class="alert-box alert-error" style="margin-bottom: 0;">
-                <div class="icon-box"><i data-lucide="x-circle" color="var(--error-text)"></i></div>
+            <div class="alert-box alert-warning" style="margin-bottom: 15px;">
+                <div class="icon-box"><i data-lucide="check-square" color="var(--warn-text)"></i></div>
                 <div>
-                    <strong style="color: var(--error-text);">Ловушка сложения (Несовместные события)</strong><br>
-                    <span style="color: var(--text-muted);">Многие школьники слепо складывают вероятности, если видят слово "ИЛИ". Но если круги Венна пересекаются (то есть события могут произойти одновременно), то при объединении вы посчитаете их "серединку" дважды!<br>
-                    Правильная формула из ЕГЭ: $P(A \cup B) = P(A) + P(B) \mathbf{- P(A \cap B)}$. <br>
-                    Если круги не пересекаются (пересечение пустое, $A \cap B = \varnothing$), то события называются <b>несовместными</b>, и только тогда серединку можно не вычитать.</span>
+                    <strong style="color: var(--warn-text);">Формула включений-исключений</strong><br>
+                    <span style="color: var(--text-muted);">Чтобы найти реальное количество элементов в объединении двух множеств (обозначим количество как $|A|$), нужно сложить их размеры и <b>обязательно вычесть их пересечение</b> (ту самую серединку, которую посчитали два раза):</span>
+                    <div style="font-size: 1.2rem; color: #fff; text-align: center; margin-top: 10px;">
+                        $$|A \cup B| = |A| + |B| - |A \cap B|$$
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-box alert-info" style="margin-bottom: 0;">
+                <div class="icon-box"><i data-lucide="fast-forward" color="var(--info-text)"></i></div>
+                <div>
+                    <strong style="color: var(--info-text);">Задел на будущее (Теория вероятностей)</strong><br>
+                    <span style="color: var(--text-muted);">Запомните эту логику! В следующих уроках мы перейдем к вероятностям. Там множества станут "событиями". И эта же формула спасет вас от потери баллов в сложных задачах ЕГЭ, когда события могут произойти одновременно (станут совместными).</span>
                 </div>
             </div>
         </div>
