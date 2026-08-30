@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Сложная вероятность и Деревья вероятностей</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1.05rem; color: var(--text-main); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; line-height: 1.3;}
+        
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: normal;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        /* Симулятор */
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { 
+            display: flex; flex-direction: column; align-items: flex-start; text-align: left; 
+            padding: 10px 15px; background: rgba(255,255,255,0.02); border-radius: 6px; width: 100%; box-sizing: border-box; overflow: hidden;
+        }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; line-height: 1.3; word-break: break-word; }
+        .dashboard-value { font-size: 1.3rem; font-weight: bold; min-height: 35px; display: flex; align-items: center; width: 100%; overflow-x: auto; }
+
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px; }
+        canvas { max-width: 100%; display: block; touch-action: none; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Сложная вероятность: От зависимостей до деревьев</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="git-branch" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Жизнь сложнее кубиков</strong><br>
+                <span style="color: var(--text-muted);">Простая формула $\frac{m}{n}$ работает, когда все исходы равновероятны (бросок монетки или кубика). Но что если события происходят по цепочке? Например: "Завод А производит 30% стекол, а Завод Б — 70%. На заводе А брак 5%, а на заводе Б — 2%". Найти шанс купить бракованное стекло простой формулой не выйдет. Здесь нам поможет графический метод — Дерево вероятностей!</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="link"></i> 1. Зависимые события (Условная вероятность)</h2>
+        <div class="card">
+            <p style="margin-top: 0; color: var(--text-muted);">Вероятности событий часто меняются в зависимости от того, что произошло шаг назад. Это называется условной вероятностью $P(A|B)$ — «вероятность события A, при условии, что B уже случилось».</p>
+            
+            <div class="alert-box alert-warning" style="margin-bottom: 15px;">
+                <div class="icon-box"><i data-lucide="alert-triangle" color="var(--warn-text)"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Ловушка «Без возврата»</strong><br>
+                    <span style="color: var(--text-muted);">В корзине 3 красных и 7 синих шаров (всего 10). Вероятность достать красный шар — $\frac{3}{10}$.<br> 
+                    Мы достали красный шар и <b>не вернули его обратно</b>. Какова вероятность достать второй красный шар?<br>
+                    Она изменилась! Красных осталось 2, а всего шаров теперь 9. Новая вероятность: $\frac{2}{9}$. <br>
+                    <i>События зависимы, так как первое действие повлияло на общее количество.</i></span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="network"></i> 2. Спасательный круг: Дерево вероятностей</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Вместо того чтобы держать в голове зубодробительные формулы условной вероятности, мы просто нарисуем схему всех возможных вариантов развития событий.</p>
+
+            <div class="props-grid" style="grid-template-columns: 1fr;">
+                <div class="prop-card" style="border-left: 4px solid var(--brand-purple);">
+                    <div class="prop-title" style="color: var(--brand-purple); border-bottom: none; margin-bottom: 0;"><i data-lucide="move-right" style="width: 18px;"></i> Правило №1: Движение вдоль ветки (УМНОЖЕНИЕ)</div>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; margin-top: 5px;">Чтобы найти вероятность того, что мы пройдем по конкретному пути (Событие А, <b>И ЗАТЕМ</b> Событие Б), мы перемножаем все вероятности, написанные на веточках этого пути.</p>
+                </div>
+                <div class="prop-card" style="border-left: 4px solid var(--accent);">
+                    <div class="prop-title" style="color: var(--accent); border-bottom: none; margin-bottom: 0;"><i data-lucide="move-down" style="width: 18px;"></i> Правило №2: Переход между ветками (СЛОЖЕНИЕ)</div>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; margin-top: 5px;">Если нужный нам результат (например, "Деталь бракованная") может получиться несколькими путями (Сделана на заводе А <b>ИЛИ</b> сделана на заводе Б), мы складываем итоговые вероятности этих независимых веток.</p>
+                </div>
+                <div class="prop-card" style="border-left: 4px solid var(--info-text);">
+                    <div class="prop-title" style="color: var(--info-text); border-bottom: none; margin-bottom: 0;"><i data-lucide="sigma" style="width: 18px;"></i> Правило №3: Узел равен 1 (100%)</div>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; margin-top: 5px;">Сумма вероятностей всех веток, выходящих из одной точки (узла), всегда равна $1$. Если завод А делает $40\%$ деталей, то завод Б обязан делать $1 - 0.4 = 0.6$ ($60\%$).</p>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="factory"></i> 3. Лаборатория: Заводы и Смартфоны</h2>
+        <p style="color: var(--text-muted);">Классическая задача ЕГЭ (№5). Два завода производят смартфоны. Первый завод выпускает часть всех смартфонов, второй — остальные. У каждого завода есть свой процент брака. Найти вероятность того, что случайно купленный в магазине смартфон окажется бракованным.</p>
+
+        <div class="simulator" style="border-color: var(--brand-purple);">
+            
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--info-text);">Доля Завода 1 ($p_1$): <span id="val-share1" style="font-weight: bold;">40%</span></label>
+                    <input type="range" id="sim-share1" min="10" max="90" value="40" step="5" style="accent-color: var(--info-text);">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--error-text);">Брак на Заводе 1 ($d_1$): <span id="val-def1" style="font-weight: bold;">5%</span></label>
+                    <input type="range" id="sim-def1" min="1" max="20" value="5" step="1" style="accent-color: var(--error-text);">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--error-text);">Брак на Заводе 2 ($d_2$): <span id="val-def2" style="font-weight: bold;">2%</span></label>
+                    <input type="range" id="sim-def2" min="1" max="20" value="2" step="1" style="accent-color: var(--error-text);">
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-tree" width="800" height="300"></canvas>
+            </div>
+
+            <div class="dashboard-grid" style="margin-top: 15px;">
+                <div class="dashboard-item" style="border-left: 4px solid var(--info-text);">
+                    <div class="dashboard-label">Шанс: Брак от Завода 1</div>
+                    <div class="dashboard-value" id="dash-path1" style="color: var(--info-text);">0.020</div>
+                </div>
+                <div class="dashboard-item" style="border-left: 4px solid var(--brand-pink);">
+                    <div class="dashboard-label">Шанс: Брак от Завода 2</div>
+                    <div class="dashboard-value" id="dash-path2" style="color: var(--brand-pink);">0.012</div>
+                </div>
+                <div class="dashboard-item" style="border-left: 4px solid var(--error-text); background: rgba(239, 68, 68, 0.1);">
+                    <div class="dashboard-label" style="color: var(--error-text);">Общая вероятность Брака</div>
+                    <div class="dashboard-value" id="dash-total" style="color: #fff; font-size: 1.5rem;">0.032</div>
+                </div>
+            </div>
+            
+        </div>
+
+        <h2><i data-lucide="sigma"></i> 4. Формула полной вероятности</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Если перевести графическое дерево на язык математики, мы получим Формулу полной вероятности. Вероятность итогового события $A$ (купить брак) равна сумме вероятностей всех путей, ведущих к нему.</p>
+            
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$P(A) = P(H_1) \cdot P(A|H_1) + P(H_2) \cdot P(A|H_2)$$
+            </div>
+            
+            <ul style="color: var(--text-muted); margin-bottom: 0;">
+                <li>$P(H_1)$ и $P(H_2)$ — вероятности пойти по верхней или нижней главной ветке (например, выбрать Завод 1 или Завод 2). Их называют "гипотезами".</li>
+                <li>$P(A|H_1)$ — условная вероятность того, что будет брак, <i>при условии</i>, что мы уже пошли по первой ветке (брак именно на Заводе 1).</li>
+                <li>Обратите внимание, как формула читается вслух: <i>(Шанс выбрать 1 завод <b>УМНОЖИТЬ</b> на шанс брака там) <b>ПЛЮС</b> (Шанс выбрать 2 завод <b>УМНОЖИТЬ</b> на шанс брака там)</i>.</li>
+            </ul>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика (Задание ЕГЭ)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Медицинский тест (ПЦР)</h3>
+            <p>В регионе $5\%$ населения больны некоторым вирусом. Для выявления вируса проводится тест. У больного человека тест дает положительный результат в $90\%$ случаев. У здорового человека тест ошибочно дает положительный результат (ложноположительный) в $2\%$ случаев.<br> Найдите вероятность того, что у случайно выбранного человека тест покажет положительный результат.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')" style="width: auto;"><i data-lucide="help-circle" style="width: 16px;"></i> Подсказка</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Нарисуйте дерево в голове! <br>
+                Первая развилка (узлы): Человек <b>Болен</b> (5%) или <b>Здоров</b> (95%). Не забудьте перевести проценты в дроби ($0.05$ и $0.95$).<br>
+                Вторая развилка от каждого узла: Тест <b>Положительный (+)</b> или Отрицательный (-). Нас интересуют только концы веток с плюсом. Соберите два пути и сложите их.
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение (по дереву вероятностей):</strong></p>
+                <p>1. <b>Путь 1: Человек болен И тест положительный.</b><br>
+                Вероятность того, что человек болен: $P(Б) = 0.05$.<br>
+                Вероятность того, что тест выявит вирус у больного: $P(+|Б) = 0.90$.<br>
+                Перемножаем вдоль первой ветки: $P_1 = 0.05 \cdot 0.90 = 0.045$.</p>
+                
+                <p>2. <b>Путь 2: Человек здоров И тест ошибочно положительный.</b><br>
+                Вероятность того, что человек здоров (правило узла $1 - 0.05$): $P(З) = 0.95$.<br>
+                Вероятность ошибки теста у здорового: $P(+|З) = 0.02$.<br>
+                Перемножаем вдоль второй ветки: $P_2 = 0.95 \cdot 0.02 = 0.019$.</p>
+                
+                <p>3. <b>Итоговая вероятность (Полная вероятность).</b><br>
+                Нас устраивает либо первый сценарий, ИЛИ второй. Складываем результаты:<br>
+                $$P(+) = P_1 + P_2 = 0.045 + 0.019 = 0.064$$</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 0.064</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация иконок
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Очередь MathJax
+            let mathRenderQueue = Promise.resolve();
+            let mathTimeout = null;
+
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* --- СИМУЛЯТОР: ДЕРЕВО ВЕРОЯТНОСТЕЙ --- */
+            const canvasTree = document.getElementById('canvas-tree');
+            const ctxTree = canvasTree.getContext('2d');
+            
+            const inShare1 = document.getElementById('sim-share1');
+            const inDef1 = document.getElementById('sim-def1');
+            const inDef2 = document.getElementById('sim-def2');
+
+            const valShare1 = document.getElementById('val-share1');
+            const valDef1 = document.getElementById('val-def1');
+            const valDef2 = document.getElementById('val-def2');
+            
+            const dashPath1 = document.getElementById('dash-path1');
+            const dashPath2 = document.getElementById('dash-path2');
+            const dashTotal = document.getElementById('dash-total');
+
+            function drawLineWithText(ctx, x1, y1, x2, y2, text, color, isHighlight=false) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = isHighlight ? 4 : 2;
+                if (isHighlight) {
+                    ctx.shadowColor = color;
+                    ctx.shadowBlur = 10;
+                }
+                ctx.stroke();
+                ctx.shadowBlur = 0; // reset
+
+                // Текст над линией
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2;
+                
+                // Чтобы текст не сливался с линией, рисуем плашку
+                ctx.fillStyle = '#1a1a1a';
+                ctx.fillRect(midX - 20, midY - 12, 40, 24);
+
+                ctx.fillStyle = isHighlight ? '#fff' : color;
+                ctx.font = isHighlight ? 'bold 14px sans-serif' : '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, midX, midY);
+            }
+
+            function drawNode(ctx, x, y, label, color) {
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, Math.PI * 2);
+                ctx.fillStyle = '#1e1e1e';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = color;
+                ctx.stroke();
+
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                // Разбиваем текст, если есть перенос (не используем \n, просто смещаем)
+                ctx.fillText(label, x, y);
+            }
+
+            function drawResultBox(ctx, x, y, w, h, val, color) {
+                ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                ctx.fillRect(x, y-h/2, w, h);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y-h/2, w, h);
+                
+                ctx.fillStyle = color;
+                ctx.font = 'bold 16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('= ' + val.toFixed(4), x + w/2, y);
+            }
+
+            window.updateTreeSim = function() {
+                // Resize for pixel-perfect clarity on high DPI displays is complex, 
+                // but basic handling:
+                const rect = canvasTree.parentElement.getBoundingClientRect();
+                if (rect.width > 0 && rect.width <= 800) {
+                    canvasTree.width = rect.width - 20; // -20 for padding
+                }
+
+                const w = canvasTree.width;
+                const h = canvasTree.height;
+                ctxTree.clearRect(0, 0, w, h);
+
+                // Читаем значения в процентах и переводим в доли
+                const p1 = parseInt(inShare1.value) / 100;
+                const p2 = 1 - p1;
+                const d1 = parseInt(inDef1.value) / 100;
+                const ok1 = 1 - d1;
+                const d2 = parseInt(inDef2.value) / 100;
+                const ok2 = 1 - d2;
+
+                // Обновляем лейблы ползунков
+                valShare1.textContent = (p1 * 100).toFixed(0) + '%';
+                valDef1.textContent = (d1 * 100).toFixed(0) + '%';
+                valDef2.textContent = (d2 * 100).toFixed(0) + '%';
+
+                // Вычисления путей
+                const path_d1 = p1 * d1;
+                const path_ok1 = p1 * ok1;
+                const path_d2 = p2 * d2;
+                const path_ok2 = p2 * ok2;
+                const total_defect = path_d1 + path_d2;
+
+                // Обновляем дашборды
+                dashPath1.textContent = path_d1.toFixed(4);
+                dashPath2.textContent = path_d2.toFixed(4);
+                dashTotal.textContent = total_defect.toFixed(4);
+
+                // Геометрия Дерева
+                const startX = 40;
+                const startY = h / 2;
+                
+                const level1X = w * 0.4;
+                const y1_up = h * 0.25;
+                const y1_down = h * 0.75;
+
+                const level2X = w * 0.75;
+                const dy = h * 0.12; // разлет вторичных веток
+
+                // Узлы 1-го уровня
+                const n1_color = 'var(--info-text)';
+                const n2_color = 'var(--brand-pink)';
+                
+                // Ветки 1-го уровня
+                drawLineWithText(ctxTree, startX+20, startY, level1X-20, y1_up, p1.toFixed(2), '#3B82F6', true);
+                drawLineWithText(ctxTree, startX+20, startY, level1X-20, y1_down, p2.toFixed(2), '#EC4899', true);
+
+                // Стартовый узел
+                drawNode(ctxTree, startX, startY, 'Старт', '#fff');
+                drawNode(ctxTree, level1X, y1_up, 'Завод 1', '#3B82F6');
+                drawNode(ctxTree, level1X, y1_down, 'Завод 2', '#EC4899');
+
+                // Ветки 2-го уровня (от Завода 1)
+                drawLineWithText(ctxTree, level1X+20, y1_up, level2X-40, y1_up - dy, d1.toFixed(2), '#EF4444', true); // Брак
+                drawLineWithText(ctxTree, level1X+20, y1_up, level2X-40, y1_up + dy, ok1.toFixed(2), '#555', false); // Ок
+
+                // Ветки 2-го уровня (от Завода 2)
+                drawLineWithText(ctxTree, level1X+20, y1_down, level2X-40, y1_down - dy, d2.toFixed(2), '#EF4444', true); // Брак
+                drawLineWithText(ctxTree, level1X+20, y1_down, level2X-40, y1_down + dy, ok2.toFixed(2), '#555', false); // Ок
+
+                // Узлы 2-го уровня и коробки с результатами
+                const boxW = 80;
+                const boxH = 30;
+                
+                // Брак 1
+                drawNode(ctxTree, level2X-20, y1_up - dy, 'Брак', '#EF4444');
+                drawResultBox(ctxTree, level2X + 10, y1_up - dy, boxW, boxH, path_d1, '#3B82F6');
+                
+                // Ок 1
+                drawNode(ctxTree, level2X-20, y1_up + dy, 'ОК', '#555');
+                
+                // Брак 2
+                drawNode(ctxTree, level2X-20, y1_down - dy, 'Брак', '#EF4444');
+                drawResultBox(ctxTree, level2X + 10, y1_down - dy, boxW, boxH, path_d2, '#EC4899');
+
+                // Ок 2
+                drawNode(ctxTree, level2X-20, y1_down + dy, 'ОК', '#555');
+
+            };
+
+            [inShare1, inDef1, inDef2].forEach(el => el.addEventListener('input', window.updateTreeSim));
+
+            // Запуск
+            // Небольшая задержка, чтобы ширина canvas правильно пересчиталась, если родитель меняет размер
+            setTimeout(window.updateTreeSim, 50);
+            window.addEventListener('resize', window.updateTreeSim);
+
+        });
+    </script>
+</body>
+</html>
