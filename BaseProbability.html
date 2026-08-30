@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Основы теории вероятностей</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1.05rem; color: var(--text-main); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; line-height: 1.3;}
+        
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: normal;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        /* Симулятор игральных костей */
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; font-weight: 600; }
+        select { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); padding: 8px; border-radius: 6px; outline: none; font-family: inherit; font-size: 0.95rem; cursor: pointer;}
+        
+        .dice-grid-container {
+            display: flex; justify-content: center; width: 100%; overflow-x: auto; margin-bottom: 20px;
+        }
+        
+        .dice-grid {
+            display: grid;
+            grid-template-columns: auto repeat(6, 1fr);
+            gap: 4px;
+            background: #1a1a1a; padding: 10px; border-radius: 8px; border: 1px solid #333;
+        }
+        
+        .dice-cell {
+            width: 40px; height: 40px; 
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 6px; font-weight: bold; font-size: 1.1rem;
+            background: rgba(255,255,255,0.05); color: var(--text-muted);
+            border: 1px solid transparent; transition: all 0.2s;
+        }
+        .dice-header { background: transparent; color: #fff; border: none; font-weight: bold; }
+        
+        /* Цвета подсветки событий */
+        .cell-A { background: rgba(59, 130, 246, 0.2) !important; border-color: var(--info-text) !important; color: var(--info-text) !important; }
+        .cell-B { background: rgba(239, 68, 68, 0.2) !important; border-color: var(--error-text) !important; color: var(--error-text) !important; }
+        .cell-AB { 
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.4) 0%, rgba(239, 68, 68, 0.4) 100%) !important; 
+            border-color: var(--brand-purple) !important; color: #fff !important; 
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; 
+            background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.2rem; min-height: 35px; display: flex; align-items: center;}
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .dice-cell { width: 30px; height: 30px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Основы теории вероятностей</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="dice-5" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">От множеств к случайностям</strong><br>
+                <span style="color: var(--text-muted);">В прошлом уроке мы научились раскладывать объекты по "коробкам" (множествам). Теория вероятностей — это продолжение той же идеи! Представь, что мы закрыли глаза и тянем один объект из коробки наугад. Вероятность просто отвечает на вопрос: <b>«Каковы шансы, что мы вытащим именно то, что хотели?»</b>.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="percent"></i> 1. Классическая вероятность</h2>
+        <div class="card">
+            <p style="margin-top: 0; color: var(--text-muted);">Вероятность события $A$ — это доля нужных нам вариантов (исходов) от всех возможных.</p>
+            
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$P(A) = \frac{m}{n}$$
+            </div>
+            
+            <div class="props-grid" style="grid-template-columns: 1fr;">
+                <div class="prop-card" style="border-left: 4px solid var(--brand-green);">
+                    <div class="prop-title" style="color: var(--brand-green); border-bottom: none; margin-bottom: 0;">$m$ — Благоприятные исходы (Размер нашего множества)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0; margin-top: 5px;">Количество вариантов, которые нас устраивают. Например: если мы хотим, чтобы на кубике выпало четное число, то нам подходят числа 2, 4 и 6. Значит, $m = 3$.</p>
+                </div>
+                <div class="prop-card" style="border-left: 4px solid var(--info-text);">
+                    <div class="prop-title" style="color: var(--info-text); border-bottom: none; margin-bottom: 0;">$n$ — Все исходы (Размер Универсального множества)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0; margin-top: 5px;">Абсолютно все возможные варианты, которые могут произойти. На кубике всего 6 граней, значит $n = 6$. <br>Итоговая вероятность: $P(A) = \frac{3}{6} = 0.5$ (или $50\%$).</p>
+                </div>
+            </div>
+            
+            <p style="color: var(--warn-text); font-weight: bold; text-align: center; margin-bottom: 0; margin-top: 20px;">Вероятность всегда находится в пределах: $0 \le P(A) \le 1$.</p>
+        </div>
+
+        <h2><i data-lucide="git-merge"></i> 2. Логическое «ИЛИ» (Сложение вероятностей)</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Что, если нас устраивают два разных события? Например, мы хотим вытащить карту, и нас устроит, если она будет <b>Пиковой (Событие А) ИЛИ Тузом (Событие В)</b>. Мы объединяем эти множества ($A \cup B$).</p>
+
+            <div class="alert-box alert-warning" style="margin-bottom: 15px;">
+                <div class="icon-box"><i data-lucide="alert-triangle" color="var(--warn-text)"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Главный вопрос: Они могут произойти одновременно?</strong>
+                </div>
+            </div>
+
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--brand-blue);">
+                    <div style="font-size: 0.95rem; color: var(--brand-blue); margin-bottom: 5px;">Несовместные события</div>
+                    $$P(A \text{ или } B) = P(A) + P(B)$$
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Они как непересекающиеся круги. Нельзя вытащить карту, которая одновременно является и "Червой", и "Крефой". Просто складываем шансы.</p>
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-pink);">
+                    <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 5px;">Совместные события (Ловушка!)</div>
+                    $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Круги пересекаются! Если мы сложим вероятность "Туз" и вероятность "Пики", мы посчитаем Туза Пик <b>дважды</b>! Эту "серединку" нужно вычесть один раз.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="git-pull-request"></i> 3. Логическое «И» (Умножение вероятностей)</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Когда мы хотим, чтобы произошло и Событие А, <b>И</b> Событие В (ищем их пересечение $A \cap B$). Чаще всего это происходит в независимых испытаниях (например, два раза подряд бросили монетку).</p>
+            
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$P(A \text{ и } B) = P(A) \cdot P(B)$$
+            </div>
+            
+            <p style="color: var(--text-muted); margin-bottom: 0;"><b>Почему умножение?</b> Представьте, что вероятность забить гол равна $0.5$ (половина попыток). Если вы бьете дважды, и хотите забить оба раза, то из вашей "половины успешных попыток" нужно взять еще "половину". Половина от половины — это четверть ($0.5 \cdot 0.5 = 0.25$). Шансы стремительно падают!</p>
+        </div>
+
+        <h2><i data-lucide="grid"></i> 4. Лаборатория: Пространство исходов (Два кубика)</h2>
+        <p style="color: var(--text-muted);">Бросок двух игральных костей — самая популярная задача на экзаменах. Перед вами матрица $6 \times 6$. В ней ровно 36 возможных исходов (универсальное множество). <br>Выберите Событие А (<span style="color: var(--info-text); font-weight: bold;">синие клетки</span>) и Событие В (<span style="color: var(--error-text); font-weight: bold;">красные клетки</span>). Посмотрите, как они пересекаются (<span style="color: var(--brand-purple); font-weight: bold;">фиолетовые клетки</span>) и как работает логика "И" и "ИЛИ" наглядно!</p>
+
+        <div class="simulator" style="border-color: var(--brand-purple);">
+            
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--info-text);">Событие A (Синее)</label>
+                    <select id="sel-event-a" onchange="updateSim()">
+                        <option value="none">--- Выберите событие ---</option>
+                        <option value="sum_gt_8">Сумма очков > 8</option>
+                        <option value="sum_eq_7">Сумма очков = 7</option>
+                        <option value="first_is_6">На первом кубике выпало 6</option>
+                        <option value="both_even">Оба числа четные</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--error-text);">Событие B (Красное)</label>
+                    <select id="sel-event-b" onchange="updateSim()">
+                        <option value="none">--- Выберите событие ---</option>
+                        <option value="doubles">Выпал дубль (одинаковые числа)</option>
+                        <option value="diff_ge_3">Разница очков ≥ 3</option>
+                        <option value="second_is_1">На втором кубике выпало 1</option>
+                        <option value="sum_lt_5">Сумма очков < 5</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="dice-grid-container">
+                <div class="dice-grid" id="sim-grid">
+                    <!-- Заполняется JS -->
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-item" style="border-left: 4px solid var(--info-text);">
+                    <div class="dashboard-label">Только A: $P(A)$</div>
+                    <div class="dashboard-value" id="dash-pa" style="color: var(--info-text);">0 / 36</div>
+                </div>
+                <div class="dashboard-item" style="border-left: 4px solid var(--error-text);">
+                    <div class="dashboard-label">Только B: $P(B)$</div>
+                    <div class="dashboard-value" id="dash-pb" style="color: var(--error-text);">0 / 36</div>
+                </div>
+                <div class="dashboard-item" style="border-left: 4px solid var(--brand-purple);">
+                    <div class="dashboard-label">Пересечение: $P(A \cap B)$</div>
+                    <div class="dashboard-value" id="dash-pand" style="color: var(--brand-purple);">0 / 36</div>
+                </div>
+                <div class="dashboard-item" style="border-left: 4px solid var(--accent); grid-column: 1 / -1; background: rgba(76, 175, 80, 0.05);">
+                    <div class="dashboard-label" style="color: var(--accent);">Объединение (ИЛИ): $P(A \cup B) = P(A) + P(B) - P(A \cap B)$</div>
+                    <div class="dashboard-value" id="dash-por" style="color: #fff; font-size: 1.3rem;">0 / 36 = 0%</div>
+                </div>
+            </div>
+            
+        </div>
+
+        <h2><i data-lucide="alert-triangle"></i> 5. Противоположное событие (Трюк для ленивых)</h2>
+        <div class="card">
+            <p>Часто в задаче бывает легче посчитать вероятность того, что событие <b>НЕ произойдет</b>, а потом вычесть её из единицы (100%).</p>
+            <div class="formula-box" style="border-color: var(--brand-cyan);">
+                $$P(A) = 1 - P(\bar{A})$$
+            </div>
+            <div class="alert-box alert-warning" style="margin-bottom: 0; margin-top: 15px;">
+                <div class="icon-box"><i data-lucide="zap" color="var(--warn-text)"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Триггер "Хотя бы один"</strong><br>
+                    <span style="color: var(--text-muted);">Если в задаче есть фраза «Найти вероятность того, что попадет <i>хотя бы один</i> раз» — сразу используйте эту формулу! <br>Считать варианты "попал 1 раз", "попал 2 раза" — долго. Проще посчитать вероятность противоположного события: "Промазал <b>ВСЕ</b> разы" и вычесть это из единицы.</span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 6. Практика (Ловушка ЕГЭ)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Стрелок и мишени</h3>
+            <p>Биатлонист стреляет по двум мишеням. Вероятность попадания в каждую мишень при одном выстреле равна $0.8$. Найдите вероятность того, что биатлонист поразит <b>ровно одну</b> мишень из двух.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение (Метод логических связок):</strong></p>
+                <p>1. Если вероятность попадания (событие П) равна $0.8$, то вероятность промаха (событие М) равна $1 - 0.8 = 0.2$.</p>
+                
+                <p>2. Что значит "поразит ровно одну мишень"? Это значит, что он попадет в первую <b>И</b> промажет во вторую, <b>ИЛИ</b> промажет в первую <b>И</b> попадет во вторую.</p>
+                
+                <p>3. Переводим эту фразу на язык формул:<br>
+                Слово "И" заменяем на умножение (события независимые).<br>
+                Слово "ИЛИ" заменяем на сложение (эти два сценария несовместны, они не могут произойти одновременно).</p>
+
+                <p>4. Сценарий 1 (Попал И Промазал): $0.8 \cdot 0.2 = 0.16$<br>
+                Сценарий 2 (Промазал И Попал): $0.2 \cdot 0.8 = 0.16$</p>
+                
+                <p>5. Итоговая вероятность (Сценарий 1 ИЛИ Сценарий 2):<br>
+                $$0.16 + 0.16 = 0.32$$</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 0.32</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация иконок
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Безопасный рендеринг MathJax
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* --- СИМУЛЯТОР: ДВА КУБИКА --- */
+            const gridContainer = document.getElementById('sim-grid');
+            const selA = document.getElementById('sel-event-a');
+            const selB = document.getElementById('sel-event-b');
+            
+            const dashPa = document.getElementById('dash-pa');
+            const dashPb = document.getElementById('dash-pb');
+            const dashPand = document.getElementById('dash-pand');
+            const dashPor = document.getElementById('dash-por');
+
+            // Функции-условия для событий
+            const conditions = {
+                'none': () => false,
+                'sum_gt_8': (d1, d2) => (d1 + d2) > 8,
+                'sum_eq_7': (d1, d2) => (d1 + d2) === 7,
+                'first_is_6': (d1, d2) => d1 === 6,
+                'both_even': (d1, d2) => (d1 % 2 === 0) && (d2 % 2 === 0),
+                'doubles': (d1, d2) => d1 === d2,
+                'diff_ge_3': (d1, d2) => Math.abs(d1 - d2) >= 3,
+                'second_is_1': (d1, d2) => d2 === 1,
+                'sum_lt_5': (d1, d2) => (d1 + d2) < 5
+            };
+
+            // Инициализация сетки (Создаем ячейки один раз)
+            function initGrid() {
+                let html = '<div class="dice-cell dice-header"></div>';
+                for(let c=1; c<=6; c++) html += `<div class="dice-cell dice-header">${c}</div>`;
+                
+                for(let r=1; r<=6; r++) {
+                    html += `<div class="dice-cell dice-header">${r}</div>`;
+                    for(let c=1; c<=6; c++) {
+                        html += `<div class="dice-cell" id="cell-${r}-${c}">${r+c}</div>`;
+                    }
+                }
+                gridContainer.innerHTML = html;
+            }
+
+            window.updateSim = function() {
+                const condA = conditions[selA.value] || conditions['none'];
+                const condB = conditions[selB.value] || conditions['none'];
+
+                let countA = 0;
+                let countB = 0;
+                let countAnd = 0;
+                let countOr = 0;
+
+                for(let r=1; r<=6; r++) {
+                    for(let c=1; c<=6; c++) {
+                        const cell = document.getElementById(`cell-${r}-${c}`);
+                        cell.className = 'dice-cell'; // Сброс классов
+
+                        const isA = condA(r, c);
+                        const isB = condB(r, c);
+
+                        if (isA) countA++;
+                        if (isB) countB++;
+                        
+                        if (isA && isB) {
+                            cell.classList.add('cell-AB');
+                            countAnd++;
+                            countOr++;
+                        } else if (isA) {
+                            cell.classList.add('cell-A');
+                            countOr++;
+                        } else if (isB) {
+                            cell.classList.add('cell-B');
+                            countOr++;
+                        }
+                    }
+                }
+
+                // Обновление дашбордов
+                dashPa.innerHTML = `$$${countA} / 36$$`;
+                dashPb.innerHTML = `$$${countB} / 36$$`;
+                dashPand.innerHTML = `$$${countAnd} / 36$$`;
+                
+                const pct = ((countOr / 36) * 100).toFixed(1);
+                // Формируем красивую формулу для объединения
+                dashPor.innerHTML = `$$${countA}/36 + ${countB}/36 - ${countAnd}/36 = ${countOr}/36 \\approx ${pct}\\%$$`;
+
+                safeMathRender([dashPa, dashPb, dashPand, dashPor]);
+            };
+
+            // Запуск
+            initGrid();
+            updateSim();
+
+        });
+    </script>
+</body>
+</html>
