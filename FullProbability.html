@@ -185,7 +185,8 @@
         </div>
 
         <h2><i data-lucide="factory"></i> 3. Лаборатория: Заводы и Смартфоны</h2>
-        <p style="color: var(--text-muted);">Классическая задача ЕГЭ (№5). Два завода производят смартфоны. Первый завод выпускает часть всех смартфонов, второй — остальные. У каждого завода есть свой процент брака. Найти вероятность того, что случайно купленный в магазине смартфон окажется бракованным.</p>
+        <p style="color: var(--text-muted);">Представьте, что вы покупаете смартфон. На склад магазина телефоны поставляют два разных завода в определенной пропорции. Вы берете с полки случайную коробку. <b>Каковы шансы, что телефон внутри окажется бракованным?</b></p>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Чтобы это узнать, нужно собрать вероятности по кусочкам. Нас устроит два сценария: телефон приехал с Завода 1 <b>И</b> он бракованный, <b>ИЛИ</b> телефон с Завода 2 <b>И</b> тоже бракованный. <br>Двигайте ползунки, чтобы увидеть, как вероятности перемножаются вдоль ветвей дерева и складываются в конце!</p>
 
         <div class="simulator" style="border-color: var(--brand-purple);">
             
@@ -208,18 +209,18 @@
                 <canvas id="canvas-tree" width="800" height="300"></canvas>
             </div>
 
-            <div class="dashboard-grid" style="margin-top: 15px;">
+            <div class="dashboard-grid" style="margin-top: 15px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div class="dashboard-item" style="border-left: 4px solid var(--info-text);">
-                    <div class="dashboard-label">Шанс: Брак от Завода 1</div>
-                    <div class="dashboard-value" id="dash-path1" style="color: var(--info-text);">0.020</div>
+                    <div class="dashboard-label">Путь 1 (Брак с Завода 1)</div>
+                    <div class="dashboard-value" id="dash-path1" style="color: var(--info-text); font-size: 1.2rem;">0.40 &middot; 0.05 = <b>0.020</b></div>
                 </div>
                 <div class="dashboard-item" style="border-left: 4px solid var(--brand-pink);">
-                    <div class="dashboard-label">Шанс: Брак от Завода 2</div>
-                    <div class="dashboard-value" id="dash-path2" style="color: var(--brand-pink);">0.012</div>
+                    <div class="dashboard-label">Путь 2 (Брак с Завода 2)</div>
+                    <div class="dashboard-value" id="dash-path2" style="color: var(--brand-pink); font-size: 1.2rem;">0.60 &middot; 0.02 = <b>0.012</b></div>
                 </div>
                 <div class="dashboard-item" style="border-left: 4px solid var(--error-text); background: rgba(239, 68, 68, 0.1);">
                     <div class="dashboard-label" style="color: var(--error-text);">Общая вероятность Брака</div>
-                    <div class="dashboard-value" id="dash-total" style="color: #fff; font-size: 1.5rem;">0.032</div>
+                    <div class="dashboard-value" id="dash-total" style="color: #fff; font-size: 1.4rem;">0.020 + 0.012 = <b>0.032</b></div>
                 </div>
             </div>
             
@@ -328,13 +329,9 @@
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x2, y2);
                 ctx.strokeStyle = color;
+                // Делаем линии плоскими, без свечения
                 ctx.lineWidth = isHighlight ? 4 : 2;
-                if (isHighlight) {
-                    ctx.shadowColor = color;
-                    ctx.shadowBlur = 10;
-                }
                 ctx.stroke();
-                ctx.shadowBlur = 0; // reset
 
                 // Текст над линией
                 const midX = (x1 + x2) / 2;
@@ -342,7 +339,7 @@
                 
                 // Чтобы текст не сливался с линией, рисуем плашку
                 ctx.fillStyle = '#1a1a1a';
-                ctx.fillRect(midX - 20, midY - 12, 40, 24);
+                ctx.fillRect(midX - 22, midY - 12, 44, 24);
 
                 ctx.fillStyle = isHighlight ? '#fff' : color;
                 ctx.font = isHighlight ? 'bold 14px sans-serif' : '14px sans-serif';
@@ -352,20 +349,21 @@
             }
 
             function drawNode(ctx, x, y, label, color) {
+                // Рисуем аккуратный маленький узел, а текст выносим наружу
                 ctx.beginPath();
-                ctx.arc(x, y, 20, 0, Math.PI * 2);
-                ctx.fillStyle = '#1e1e1e';
+                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = color;
                 ctx.fill();
                 ctx.lineWidth = 2;
-                ctx.strokeStyle = color;
+                ctx.strokeStyle = '#fff';
                 ctx.stroke();
 
                 ctx.fillStyle = '#fff';
-                ctx.font = 'bold 12px sans-serif';
+                ctx.font = 'bold 13px sans-serif';
                 ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                // Разбиваем текст, если есть перенос (не используем \n, просто смещаем)
-                ctx.fillText(label, x, y);
+                ctx.textBaseline = 'bottom';
+                // Поднимаем текст над узлом
+                ctx.fillText(label, x, y - 12);
             }
 
             function drawResultBox(ctx, x, y, w, h, val, color) {
@@ -379,12 +377,11 @@
                 ctx.font = 'bold 16px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('= ' + val.toFixed(4), x + w/2, y);
+                ctx.fillText('P = ' + val.toFixed(4), x + w/2, y);
             }
 
             window.updateTreeSim = function() {
-                // Resize for pixel-perfect clarity on high DPI displays is complex, 
-                // but basic handling:
+                // Resize for pixel-perfect clarity on high DPI displays
                 const rect = canvasTree.parentElement.getBoundingClientRect();
                 if (rect.width > 0 && rect.width <= 800) {
                     canvasTree.width = rect.width - 20; // -20 for padding
@@ -414,13 +411,13 @@
                 const path_ok2 = p2 * ok2;
                 const total_defect = path_d1 + path_d2;
 
-                // Обновляем дашборды
-                dashPath1.textContent = path_d1.toFixed(4);
-                dashPath2.textContent = path_d2.toFixed(4);
-                dashTotal.textContent = total_defect.toFixed(4);
+                // Обновляем дашборды, показывая сам процесс расчета
+                dashPath1.innerHTML = `${p1.toFixed(2)} &middot; ${d1.toFixed(2)} = <b>${path_d1.toFixed(4)}</b>`;
+                dashPath2.innerHTML = `${p2.toFixed(2)} &middot; ${d2.toFixed(2)} = <b>${path_d2.toFixed(4)}</b>`;
+                dashTotal.innerHTML = `${path_d1.toFixed(4)} + ${path_d2.toFixed(4)} = <b>${total_defect.toFixed(4)}</b>`;
 
                 // Геометрия Дерева
-                const startX = 40;
+                const startX = 60;
                 const startY = h / 2;
                 
                 const level1X = w * 0.4;
@@ -428,31 +425,27 @@
                 const y1_down = h * 0.75;
 
                 const level2X = w * 0.75;
-                const dy = h * 0.12; // разлет вторичных веток
+                const dy = h * 0.15; // разлет вторичных веток
 
-                // Узлы 1-го уровня
-                const n1_color = 'var(--info-text)';
-                const n2_color = 'var(--brand-pink)';
-                
                 // Ветки 1-го уровня
-                drawLineWithText(ctxTree, startX+20, startY, level1X-20, y1_up, p1.toFixed(2), '#3B82F6', true);
-                drawLineWithText(ctxTree, startX+20, startY, level1X-20, y1_down, p2.toFixed(2), '#EC4899', true);
+                drawLineWithText(ctxTree, startX, startY, level1X, y1_up, p1.toFixed(2), '#3B82F6', true);
+                drawLineWithText(ctxTree, startX, startY, level1X, y1_down, p2.toFixed(2), '#EC4899', true);
 
                 // Стартовый узел
-                drawNode(ctxTree, startX, startY, 'Старт', '#fff');
+                drawNode(ctxTree, startX, startY, 'Старт', '#8B5CF6');
                 drawNode(ctxTree, level1X, y1_up, 'Завод 1', '#3B82F6');
                 drawNode(ctxTree, level1X, y1_down, 'Завод 2', '#EC4899');
 
                 // Ветки 2-го уровня (от Завода 1)
-                drawLineWithText(ctxTree, level1X+20, y1_up, level2X-40, y1_up - dy, d1.toFixed(2), '#EF4444', true); // Брак
-                drawLineWithText(ctxTree, level1X+20, y1_up, level2X-40, y1_up + dy, ok1.toFixed(2), '#555', false); // Ок
+                drawLineWithText(ctxTree, level1X, y1_up, level2X-20, y1_up - dy, d1.toFixed(2), '#EF4444', true); // Брак
+                drawLineWithText(ctxTree, level1X, y1_up, level2X-20, y1_up + dy, ok1.toFixed(2), '#555', false); // Ок
 
                 // Ветки 2-го уровня (от Завода 2)
-                drawLineWithText(ctxTree, level1X+20, y1_down, level2X-40, y1_down - dy, d2.toFixed(2), '#EF4444', true); // Брак
-                drawLineWithText(ctxTree, level1X+20, y1_down, level2X-40, y1_down + dy, ok2.toFixed(2), '#555', false); // Ок
+                drawLineWithText(ctxTree, level1X, y1_down, level2X-20, y1_down - dy, d2.toFixed(2), '#EF4444', true); // Брак
+                drawLineWithText(ctxTree, level1X, y1_down, level2X-20, y1_down + dy, ok2.toFixed(2), '#555', false); // Ок
 
                 // Узлы 2-го уровня и коробки с результатами
-                const boxW = 80;
+                const boxW = 85;
                 const boxH = 30;
                 
                 // Брак 1
