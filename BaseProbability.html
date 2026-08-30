@@ -134,7 +134,7 @@
         }
 
         .dashboard-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; 
             background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
         }
         .dashboard-item { 
@@ -211,12 +211,12 @@
             </div>
 
             <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0;">
-                <div class="formula-box" style="flex: 1; min-width: 200px; border-color: var(--brand-blue); margin: 0;">
+                <div class="formula-box" style="flex: 1; min-width: 200px; border-color: var(--brand-blue); margin: 0; overflow-x: hidden;">
                     <div style="font-size: 0.95rem; color: var(--brand-blue); margin-bottom: 5px;">Несовместные события</div>
                     $$P(A \text{ или } B) = P(A) + P(B)$$
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Они как непересекающиеся круги. Нельзя вытащить карту, которая одновременно является и "Червой", и "Крефой". Просто складываем шансы.</p>
                 </div>
-                <div class="formula-box" style="flex: 1.6; min-width: 280px; border-color: var(--brand-pink); margin: 0;">
+                <div class="formula-box" style="flex: 1.6; min-width: 280px; border-color: var(--brand-pink); margin: 0; overflow-x: hidden;">
                     <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 5px;">Совместные события (Ловушка!)</div>
                     $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Круги пересекаются! Если мы сложим вероятность "Туз" и вероятность "Пики", мы посчитаем Туза Пик <b>дважды</b>! Эту "серединку" нужно вычесть один раз.</p>
@@ -288,7 +288,7 @@
                 </div>
                 <div class="dashboard-item" style="grid-column: 1 / -1; border-left: 4px solid var(--accent); background: rgba(76, 175, 80, 0.05); align-items: center; text-align: center;">
                     <div class="dashboard-label" style="color: var(--accent);">Объединение (ИЛИ): $P(A \cup B)$</div>
-                    <div class="dashboard-value" id="dash-por" style="color: #fff; font-size: 1.3rem; justify-content: center;">0 / 36 = 0%</div>
+                    <div class="dashboard-value" id="dash-por" style="color: #fff; font-size: 1.3rem; justify-content: center;">0 / 36 = 0</div>
                 </div>
             </div>
             
@@ -443,9 +443,9 @@
                 dashPb.innerHTML = `$$${countB} / 36$$`;
                 dashPand.innerHTML = `$$${countAnd} / 36$$`;
                 
-                const pct = ((countOr / 36) * 100).toFixed(1);
+                const dec = Number((countOr / 36).toFixed(3));
                 // Формируем красивую и компактную формулу для объединения
-                dashPor.innerHTML = `$$ \\frac{${countA} + ${countB} - ${countAnd}}{36} = \\frac{${countOr}}{36} \\approx ${pct}\\% $$`;
+                dashPor.innerHTML = `$$ \\frac{${countA} + ${countB} - ${countAnd}}{36} = \\frac{${countOr}}{36} \\approx ${dec} $$`;
 
                 safeMathRender([dashPa, dashPb, dashPand, dashPor]);
             };
