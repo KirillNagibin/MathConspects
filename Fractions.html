@@ -171,7 +171,30 @@
             </ul>
         </div>
 
-        <h2><i data-lucide="wand-2"></i> 2. Основное свойство дроби (Магия чисел)</h2>
+        <h2><i data-lucide="refresh-cw"></i> 2. Перевод: Неправильная дробь ↔ Смешанное число</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Часто в задачах нужно превращать «целые пиццы с кусочками» в «просто кучу кусочков» и наоборот. Особенно это важно перед умножением и делением, где смешанные числа использовать нельзя!</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 15px;">
+                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent);">
+                    <strong style="color: var(--accent); font-size: 1.1rem;">Смешанное ➔ Неправильная</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Умножаем целую часть на знаменатель и прибавляем числитель. Знаменатель оставляем прежним.</p>
+                    <div class="formula-box" style="margin: 0; padding: 10px; border: none; background: rgba(0,0,0,0.2);">
+                        $$ 2 \frac{3}{4} = \frac{2 \cdot 4 + 3}{4} = \frac{11}{4} $$
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border-left: 4px solid var(--brand-pink);">
+                    <strong style="color: var(--brand-pink); font-size: 1.1rem;">Неправильная ➔ Смешанное</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin: 10px 0;">Делим числитель на знаменатель с остатком. Целый результат — это целая часть, остаток — новый числитель.</p>
+                    <div class="formula-box" style="margin: 0; padding: 10px; border: none; background: rgba(0,0,0,0.2);">
+                        $$ \frac{11}{4} \rightarrow 11 : 4 = \mathbf{2} \text{ (ост. } \mathbf{3}) \rightarrow \mathbf{2} \frac{\mathbf{3}}{4} $$
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="wand-2"></i> 3. Основное свойство дроби (Магия чисел)</h2>
         <div class="card">
             <p>Дробь не изменит своей "ценности", если и числитель, и знаменатель умножить или разделить на одно и то же число (кроме нуля).</p>
             
@@ -185,7 +208,7 @@
             </ul>
         </div>
 
-        <h2><i data-lucide="pie-chart"></i> 3. Лаборатория: Иллюзия разных чисел</h2>
+        <h2><i data-lucide="pie-chart"></i> 4. Лаборатория: Иллюзия разных чисел</h2>
         <p style="color: var(--text-muted);">Давайте проверим основное свойство дроби. Слева находится ваша базовая дробь. Справа вы можете умножить (расширить) ее на любое число $M$. Посмотрите на картинки: количество кусков меняется, но <b>закрашенная площадь остается абсолютно такой же!</b></p>
         
         <div class="simulator" style="border-color: var(--brand-purple);">
@@ -216,7 +239,7 @@
             </div>
         </div>
 
-        <h2><i data-lucide="plus-square"></i> 4. Сложение и вычитание (Ищем НОК)</h2>
+        <h2><i data-lucide="plus-square"></i> 5. Сложение и вычитание (Ищем НОК)</h2>
         <div class="card">
             <p>Складывать можно только одинаковые вещи! Нельзя просто сложить $\frac{1}{2}$ пиццы и $\frac{1}{3}$ пиццы, потому что куски разного размера. Нужно привести их к <b>общему знаменателю</b>.</p>
             
@@ -232,7 +255,7 @@
             </div>
         </div>
 
-        <h2><i data-lucide="x"></i> 5. Умножение и деление</h2>
+        <h2><i data-lucide="x"></i> 6. Умножение и деление</h2>
         <div class="card">
             <p>Здесь всё проще, чем при сложении! Никакого общего знаменателя искать не нужно.</p>
             
@@ -252,7 +275,7 @@
             <p style="color: var(--warn-text); font-weight: bold; text-align: center;">Важно: Перед умножением и делением все смешанные числа (например, $1 \frac{1}{2}$) нужно обязательно перевести в неправильные дроби ($\frac{3}{2}$)!</p>
         </div>
 
-        <h2><i data-lucide="alert-triangle"></i> 6. Главные ловушки</h2>
+        <h2><i data-lucide="alert-triangle"></i> 7. Главные ловушки</h2>
         <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
             
             <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
@@ -272,7 +295,7 @@
             </div>
         </div>
 
-        <h2><i data-lucide="target"></i> 7. Практика</h2>
+        <h2><i data-lucide="target"></i> 8. Практика</h2>
         <div class="card">
             <h3 style="color: var(--accent); margin-top:0;">Задача: Комбинированный пример</h3>
             <p>Вычислите значение выражения: $\left(\frac{2}{3} + \frac{1}{4}\right) : \frac{11}{6}$</p>
