@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Арифметическая прогрессия</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1.1rem; color: var(--accent); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px;}
+        
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: normal;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.2rem; min-height: 35px; display: flex; align-items: center; transition: 0.15s ease-in-out;}
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+
+        .seq-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; font-family: monospace; font-size: 1.1rem; }
+        .seq-item { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; position: relative;}
+        .seq-item.highlight { background: rgba(6, 182, 212, 0.15); border-color: var(--accent); color: #fff; font-weight: bold;}
+        .seq-index { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-muted); }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Арифметическая прогрессия</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="bar-chart-3" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Что это такое?</strong><br>
+                <span style="color: var(--text-muted);">Арифметическая прогрессия — это просто числовой ряд, в котором каждое следующее число получается из предыдущего прибавлением <b>одного и того же шага</b>. Представь себе ступеньки на лестнице: каждая следующая ступенька ровно на 15 см выше предыдущей.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="list-ordered"></i> 1. Анатомия прогрессии</h2>
+        <div class="card">
+            <p style="margin-top: 0; color: var(--text-muted);">Любая арифметическая прогрессия полностью описывается всего двумя "генами": с чего она начинается и как быстро растет.</p>
+            
+            <div class="props-grid">
+                <div class="prop-card" style="border-top: 4px solid var(--brand-purple);">
+                    <div class="prop-title" style="color: var(--brand-purple);">Первый член ($a_1$)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Число, с которого начинается ряд. Стартовая точка.</p>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--brand-green);">
+                    <div class="prop-title" style="color: var(--brand-green);">Разность ($d$)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Тот самый шаг (разница между соседями). $d = a_2 - a_1 = a_3 - a_2$.</p>
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid var(--accent);">
+                <strong>Поведение прогрессии зависит от $d$:</strong>
+                <ul style="color: var(--text-muted); margin-bottom: 0; margin-top: 5px;">
+                    <li>Если $d > 0$ — прогрессия <b>возрастающая</b> (ряд: 2, 5, 8, 11...).</li>
+                    <li>Если $d < 0$ — прогрессия <b>убывающая</b> (ряд: 10, 7, 4, 1...).</li>
+                    <li>Если $d = 0$ — прогрессия <b>стационарная</b> (ряд: 5, 5, 5, 5...).</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2><i data-lucide="zap"></i> 2. Формула $n$-го члена (Как прыгать через ступеньки)</h2>
+        <div class="card">
+            <p>Представь, что тебе нужно найти 100-е число в ряду. Неужели придется прибавлять шаг 99 раз вручную? Конечно, нет!</p>
+            
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$a_n = a_1 + d(n - 1)$$
+            </div>
+            
+            <p style="color: var(--text-muted);"><b>В чем логика формулы?</b> <br>
+            Чтобы дойти от 1-й ступеньки до 5-й, сколько шагов нужно сделать? Ровно 4 шага! То есть, чтобы найти $a_5$, нужно к старту ($a_1$) прибавить четыре разности ($4d$). Количество шагов всегда <b>на единицу меньше</b> номера ступеньки, куда мы хотим попасть.</p>
+            
+            <div class="alert-box alert-info" style="margin-bottom: 0; padding: 10px 15px;">
+                <div class="icon-box"><i data-lucide="eye" color="var(--info-text)"></i></div>
+                <div>Пример: $a_{15} = a_1 + 14d$</div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="git-commit"></i> 3. Свойство соседей (Среднее арифметическое)</h2>
+        <div class="card">
+            <p>Любой член арифметической прогрессии равен среднему арифметическому его соседей слева и справа. Собственно, поэтому прогрессия и называется "арифметической"!</p>
+            
+            <div class="formula-box" style="border-color: var(--info-text);">
+                $$a_n = \frac{a_{n-1} + a_{n+1}}{2}$$
+            </div>
+            
+            <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 0;"><i>Если ряд: 5, 8, 11. То центральное число $8 = \frac{5 + 11}{2}$. Это работает всегда!</i></p>
+        </div>
+
+        <h2><i data-lucide="flask-conical"></i> 4. Лаборатория: Генератор и Трюк Гаусса</h2>
+        <p style="color: var(--text-muted);">Задайте стартовое число и шаг. Симулятор сгенерирует ряд. <br><b>Фокус Гаусса:</b> Нажмите чекбокс "Показать пары". Юный Карл Гаусс заметил, что если складывать первое число с последним, второе с предпоследним и так далее, то <b>суммы пар всегда одинаковы</b>!</p>
+        
+        <div class="simulator">
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--brand-purple);">Первый член ($a_1$): <span id="val-a1" style="font-weight: bold;">2</span></label>
+                    <input type="range" id="sim-a1" min="-10" max="20" value="2" step="1" style="accent-color: var(--brand-purple);">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--brand-green);">Разность ($d$): <span id="val-d" style="font-weight: bold;">3</span></label>
+                    <input type="range" id="sim-d" min="-5" max="10" value="3" step="1" style="accent-color: var(--brand-green);">
+                </div>
+                <div class="control-group">
+                    <label style="color: #fff;">Количество ($n$): <span id="val-n" style="font-weight: bold;">6</span></label>
+                    <input type="range" id="sim-n" min="3" max="12" value="6" step="1" style="accent-color: #aaa;">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                <label style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 8px; cursor: pointer; border: 1px solid var(--accent); color: var(--accent);">
+                    <input type="checkbox" id="sim-pairs" style="width: auto;" onchange="updateSim()">
+                    <strong>Показать "Трюк Гаусса" (Пары)</strong>
+                </label>
+            </div>
+
+            <div class="seq-container" id="sim-sequence">
+                <!-- Sequence items generated via JS -->
+            </div>
+
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Последний член ($a_n$)</div>
+                    <div class="dashboard-value" id="dash-an" style="color: #fff;">$a_6 = 17$</div>
+                </div>
+                <div class="dashboard-item" style="background: rgba(6, 182, 212, 0.1); border-color: var(--accent);">
+                    <div class="dashboard-label" style="color: var(--accent);">Сумма всех членов ($S_n$)</div>
+                    <div class="dashboard-value" id="dash-sn" style="color: var(--accent); font-weight: bold;">$S_6 = 57$</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-prog" width="600" height="250"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="sigma"></i> 5. Сумма первых $n$ членов ($S_n$)</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Из "трюка Гаусса" в Лаборатории логично вытекает формула суммы. Мы берем сумму краев ($a_1 + a_n$), делим на 2 (находим "средний" уровень) и умножаем на количество элементов $n$.</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--accent);">
+                    <div style="font-size: 0.9rem; color: var(--accent); margin-bottom: 5px;">Основная формула (если знаем края)</div>
+                    $$S_n = \frac{a_1 + a_n}{2} \cdot n$$
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-pink);">
+                    <div style="font-size: 0.9rem; color: var(--brand-pink); margin-bottom: 5px;">Если $a_n$ неизвестен (подставили формулу $a_n$)</div>
+                    $$S_n = \frac{2a_1 + d(n-1)}{2} \cdot n$$
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="alert-triangle"></i> 6. Главные ловушки (ОГЭ/ЕГЭ)</h2>
+        <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            
+            <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="x-circle" style="width: 18px;"></i> Путаница $n$ и $a_n$
+                </strong>
+                <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-muted);">Самая частая ошибка! <br>
+                <b>$n$</b> — это НОМЕР места в очереди (индекс). $n$ может быть только целым положительным числом ($1, 2, 3...$).<br>
+                <b>$a_n$</b> — это само ЧИСЛО, которое стоит на этом месте. Оно может быть отрицательным, дробным, каким угодно.</p>
+            </div>
+
+            <div class="alert-box alert-warning" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--warn-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="search" style="width: 18px;"></i> Разность разностей
+                </strong>
+                <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-muted);">Как быстро найти разность $d$, если известны, например, $a_{10}$ и $a_3$? Не надо составлять систему уравнений! Используй логику "прыжков": между 10-й и 3-й ступенькой ровно 7 шагов ($10 - 3 = 7$). Значит: <br>
+                <span style="color: #fff; font-weight: bold; background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px;">$d = \frac{a_{10} - a_3}{10 - 3}$</span></p>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 7. Практика</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Поиск номера</h3>
+            <p>В арифметической прогрессии известно, что $a_1 = -5$, а разность $d = 3$. Каким по счету членом этой прогрессии является число $34$?</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать пошаговое решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>Нам известно само число: $a_n = 34$. Нас просят найти его порядковый номер, то есть $n$.</p>
+                
+                <p>1. Запишем формулу $n$-го члена:<br>
+                $$a_n = a_1 + d(n - 1)$$</p>
+                
+                <p>2. Подставим в неё всё, что нам известно:<br>
+                $$34 = -5 + 3(n - 1)$$</p>
+                
+                <p>3. Решим это простое линейное уравнение. Перенесем $-5$ влево:<br>
+                $$34 + 5 = 3(n - 1)$$
+                $$39 = 3(n - 1)$$</p>
+                
+                <p>4. Разделим обе части на 3:<br>
+                $$13 = n - 1$$</p>
+
+                <p>5. Перенесем $-1$ влево:<br>
+                $$n = 13 + 1 = 14$$</p>
+                
+                <p style="font-size: 0.9rem; color: var(--text-muted);">*Получилось целое число! Значит, 34 действительно стоит в этом ряду на 14-м месте.*</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 14</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация иконок
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Очередь MathJax
+            let mathRenderQueue = Promise.resolve();
+            let mathTimeout = null;
+
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* --- СИМУЛЯТОР: АРИФМЕТИЧЕСКАЯ ПРОГРЕССИЯ --- */
+            const canvasProg = document.getElementById('canvas-prog');
+            const ctxProg = canvasProg.getContext('2d');
+            
+            const inA1 = document.getElementById('sim-a1');
+            const inD = document.getElementById('sim-d');
+            const inN = document.getElementById('sim-n');
+            const inPairs = document.getElementById('sim-pairs');
+
+            const valA1 = document.getElementById('val-a1');
+            const valD = document.getElementById('val-d');
+            const valN = document.getElementById('val-n');
+            
+            const seqContainer = document.getElementById('sim-sequence');
+            const dashAn = document.getElementById('dash-an');
+            const dashSn = document.getElementById('dash-sn');
+
+            // Палитра для пар Гаусса
+            const pairColors = ['#06B6D4', '#8B5CF6', '#EC4899', '#F59E0B', '#4CAF50', '#3B82F6'];
+
+            window.updateSim = function() {
+                const a1 = parseInt(inA1.value);
+                const d = parseInt(inD.value);
+                const n = parseInt(inN.value);
+                const showPairs = inPairs.checked;
+
+                valA1.textContent = a1;
+                valD.textContent = d;
+                valN.textContent = n;
+
+                // Генерация массива чисел
+                let sequence = [];
+                let sum = 0;
+                for (let i = 0; i < n; i++) {
+                    let term = a1 + d * i;
+                    sequence.push(term);
+                    sum += term;
+                }
+
+                // Обновление HTML-строки последовательности
+                seqContainer.innerHTML = '';
+                sequence.forEach((val, idx) => {
+                    let div = document.createElement('div');
+                    div.className = 'seq-item';
+                    
+                    // Раскраска пар, если включен режим Гаусса
+                    if (showPairs) {
+                        // Определяем номер пары: 0 (края), 1, 2...
+                        // Если n нечетное, центральный элемент ни с кем не парится
+                        let pairIndex = Math.min(idx, n - 1 - idx);
+                        let isCenter = (n % 2 !== 0 && idx === Math.floor(n/2));
+                        
+                        if (!isCenter) {
+                            div.style.borderColor = pairColors[pairIndex % pairColors.length];
+                            div.style.color = pairColors[pairIndex % pairColors.length];
+                            div.style.fontWeight = 'bold';
+                        } else {
+                            div.style.opacity = '0.7'; // центральный элемент (половина суммы)
+                        }
+                    }
+
+                    div.innerHTML = `${val} <span class="seq-index">a<sub>${idx+1}</sub></span>`;
+                    seqContainer.appendChild(div);
+                });
+
+                // Обновление дашбордов (используем MathJax для красивых формул)
+                const an = sequence[n - 1];
+                const anStr = `$$a_{${n}} = ${an}$$`;
+                const snStr = `$$S_{${n}} = ${sum}$$`;
+
+                dashAn.style.opacity = '0';
+                dashSn.style.opacity = '0';
+                
+                if (mathTimeout) clearTimeout(mathTimeout);
+                mathTimeout = setTimeout(() => {
+                    dashAn.innerHTML = anStr;
+                    dashSn.innerHTML = snStr;
+                    safeMathRender([dashAn, dashSn]);
+                    dashAn.style.opacity = '1';
+                    dashSn.style.opacity = '1';
+                }, 150);
+
+                // Отрисовка на Canvas
+                drawCanvasGraph(sequence, showPairs);
+            };
+
+            function drawCanvasGraph(sequence, showPairs) {
+                const w = canvasProg.width;
+                const h = canvasProg.height;
+                ctxProg.clearRect(0, 0, w, h);
+
+                const n = sequence.length;
+                if (n === 0) return;
+
+                // Находим мин и макс для масштабирования графика
+                let maxVal = Math.max(...sequence, 0);
+                let minVal = Math.min(...sequence, 0);
+                
+                // Добавим запас в 20%, чтобы столбцы не упирались в потолок
+                const range = Math.max(10, maxVal - minVal) * 1.3; 
+                
+                // Координата Y для нуля
+                const paddingY = 30;
+                const scaleY = (h - paddingY * 2) / range;
+                const zeroY = h - paddingY + minVal * scaleY;
+
+                const paddingX = 40;
+                const stepX = (w - paddingX * 2) / Math.max(1, n - 1);
+
+                // 1. Рисуем ось X (Нуль)
+                ctxProg.strokeStyle = '#555';
+                ctxProg.lineWidth = 2;
+                ctxProg.beginPath();
+                ctxProg.moveTo(20, zeroY);
+                ctxProg.lineTo(w - 20, zeroY);
+                ctxProg.stroke();
+                
+                ctxProg.fillStyle = '#888';
+                ctxProg.font = '12px sans-serif';
+                ctxProg.textAlign = 'right';
+                ctxProg.fillText('0', 15, zeroY + 4);
+
+                // 2. Рисуем столбцы (Бары)
+                const barWidth = Math.min(30, (stepX * 0.6));
+                
+                sequence.forEach((val, idx) => {
+                    const cx = paddingX + idx * stepX;
+                    const barH = Math.abs(val) * scaleY;
+                    const barY = val >= 0 ? zeroY - barH : zeroY;
+
+                    // Цвет зависит от знака, или от пары, если включен режим Гаусса
+                    let fillColor = val >= 0 ? 'rgba(6, 182, 212, 0.7)' : 'rgba(239, 68, 68, 0.7)';
+                    let strokeColor = val >= 0 ? '#06B6D4' : '#EF4444';
+
+                    if (showPairs) {
+                        let pairIndex = Math.min(idx, n - 1 - idx);
+                        let isCenter = (n % 2 !== 0 && idx === Math.floor(n/2));
+                        if (!isCenter) {
+                            strokeColor = pairColors[pairIndex % pairColors.length];
+                            fillColor = strokeColor.replace(')', ', 0.4)').replace('rgb', 'rgba'); // Hacky hex to rgba won't work easily if hex, but pairColors are hex. Let's manual convert or just use solid borders.
+                            // Better: just use the hex for both, but add transparency in canvas context
+                            ctxProg.globalAlpha = 0.5;
+                            ctxProg.fillStyle = strokeColor;
+                        } else {
+                            ctxProg.globalAlpha = 0.2;
+                            ctxProg.fillStyle = '#fff';
+                            strokeColor = '#888';
+                        }
+                    }
+
+                    // Заливка
+                    ctxProg.fillRect(cx - barWidth/2, barY, barWidth, barH);
+                    ctxProg.globalAlpha = 1.0; // reset
+                    
+                    // Обводка
+                    ctxProg.strokeStyle = strokeColor;
+                    ctxProg.lineWidth = 2;
+                    ctxProg.strokeRect(cx - barWidth/2, barY, barWidth, barH);
+
+                    // Значение над/под столбцом
+                    ctxProg.fillStyle = '#fff';
+                    ctxProg.font = 'bold 12px sans-serif';
+                    ctxProg.textAlign = 'center';
+                    if (val >= 0) {
+                        ctxProg.fillText(val, cx, barY - 8);
+                    } else {
+                        ctx.fillText(val, cx, barY + barH + 15);
+                    }
+                });
+
+                // 3. Рисуем дуги "Трюка Гаусса"
+                if (showPairs) {
+                    ctxProg.lineWidth = 2;
+                    ctxProg.setLineDash([5, 5]);
+                    
+                    for (let i = 0; i < Math.floor(n / 2); i++) {
+                        let leftIdx = i;
+                        let rightIdx = n - 1 - i;
+                        
+                        let x1 = paddingX + leftIdx * stepX;
+                        let x2 = paddingX + rightIdx * stepX;
+                        
+                        let val1 = sequence[leftIdx];
+                        let val2 = sequence[rightIdx];
+                        
+                        // Высота, от которой рисуем дугу (чуть выше самого высокого из пары)
+                        let yTop = zeroY - Math.max(val1, val2, 0) * scaleY - 25 - i*15;
+                        
+                        let color = pairColors[i % pairColors.length];
+                        ctxProg.strokeStyle = color;
+                        
+                        ctxProg.beginPath();
+                        ctxProg.moveTo(x1, zeroY - Math.max(val1, 0)*scaleY - 15);
+                        ctxProg.lineTo(x1, yTop);
+                        ctxProg.lineTo(x2, yTop);
+                        ctxProg.lineTo(x2, zeroY - Math.max(val2, 0)*scaleY - 15);
+                        ctxProg.stroke();
+
+                        // Рисуем сумму в центре линии
+                        let pairSum = val1 + val2;
+                        ctxProg.fillStyle = '#1a1a1a'; // bg color to clear behind text
+                        ctxProg.fillRect((x1+x2)/2 - 15, yTop - 10, 30, 20);
+                        
+                        ctxProg.fillStyle = color;
+                        ctxProg.font = 'bold 12px monospace';
+                        ctxProg.fillText(`Σ=${pairSum}`, (x1+x2)/2, yTop + 4);
+                    }
+                    ctxProg.setLineDash([]);
+                }
+            }
+
+            [inA1, inD, inN].forEach(el => el.addEventListener('input', window.updateSim));
+
+            // Инициализация
+            window.updateSim();
+        });
+    </script>
+</body>
+</html>
