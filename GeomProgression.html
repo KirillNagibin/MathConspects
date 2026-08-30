@@ -263,24 +263,32 @@
         </div>
 
         <h2><i data-lucide="alert-triangle"></i> 6. Главные ловушки (ОГЭ/ЕГЭ)</h2>
-        <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div class="card">
             
-            <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
-                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
-                    <i data-lucide="x-circle" style="width: 18px;"></i> Потеря минуса в четной степени
+            <div class="alert-box alert-error" style="margin: 0 0 20px 0; flex-direction: column; padding: 20px;">
+                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px; font-size: 1.1rem; margin-bottom: 10px;">
+                    <i data-lucide="x-circle" style="width: 20px;"></i> Потеря минуса в четной степени
                 </strong>
-                <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-muted);">Предположим, вам известно, что $b_1 = 2$, а $b_3 = 18$. Вы делите $b_3$ на $b_1$ и получаете уравнение: $q^2 = 9$. <br>
-                Многие тут же пишут $q = 3$. <b>ЭТО ОШИБКА!</b> <br>
-                Уравнение $q^2 = 9$ имеет <b>два</b> корня: $q = 3$ и $q = -3$. Без дополнительных условий задачи (например, "все члены прогрессии положительны") вы не можете отбросить отрицательный корень. Прогрессия вполне могла быть знакочередующейся: 2, -6, 18...</p>
+                <p style="margin: 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;">Предположим, вам известно, что $b_1 = 2$, а $b_3 = 18$. Вы делите $b_3$ на $b_1$ и получаете уравнение: $q^2 = 9$.</p>
+                
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 10px 15px; border-radius: 6px; margin: 15px 0; border-left: 3px solid var(--error-text);">
+                    <span style="color: #fff; font-weight: bold;">Многие тут же пишут $q = 3$. ЭТО ОШИБКА!</span>
+                </div>
+                
+                <p style="margin: 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;">Уравнение $q^2 = 9$ имеет <b>два</b> корня: $q = 3$ и $q = -3$. Без дополнительных условий задачи (например, "все члены прогрессии положительны") вы не можете отбросить отрицательный корень. Прогрессия вполне могла быть знакочередующейся: 2, -6, 18...</p>
             </div>
 
-            <div class="alert-box alert-warning" style="margin: 0; flex-direction: column;">
-                <strong style="color: var(--warn-text); display: flex; align-items: center; gap: 8px;">
-                    <i data-lucide="search" style="width: 18px;"></i> Как найти $q$ из любых двух членов
+            <div class="alert-box alert-warning" style="margin: 0; flex-direction: column; padding: 20px;">
+                <strong style="color: var(--warn-text); display: flex; align-items: center; gap: 8px; font-size: 1.1rem; margin-bottom: 10px;">
+                    <i data-lucide="search" style="width: 20px;"></i> Как найти $q$ из любых двух членов
                 </strong>
-                <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-muted);">Не составляйте громоздкие системы уравнений! Если известны члены $b_k$ и $b_m$ (где $k > m$), просто разделите больший номер на меньший. Степень у $q$ будет равна разности их индексов: <br>
-                <span style="color: #fff; font-weight: bold; background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px;">$q^{k-m} = \frac{b_k}{b_m}$</span><br>
-                <i>Например: Если дали $b_7$ и $b_4$, то $q^{7-4} = q^3 = \frac{b_7}{b_4}$. Извлекаем кубический корень и готово!</i></p>
+                <p style="margin: 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;">Не составляйте громоздкие системы уравнений! Если известны члены $b_k$ и $b_m$ (где $k > m$), просто разделите больший номер на меньший. Степень у $q$ будет равна разности их индексов:</p>
+                
+                <div class="formula-box" style="margin: 15px 0; padding: 10px; border-color: var(--warn-text); background: rgba(245, 158, 11, 0.05);">
+                    $$q^{k-m} = \frac{b_k}{b_m}$$
+                </div>
+                
+                <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; text-align: center;"><i>Например: Если дали $b_7$ и $b_4$, то $q^{7-4} = q^3 = \frac{b_7}{b_4}$. Извлекаем кубический корень и готово!</i></p>
             </div>
         </div>
 
