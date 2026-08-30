@@ -394,8 +394,8 @@
                     const val = +(breakdown.calculations[i]).toFixed(2); // Fix float
                     const color = blockColors[i % blockColors.length];
                     
-                    // MathJax underbrace syntax: \underbrace{Value}_{Percentage%}
-                    blockParts.push(`\\underbrace{${val}}_{\\text{${chunk}\\%}}`);
+                    // Формируем подпись без \text{}, чтобы MathJax корректно скрыл слэш перед процентом
+                    blockParts.push(`\\underbrace{${val}}_{${chunk}\\%}`);
                     
                     // Build colorful HTML legend badge
                     legendHTML += `<div style="display:flex; align-items:center; gap:6px; font-size:0.95rem; background:rgba(255,255,255,0.05); padding:6px 12px; border-radius:6px; border:1px solid ${color};">
