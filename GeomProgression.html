@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Геометрическая прогрессия</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1.1rem; color: var(--accent); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px;}
+        
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: normal;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.2rem; min-height: 35px; display: flex; align-items: center; transition: 0.15s ease-in-out;}
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+
+        .seq-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; font-family: monospace; font-size: 1.1rem; }
+        .seq-item { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 5px 10px; border-radius: 6px; position: relative;}
+        .seq-index { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-muted); }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Геометрическая прогрессия</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="trending-up" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Что это такое?</strong><br>
+                <span style="color: var(--text-muted);">Если в арифметической прогрессии мы каждый раз прибавляем одно и то же число, то в геометрической мы каждый раз <b>умножаем</b> на одно и то же число. Этот ряд растет (или падает) стремительно. На этом принципе работают банковские вклады, размножение бактерий и цепные ядерные реакции.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="layers"></i> 1. Анатомия прогрессии</h2>
+        <div class="card">
+            <p style="margin-top: 0; color: var(--text-muted);">Любая геометрическая прогрессия задается стартовой точкой и множителем.</p>
+            
+            <div class="props-grid">
+                <div class="prop-card" style="border-top: 4px solid var(--brand-purple);">
+                    <div class="prop-title" style="color: var(--brand-purple);">Первый член ($b_1$)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Число, с которого всё начинается. В геометрической прогрессии $b_1 \neq 0$ (иначе весь ряд будет состоять из нулей).</p>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--brand-green);">
+                    <div class="prop-title" style="color: var(--brand-green);">Знаменатель ($q$)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Тот самый множитель. Показывает, во сколько раз следующий член отличается от предыдущего. $q = b_2 : b_1 = b_3 : b_2$. ($q \neq 0$).</p>
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid var(--accent);">
+                <strong>Поведение прогрессии зависит от $q$ (при $b_1 > 0$):</strong>
+                <ul style="color: var(--text-muted); margin-bottom: 0; margin-top: 5px;">
+                    <li>Если $q > 1$ — прогрессия <b>возрастающая</b> (ряд: 2, 4, 8, 16...).</li>
+                    <li>Если $0 < q < 1$ — прогрессия <b>убывающая</b> (ряд: 16, 8, 4, 2...).</li>
+                    <li>Если $q < 0$ — прогрессия <b>знакочередующаяся</b> (ряд: 2, -4, 8, -16...). Знаки будут меняться каждый шаг!</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2><i data-lucide="fast-forward"></i> 2. Формула $n$-го члена (Прыжки с умножением)</h2>
+        <div class="card">
+            <p>Представь, что тебе нужно найти 10-е число в ряду. Логика точно такая же, как в арифметической прогрессии: количество "прыжков" на единицу меньше, чем номер места, куда мы хотим попасть. Но теперь мы не прибавляем, а <b>возводим в степень</b>!</p>
+            
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$b_n = b_1 \cdot q^{n - 1}$$
+            </div>
+            
+            <p style="color: var(--text-muted);">Чтобы попасть со 1-й ступеньки на 5-ю, нужно умножить на $q$ ровно 4 раза, то есть умножить на $q^4$.</p>
+            
+            <div class="alert-box alert-info" style="margin-bottom: 0; padding: 10px 15px;">
+                <div class="icon-box"><i data-lucide="eye" color="var(--info-text)"></i></div>
+                <div>Пример: $b_8 = b_1 \cdot q^7$</div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="link"></i> 3. Свойство соседей (Среднее геометрическое)</h2>
+        <div class="card">
+            <p>Квадрат любого члена геометрической прогрессии равен произведению его соседей слева и справа. Поэтому она и называется "геометрической"!</p>
+            
+            <div class="formula-box" style="border-color: var(--info-text);">
+                $$b_n^2 = b_{n-1} \cdot b_{n+1}$$
+            </div>
+            
+            <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 0;"><i>Если ряд: 2, 6, 18. То для центрального числа $6^2 = 2 \cdot 18 = 36$. Модуль числа равен $\sqrt{b_{n-1} b_{n+1}}$.</i></p>
+        </div>
+
+        <h2><i data-lucide="bar-chart-2"></i> 4. Лаборатория: Экспоненциальный взрыв</h2>
+        <p style="color: var(--text-muted);">Попробуйте задать дробный $q$ (например, $0.5$) — столбики начнут затухать. Задайте отрицательный $q$ (например, $-1.5$) — график начнет "плясать" вверх-вниз, меняя знак на каждом шаге!</p>
+        
+        <div class="simulator" style="border-color: var(--brand-purple);">
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--brand-purple);">Первый член ($b_1$): <span id="val-b1" style="font-weight: bold;">2</span></label>
+                    <input type="range" id="sim-b1" min="-10" max="10" value="2" step="1" style="accent-color: var(--brand-purple);">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--brand-green);">Знаменатель ($q$): <span id="val-q" style="font-weight: bold;">1.5</span></label>
+                    <input type="range" id="sim-q" min="-3" max="3" value="1.5" step="0.5" style="accent-color: var(--brand-green);">
+                </div>
+                <div class="control-group">
+                    <label style="color: #fff;">Количество ($n$): <span id="val-n" style="font-weight: bold;">6</span></label>
+                    <input type="range" id="sim-n" min="3" max="10" value="6" step="1" style="accent-color: #aaa;">
+                </div>
+            </div>
+
+            <div class="seq-container" id="sim-sequence">
+                <!-- Sequence items generated via JS -->
+            </div>
+
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Последний член ($b_n$)</div>
+                    <div class="dashboard-value" id="dash-bn" style="color: #fff;">$b_6 = 15.1875$</div>
+                </div>
+                <div class="dashboard-item" style="background: rgba(139, 92, 246, 0.1); border-color: var(--brand-purple);">
+                    <div class="dashboard-label" style="color: var(--brand-purple);">Сумма всех членов ($S_n$)</div>
+                    <div class="dashboard-value" id="dash-sn" style="color: var(--brand-purple); font-weight: bold;">$S_6 = 41.5625$</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-prog" width="600" height="250"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="sigma"></i> 5. Суммы прогрессии ($S_n$)</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">В отличие от арифметической прогрессии, здесь сумма растет (или падает) нелинейно. Запомните основную формулу:</p>
+            
+            <div class="formula-box" style="border-color: var(--accent);">
+                $$S_n = \frac{b_1 (q^n - 1)}{q - 1}$$
+            </div>
+
+            <div class="alert-box alert-warning" style="margin-bottom: 0; margin-top: 25px;">
+                <div class="icon-box"><i data-lucide="infinity" color="var(--warn-text)"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Бесконечно убывающая геометрическая прогрессия</strong><br>
+                    <span style="color: var(--text-muted);">Если знаменатель по модулю меньше единицы ($|q| < 1$), то члены прогрессии становятся всё меньше и меньше, стремясь к нулю (например, 8, 4, 2, 1, 0.5...). Удивительно, но если сложить бесконечное количество таких чисел, получится <b>конечное число</b>! Формула для такой суммы значительно проще:
+                    <div class="formula-box" style="margin: 10px 0 0 0; padding: 10px; border: none; background: rgba(0,0,0,0.2);">
+                        $$S = \frac{b_1}{1 - q}$$
+                    </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="alert-triangle"></i> 6. Главные ловушки (ОГЭ/ЕГЭ)</h2>
+        <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            
+            <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="x-circle" style="width: 18px;"></i> Потеря минуса в четной степени
+                </strong>
+                <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-muted);">Предположим, вам известно, что $b_1 = 2$, а $b_3 = 18$. Вы делите $b_3$ на $b_1$ и получаете уравнение: $q^2 = 9$. <br>
+                Многие тут же пишут $q = 3$. <b>ЭТО ОШИБКА!</b> <br>
+                Уравнение $q^2 = 9$ имеет <b>два</b> корня: $q = 3$ и $q = -3$. Без дополнительных условий задачи (например, "все члены прогрессии положительны") вы не можете отбросить отрицательный корень. Прогрессия вполне могла быть знакочередующейся: 2, -6, 18...</p>
+            </div>
+
+            <div class="alert-box alert-warning" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--warn-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="search" style="width: 18px;"></i> Как найти $q$ из любых двух членов
+                </strong>
+                <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-muted);">Не составляйте громоздкие системы уравнений! Если известны члены $b_k$ и $b_m$ (где $k > m$), просто разделите больший номер на меньший. Степень у $q$ будет равна разности их индексов: <br>
+                <span style="color: #fff; font-weight: bold; background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px;">$q^{k-m} = \frac{b_k}{b_m}$</span><br>
+                <i>Например: Если дали $b_7$ и $b_4$, то $q^{7-4} = q^3 = \frac{b_7}{b_4}$. Извлекаем кубический корень и готово!</i></p>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 7. Практика</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Бесконечно убывающая</h3>
+            <p>В бесконечно убывающей геометрической прогрессии сумма всех её членов равна $12$, а первый член равен $3$. Найдите третий член этой прогрессии ($b_3$).</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать пошаговое решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>Нам известны $S = 12$ и $b_1 = 3$. Прогрессия бесконечно убывающая, поэтому используем соответствующую формулу суммы.</p>
+                
+                <p>1. Запишем формулу суммы и подставим в нее известные значения:<br>
+                $$S = \frac{b_1}{1 - q}$$
+                $$12 = \frac{3}{1 - q}$$</p>
+                
+                <p>2. Решим это уравнение относительно знаменателя $q$. По свойству пропорции:<br>
+                $$12(1 - q) = 3$$
+                $$1 - q = \frac{3}{12} = \frac{1}{4}$$
+                $$q = 1 - \frac{1}{4} = \frac{3}{4}$$</p>
+                
+                <p>3. Нам нужно найти третий член $b_3$. Используем формулу $n$-го члена:<br>
+                $$b_3 = b_1 \cdot q^2$$</p>
+
+                <p>4. Подставляем $b_1$ и найденный $q$:<br>
+                $$b_3 = 3 \cdot \left(\frac{3}{4}\right)^2 = 3 \cdot \frac{9}{16} = \frac{27}{16}$$</p>
+                
+                <p style="font-size: 0.9rem; color: var(--text-muted);">*Переведем в десятичную дробь для записи ответа в бланк: $\frac{27}{16} = 1.6875$.*</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 1.6875</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация иконок
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Очередь MathJax
+            let mathRenderQueue = Promise.resolve();
+            let mathTimeout = null;
+
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* --- СИМУЛЯТОР: ГЕОМЕТРИЧЕСКАЯ ПРОГРЕССИЯ --- */
+            const canvasProg = document.getElementById('canvas-prog');
+            const ctxProg = canvasProg.getContext('2d');
+            
+            const inB1 = document.getElementById('sim-b1');
+            const inQ = document.getElementById('sim-q');
+            const inN = document.getElementById('sim-n');
+
+            const valB1 = document.getElementById('val-b1');
+            const valQ = document.getElementById('val-q');
+            const valN = document.getElementById('val-n');
+            
+            const seqContainer = document.getElementById('sim-sequence');
+            const dashBn = document.getElementById('dash-bn');
+            const dashSn = document.getElementById('dash-sn');
+
+            window.updateSim = function() {
+                // Избегаем q=0 чтобы не ломать логику прогрессии
+                let qVal = parseFloat(inQ.value);
+                if (qVal === 0) {
+                    qVal = 0.5;
+                    inQ.value = "0.5";
+                }
+
+                const b1 = parseInt(inB1.value);
+                const q = qVal;
+                const n = parseInt(inN.value);
+
+                valB1.textContent = b1;
+                valQ.textContent = q;
+                valN.textContent = n;
+
+                // Генерация массива чисел
+                let sequence = [];
+                let sum = 0;
+                let currentTerm = b1;
+                
+                for (let i = 0; i < n; i++) {
+                    sequence.push(currentTerm);
+                    sum += currentTerm;
+                    currentTerm = currentTerm * q;
+                }
+
+                // Обновление HTML-строки последовательности
+                seqContainer.innerHTML = '';
+                sequence.forEach((val, idx) => {
+                    let div = document.createElement('div');
+                    div.className = 'seq-item';
+                    
+                    // Форматируем длинные числа (округление для отображения в ряду)
+                    let displayVal = val;
+                    if (!Number.isInteger(val)) {
+                        displayVal = val.toFixed(2).replace(/\.?0+$/, '');
+                    }
+                    if (Math.abs(val) > 10000) {
+                        displayVal = val.toExponential(1);
+                    }
+
+                    // Подсветка знака для знакочередующейся
+                    if (q < 0 && b1 !== 0) {
+                        if (val > 0) {
+                            div.style.color = '#06B6D4'; // Бирюзовый для плюса
+                        } else if (val < 0) {
+                            div.style.color = '#EF4444'; // Красный для минуса
+                        }
+                    }
+
+                    div.innerHTML = `${displayVal} <span class="seq-index">b<sub>${idx+1}</sub></span>`;
+                    seqContainer.appendChild(div);
+                });
+
+                // Обновление дашбордов (используем MathJax для красивых формул)
+                let bnRaw = sequence[n - 1];
+                let snRaw = sum;
+                
+                // Форматируем для дашборда
+                if (Math.abs(bnRaw) > 10000 || (!Number.isInteger(bnRaw) && bnRaw.toString().length > 7)) {
+                    bnRaw = bnRaw.toPrecision(4);
+                }
+                if (Math.abs(snRaw) > 10000 || (!Number.isInteger(snRaw) && snRaw.toString().length > 7)) {
+                    snRaw = snRaw.toPrecision(4);
+                }
+
+                const bnStr = `$$b_{${n}} = ${bnRaw}$$`;
+                const snStr = `$$S_{${n}} = ${snRaw}$$`;
+
+                dashBn.style.opacity = '0';
+                dashSn.style.opacity = '0';
+                
+                if (mathTimeout) clearTimeout(mathTimeout);
+                mathTimeout = setTimeout(() => {
+                    dashBn.innerHTML = bnStr;
+                    dashSn.innerHTML = snStr;
+                    safeMathRender([dashBn, dashSn]);
+                    dashBn.style.opacity = '1';
+                    dashSn.style.opacity = '1';
+                }, 150);
+
+                // Отрисовка на Canvas
+                drawCanvasGraph(sequence);
+            };
+
+            function drawCanvasGraph(sequence) {
+                const w = canvasProg.width;
+                const h = canvasProg.height;
+                ctxProg.clearRect(0, 0, w, h);
+
+                const n = sequence.length;
+                if (n === 0) return;
+
+                // Находим макс по модулю для симметричного масштабирования оси Y
+                let maxAbsVal = Math.max(...sequence.map(Math.abs), 0.1); // 0.1 защита от деления на 0, если b1=0
+                
+                // Координата Y для нуля (по центру)
+                const zeroY = h / 2;
+                // Масштаб. Оставляем 20px отступы сверху и снизу
+                const maxBarHeight = (h / 2) - 20;
+                const scaleY = maxBarHeight / maxAbsVal;
+
+                const paddingX = 40;
+                const stepX = (w - paddingX * 2) / Math.max(1, n - 1);
+
+                // 1. Рисуем ось X (Нуль)
+                ctxProg.strokeStyle = '#555';
+                ctxProg.lineWidth = 2;
+                ctxProg.beginPath();
+                ctxProg.moveTo(20, zeroY);
+                ctxProg.lineTo(w - 20, zeroY);
+                ctxProg.stroke();
+                
+                ctxProg.fillStyle = '#888';
+                ctxProg.font = '12px sans-serif';
+                ctxProg.textAlign = 'right';
+                ctxProg.fillText('0', 15, zeroY + 4);
+
+                // 2. Рисуем столбцы и соединяющую кривую (огибающую)
+                const barWidth = Math.min(25, (stepX * 0.5));
+                const points = [];
+                
+                sequence.forEach((val, idx) => {
+                    const cx = paddingX + idx * stepX;
+                    const barH = Math.abs(val) * scaleY;
+                    const barY = val >= 0 ? zeroY - barH : zeroY;
+                    
+                    points.push({x: cx, y: val >= 0 ? zeroY - barH : zeroY + barH});
+
+                    let fillColor = val >= 0 ? 'rgba(139, 92, 246, 0.5)' : 'rgba(239, 68, 68, 0.5)';
+                    let strokeColor = val >= 0 ? '#8B5CF6' : '#EF4444';
+
+                    // Заливка
+                    ctxProg.fillStyle = fillColor;
+                    ctxProg.fillRect(cx - barWidth/2, barY, barWidth, barH);
+                    
+                    // Обводка
+                    ctxProg.strokeStyle = strokeColor;
+                    ctxProg.lineWidth = 2;
+                    ctxProg.strokeRect(cx - barWidth/2, barY, barWidth, barH);
+
+                    // Значение (только если оно не слишком дикое)
+                    if (n <= 8) {
+                        let displayVal = val;
+                        if (!Number.isInteger(val)) displayVal = val.toFixed(1).replace(/\.?0+$/, '');
+                        if (Math.abs(val) >= 1000) displayVal = val.toExponential(1);
+
+                        ctxProg.fillStyle = '#fff';
+                        ctxProg.font = '11px sans-serif';
+                        ctxProg.textAlign = 'center';
+                        if (val >= 0) {
+                            ctxProg.fillText(displayVal, cx, barY - 8);
+                        } else {
+                            ctxProg.fillText(displayVal, cx, barY + barH + 15);
+                        }
+                    }
+                });
+
+                // Рисуем огибающую линию (кривую экспоненты) для наглядности
+                if (n > 1) {
+                    ctxProg.beginPath();
+                    ctxProg.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctxProg.lineWidth = 2;
+                    ctxProg.setLineDash([5, 5]);
+                    ctxProg.moveTo(points[0].x, points[0].y);
+                    
+                    for (let i = 1; i < n; i++) {
+                        ctxProg.lineTo(points[i].x, points[i].y);
+                    }
+                    ctxProg.stroke();
+                    ctxProg.setLineDash([]);
+                }
+            }
+
+            [inB1, inQ, inN].forEach(el => el.addEventListener('input', window.updateSim));
+
+            // Инициализация
+            window.updateSim();
+        });
+    </script>
+</body>
+</html>
