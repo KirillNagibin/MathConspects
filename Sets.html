@@ -216,6 +216,12 @@
                     <div class="dashboard-value" id="dash-explanation" style="font-size: 0.95rem; font-weight: normal; color: var(--text-muted); min-height: auto; margin-top: 5px;">Подходит хотя бы под одно условие (Логическое ИЛИ).<br>Например: «Берем на работу тех, кто знает Python (A) ИЛИ знает Java (B)». Подойдут и те, кто знает только один язык, и те, кто знает оба.</div>
                 </div>
             </div>
+
+            <div class="canvas-container" style="background: transparent; border: none; padding: 0; margin-top: 15px;">
+                <canvas id="canvas-venn" width="600" height="300" style="background: #1a1a1a; border-radius: 8px; border: 1px solid #333; margin: 0 auto; display: block;"></canvas>
+            </div>
+        </div>
+
         <h2><i data-lucide="alert-triangle"></i> 4. Главная ловушка: Двойной счет</h2>
         <div class="card" style="border-color: var(--error-text); background: rgba(239, 68, 68, 0.03);">
             <p style="margin-top: 0; color: var(--text-main);">Чаще всего в задачах (особенно текстовых) нас просят посчитать <b>количество элементов</b> в объединении множеств. И тут кроется главная ошибка.</p>
