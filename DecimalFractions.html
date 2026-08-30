@@ -446,7 +446,8 @@
                     resultValue = "3,1415";
                 } else if (k > 0) {
                     multiplier = "\\cdot " + Math.pow(10, k);
-                    resultValue = (baseValue * Math.pow(10, k)).toString().replace('.', ',');
+                    // Устраняем проблему плавающей точки (ограничиваем количество знаков: 4 - k)
+                    resultValue = (baseValue * Math.pow(10, k)).toFixed(4 - k).replace('.', ',');
                 } else {
                     multiplier = ": " + Math.pow(10, Math.abs(k));
                     resultValue = (baseValue / Math.pow(10, Math.abs(k))).toFixed(4 + Math.abs(k)).replace('.', ',');
