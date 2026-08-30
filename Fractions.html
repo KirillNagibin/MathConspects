@@ -205,9 +205,9 @@
             </div>
 
             <div class="dashboard-grid" style="grid-template-columns: 1fr;">
-                <div class="dashboard-item" style="align-items: center;">
+                <div class="dashboard-item" style="align-items: center; min-height: 90px; justify-content: center;">
                     <div class="dashboard-label">Доказательство равенства</div>
-                    <div class="dashboard-value" id="dash-fraction" style="color: #fff;">$$ \frac{1}{2} = \frac{1 \cdot 2}{2 \cdot 2} = \frac{2}{4} $$</div>
+                    <div class="dashboard-value" id="dash-fraction" style="color: #fff; transition: opacity 0.15s ease-in-out; min-height: 45px; display: flex; align-items: center;">$$ \frac{1}{2} = \frac{1 \cdot 2}{2 \cdot 2} = \frac{2}{4} $$</div>
                 </div>
             </div>
 
@@ -349,9 +349,9 @@
                 // Draw background circle
                 ctx.beginPath();
                 ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
                 ctx.fill();
-                ctx.strokeStyle = '#555';
+                ctx.strokeStyle = '#444';
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
@@ -407,10 +407,21 @@
 
                 // Update formula
                 const eqStr = `$$ \\frac{${num}}{${den}} = \\frac{${num} \\cdot ${mul}}{${den} \\cdot ${mul}} = \\frac{${resNum}}{${resDen}} $$`;
-                dashFraction.innerHTML = eqStr;
+                
+                dashFraction.style.opacity = '0';
                 
                 if (mathTimeout) clearTimeout(mathTimeout);
-                mathTimeout = setTimeout(() => safeMathRender([dashFraction]), 100);
+                mathTimeout = setTimeout(() => {
+                    dashFraction.innerHTML = eqStr;
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        MathJax.typesetPromise([dashFraction]).then(() => {
+                            dashFraction.style.opacity = '1';
+                        });
+                    } else {
+                        safeMathRender([dashFraction]);
+                        dashFraction.style.opacity = '1';
+                    }
+                }, 150);
 
                 // Draw on canvas
                 const w = canvasF.width;
@@ -420,7 +431,7 @@
                 const radius = 100;
                 
                 // Left Pie (Original)
-                drawPie(ctxF, w * 0.25, h / 2, radius, num, den, 'var(--accent)');
+                drawPie(ctxF, w * 0.25, h / 2, radius, num, den, '#06B6D4');
                 
                 // Equals sign
                 ctxF.fillStyle = '#fff';
@@ -430,7 +441,7 @@
                 ctxF.fillText('=', w * 0.5, h / 2);
 
                 // Right Pie (Expanded)
-                drawPie(ctxF, w * 0.75, h / 2, radius, resNum, resDen, 'var(--brand-purple)');
+                drawPie(ctxF, w * 0.75, h / 2, radius, resNum, resDen, '#8B5CF6');
                 
                 // Labels below pies
                 ctxF.font = '16px sans-serif';
