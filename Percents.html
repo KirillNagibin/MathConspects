@@ -92,7 +92,7 @@
         .formula-box {
             background: rgba(0,0,0,0.3); border: 1px solid var(--border);
             padding: 15px; text-align: center; border-radius: 8px; font-size: 1.1rem;
-            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+            overflow-x: auto;
         }
         
         mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
@@ -152,7 +152,30 @@
             </div>
         </div>
 
-        <h2><i data-lucide="blocks"></i> 1. Метод "Блоков": Считаем в уме за 3 секунды</h2>
+        <h2><i data-lucide="calculator"></i> 1. Три главных типа задач на проценты</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Все задачи на проценты делятся ровно на три категории. Главное — правильно перевести процент в десятичную дробь (разделить на 100), а затем выполнить одно действие.</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--info-text);">
+                    <div style="font-size: 0.95rem; color: var(--info-text); margin-bottom: 5px; font-weight: bold;">1. Найти % от числа (УМНОЖАЕМ)</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Найти $20\%$ от числа $150$.<br>Переводим $20\%$ в $0,20$.</p>
+                    $$150 \cdot 0,2 = 30$$
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-pink);">
+                    <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 5px; font-weight: bold;">2. Найти число по его % (ДЕЛИМ)</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Найти число, если $40\%$ от него равны $120$.<br>Переводим $40\%$ в $0,40$.</p>
+                    $$120 : 0,4 = 300$$
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-green);">
+                    <div style="font-size: 0.95rem; color: var(--brand-green); margin-bottom: 5px; font-weight: bold;">3. Сколько % одно число от другого?</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Сколько % составляет $15$ от $60$?<br>Делим часть на целое и множим на 100.</p>
+                    $$\frac{15}{60} \cdot 100\% = 25\%$$
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="blocks"></i> 2. Метод "Блоков": Считаем в уме за 3 секунды</h2>
         <div class="card">
             <p style="margin-top: 0; color: var(--text-muted);">Главный секрет быстрого счета процентов — это превращение их в удобные обыкновенные дроби (части целого). Запомни эту таблицу, как таблицу умножения!</p>
             
@@ -191,7 +214,7 @@
             </div>
         </div>
 
-        <h2><i data-lucide="layout-template"></i> 2. Лаборатория: Визуальный калькулятор</h2>
+        <h2><i data-lucide="layout-template"></i> 3. Лаборатория: Визуальный калькулятор</h2>
         <p style="color: var(--text-muted);">Большой квадрат — это $100\%$, он разделен на 100 маленьких клеточек (каждая по $1\%$). Задайте базовое число и желаемый процент. Посмотрите, как программа визуально "отрезает" нужный кусок и раскладывает его на удобные математические блоки!</p>
         
         <div class="simulator" style="border-color: var(--accent);">
@@ -209,11 +232,13 @@
             <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div class="dashboard-item" style="border: 1px solid var(--border);">
                     <div class="dashboard-label">Прямой расчет (Школьный)</div>
-                    <div class="dashboard-value" id="dash-calc-direct" style="color: #fff;">$400 \cdot 0.15 = 60$</div>
+                    <div class="dashboard-value" id="dash-calc-direct" style="color: #fff; min-height: 45px; display: flex; align-items: center;">$400 \cdot 0.15 = 60$</div>
                 </div>
                 <div class="dashboard-item" style="border: 1px solid var(--accent); background: rgba(6, 182, 212, 0.05);">
                     <div class="dashboard-label" style="color: var(--accent);">Разбивка на блоки (В уме)</div>
-                    <div class="dashboard-value" id="dash-calc-blocks" style="color: var(--accent);">$40 + 20 = 60$</div>
+                    <div class="dashboard-value" id="dash-calc-blocks" style="color: var(--accent); min-height: 45px; display: flex; align-items: center; justify-content: center; width: 100%; overflow-x: auto;">
+                        $40 + 20 = 60$
+                    </div>
                 </div>
             </div>
 
@@ -221,28 +246,9 @@
                 <canvas id="canvas-grid" width="400" height="400" style="background: transparent; margin: 0 auto; display: block; border: none;"></canvas>
             </div>
             <p id="grid-legend" style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 10px; font-family: monospace;">1 клеточка (1%) = 4 ед.</p>
-        </div>
-
-        <h2><i data-lucide="calculator"></i> 3. Три главных типа задач на проценты</h2>
-        <div class="card">
-            <p style="color: var(--text-muted); margin-top: 0;">Все задачи на проценты делятся ровно на три категории. Главное — правильно перевести процент в десятичную дробь (разделить на 100), а затем выполнить одно действие.</p>
             
-            <div class="formula-grid">
-                <div class="formula-box" style="border-color: var(--info-text);">
-                    <div style="font-size: 0.95rem; color: var(--info-text); margin-bottom: 5px;">1. Найти % от числа (УМНОЖАЕМ)</div>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Найти $20\%$ от числа $150$.<br>Переводим $20\%$ в $0,20$.</p>
-                    $$150 \cdot 0,2 = 30$$
-                </div>
-                <div class="formula-box" style="border-color: var(--brand-pink);">
-                    <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 5px;">2. Найти число по его % (ДЕЛИМ)</div>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Найти число, если $40\%$ от него равны $120$.<br>Переводим $40\%$ в $0,40$.</p>
-                    $$120 : 0,4 = 300$$
-                </div>
-                <div class="formula-box" style="border-color: var(--brand-green);">
-                    <div style="font-size: 0.95rem; color: var(--brand-green); margin-bottom: 5px;">3. Сколько % одно число от другого?</div>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Сколько % составляет $15$ от $60$?<br>Делим часть на целое и множим на 100.</p>
-                    $$\frac{15}{60} \cdot 100\% = 25\%$$
-                </div>
+            <div id="sim-legend" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <!-- Dynamically generated legend items will go here -->
             </div>
         </div>
 
@@ -334,6 +340,10 @@
             const dashDirect = document.getElementById('dash-calc-direct');
             const dashBlocks = document.getElementById('dash-calc-blocks');
             const gridLegend = document.getElementById('grid-legend');
+            const simLegendContainer = document.getElementById('sim-legend');
+
+            // Цветовая палитра для блоков
+            const blockColors = ['#06B6D4', '#8B5CF6', '#4CAF50', '#EC4899', '#F59E0B', '#3B82F6', '#10B981'];
 
             let mathTimeout = null;
 
@@ -367,23 +377,46 @@
                 valBase.textContent = base;
                 valPct.textContent = pct + '%';
 
-                const unitValue = base / 100; // Чему равен 1%
+                // Ограничиваем дробную часть до 2 знаков для корректного отображения (защита от плавающей точки JS)
+                const unitValue = +(base / 100).toFixed(2); 
                 gridLegend.textContent = `1 клеточка (1%) = ${unitValue} ед.`;
 
-                // Математические строки
-                const result = base * (pct / 100);
+                const result = +(base * (pct / 100)).toFixed(2);
                 const directStr = `$$ ${base} \\cdot ${(pct/100).toFixed(2)} = ${result} $$`;
                 
                 const breakdown = getSmartBreakdown(pct, base);
+                
+                // Генерация формулы с фигурными скобками и HTML-легенды
+                let blockParts = [];
+                let legendHTML = '';
+                
+                breakdown.blocks.forEach((chunk, i) => {
+                    const val = +(breakdown.calculations[i]).toFixed(2); // Fix float
+                    const color = blockColors[i % blockColors.length];
+                    
+                    // MathJax underbrace syntax: \underbrace{Value}_{Percentage%}
+                    blockParts.push(`\\underbrace{${val}}_{\\text{${chunk}\\%}}`);
+                    
+                    // Build colorful HTML legend badge
+                    legendHTML += `<div style="display:flex; align-items:center; gap:6px; font-size:0.95rem; background:rgba(255,255,255,0.05); padding:6px 12px; border-radius:6px; border:1px solid ${color};">
+                        <span style="display:inline-block; width:14px; height:14px; background:${color}; border-radius:3px; box-shadow: 0 0 5px ${color};"></span> 
+                        <span style="color:#fff; font-weight:bold;">${chunk}%</span> 
+                        <span style="color:var(--text-muted)">= ${val}</span>
+                    </div>`;
+                });
+
                 let blockStr = "";
                 if (breakdown.calculations.length > 1) {
-                    // Например: 200 (50%) + 40 (10%) = 240
-                    const sumParts = breakdown.calculations.join(' + ');
-                    blockStr = `$$ ${sumParts} = ${result} $$`;
+                    blockStr = `$$ ${blockParts.join(' + ')} = ${result} $$`;
                 } else if (breakdown.calculations.length === 1) {
-                    blockStr = `$$ ${breakdown.calculations[0]} = ${result} $$`;
+                    blockStr = `$$ ${blockParts[0]} = ${result} $$`;
                 } else {
                     blockStr = `$$ 0 = 0 $$`;
+                }
+
+                // Вставляем легенду в DOM
+                if(simLegendContainer) {
+                    simLegendContainer.innerHTML = legendHTML;
                 }
 
                 dashDirect.style.opacity = '0';
@@ -413,16 +446,13 @@
                 const cellW = (w - padding * 2) / cols;
                 const cellH = (h - padding * 2) / rows;
 
-                // Цвета для разных блоков, чтобы визуально их разделять
-                const colors = ['#06B6D4', '#8B5CF6', '#4CAF50', '#EC4899', '#F59E0B'];
-                
                 // Создаем карту соответствия клеточки -> цвет
                 let cellColors = new Array(100).fill(null);
                 let colorIndex = 0;
                 let cellCounter = 0;
 
                 for (let b of blocks) {
-                    let currentColor = colors[colorIndex % colors.length];
+                    let currentColor = blockColors[colorIndex % blockColors.length];
                     for (let i = 0; i < b; i++) {
                         if (cellCounter < 100) {
                             cellColors[cellCounter] = currentColor;
