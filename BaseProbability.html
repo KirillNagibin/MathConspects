@@ -201,7 +201,7 @@
 
         <h2><i data-lucide="git-merge"></i> 2. Логическое «ИЛИ» (Сложение вероятностей)</h2>
         <div class="card">
-            <p style="color: var(--text-muted); margin-top: 0;">Что, если нас устраивают два разных события? Например, мы хотим вытащить карту, и нас устроит, если она будет <b>Пиковой (Событие А) ИЛИ Тузом (Событие В)</b>. Мы объединяем эти множества ($A \cup B$).</p>
+            <p style="color: var(--text-muted); margin-top: 0;">Что, если нас устраивают два разных события? Например, мы выбираем случайного ученика в классе, и нас устроит, если это будет <b>Девочка (Событие А) ИЛИ Отличник (Событие В)</b>. Мы объединяем эти множества ($A \cup B$).</p>
 
             <div class="alert-box alert-warning" style="margin-bottom: 15px;">
                 <div class="icon-box"><i data-lucide="alert-triangle" color="var(--warn-text)"></i></div>
@@ -211,15 +211,15 @@
             </div>
 
             <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0;">
-                <div class="formula-box" style="flex: 1; min-width: 200px; border-color: var(--brand-blue); margin: 0; overflow-x: hidden;">
+                <div class="formula-box" style="flex: 1.2; min-width: 230px; border-color: var(--brand-blue); margin: 0; overflow-x: hidden;">
                     <div style="font-size: 0.95rem; color: var(--brand-blue); margin-bottom: 5px;">Несовместные события</div>
                     $$P(A \text{ или } B) = P(A) + P(B)$$
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Они как непересекающиеся круги. Нельзя вытащить карту, которая одновременно является и "Червой", и "Крефой". Просто складываем шансы.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Они как непересекающиеся круги. Нельзя выбрать ученика, который одновременно учится и в 7-м, и в 8-м классе. Просто складываем шансы.</p>
                 </div>
-                <div class="formula-box" style="flex: 1.6; min-width: 280px; border-color: var(--brand-pink); margin: 0; overflow-x: hidden;">
+                <div class="formula-box" style="flex: 1.4; min-width: 250px; border-color: var(--brand-pink); margin: 0; overflow-x: hidden;">
                     <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 5px;">Совместные события (Ловушка!)</div>
                     $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Круги пересекаются! Если мы сложим вероятность "Туз" и вероятность "Пики", мы посчитаем Туза Пик <b>дважды</b>! Эту "серединку" нужно вычесть один раз.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Круги пересекаются! Если мы сложим шансы выбрать «Девочку» и шансы выбрать «Отличника», мы посчитаем девочек-отличниц <b>дважды</b>! Эту "серединку" нужно вычесть один раз.</p>
                 </div>
             </div>
         </div>
