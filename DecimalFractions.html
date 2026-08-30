@@ -228,15 +228,18 @@
             <div class="sim-controls" style="grid-template-columns: 1fr;">
                 <div class="control-group">
                     <label style="color: var(--brand-pink);">Действие: Умножить / Разделить на степень десятки ($10^k$)</label>
-                    <input type="range" id="sim-power" min="-3" max="3" value="0" step="1" style="accent-color: var(--brand-pink);">
+                    <input type="range" id="sim-power" min="-4" max="5" value="0" step="1" style="accent-color: var(--brand-pink);">
                     <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-top: 5px;">
-                        <span>: 1000</span>
-                        <span>: 100</span>
+                        <span>: 10⁴</span>
+                        <span>: 10³</span>
+                        <span>: 10²</span>
                         <span>: 10</span>
-                        <span>Исходное число</span>
+                        <span>Исходное</span>
                         <span>x 10</span>
-                        <span>x 100</span>
-                        <span>x 1000</span>
+                        <span>x 10²</span>
+                        <span>x 10³</span>
+                        <span>x 10⁴</span>
+                        <span>x 10⁵</span>
                     </div>
                 </div>
             </div>
@@ -326,13 +329,13 @@
 
             // Исходное число 3.1415
             // Распишем его по символам, добавив "бесконечные" нули по краям.
-            // Индексы: 0 1 2 3 4 5 6 7 8 9
-            // Символы: 0 0 0 3 1 4 1 5 0 0
-            const digits = ['0', '0', '0', '3', '1', '4', '1', '5', '0', '0'];
+            // Индексы: 0 1 2 3 4 5 6 7 8 9 10 11 12
+            // Символы: 0 0 0 0 3 1 4 1 5 0 0  0  0
+            const digits = ['0', '0', '0', '0', '3', '1', '4', '1', '5', '0', '0', '0', '0'];
             
             // Базовое положение запятой (после тройки). 
-            // Индекс 3 означает, что запятая рисуется ПОСЛЕ элемента с индексом 3.
-            const baseCommaIdx = 3; 
+            // Индекс 4 означает, что запятая рисуется ПОСЛЕ элемента с индексом 4.
+            const baseCommaIdx = 4; 
 
             let mathTimeout = null;
 
@@ -359,14 +362,14 @@
                     let isVisible = false;
                     // Сложная логика видимости цифр для красоты:
                     // Если это исходное число (31415), они белые.
-                    if (i >= 3 && i <= 7) isVisible = true;
+                    if (i >= 4 && i <= 8) isVisible = true;
                     
                     // Если запятая ушла влево, зажигаем нули слева
-                    if (shiftK < 0 && i >= currentCommaIdx && i < 3) isVisible = true;
+                    if (shiftK < 0 && i >= currentCommaIdx && i < 4) isVisible = true;
                     // Если запятая ушла вправо, зажигаем нули справа
-                    if (shiftK > 0 && i > 7 && i <= currentCommaIdx) isVisible = true;
+                    if (shiftK > 0 && i > 8 && i <= currentCommaIdx) isVisible = true;
                     // Всегда зажигаем один 0 перед запятой, если там пусто
-                    if (i === currentCommaIdx && i < 3) isVisible = true;
+                    if (i === currentCommaIdx && i < 4) isVisible = true;
 
                     ctxC.fillStyle = isVisible ? '#ffffff' : '#333333';
                     ctxC.fillText(digits[i], cx, yPos);
@@ -446,8 +449,9 @@
                     resultValue = "3,1415";
                 } else if (k > 0) {
                     multiplier = "\\cdot " + Math.pow(10, k);
-                    // Устраняем проблему плавающей точки (ограничиваем количество знаков: 4 - k)
-                    resultValue = (baseValue * Math.pow(10, k)).toFixed(4 - k).replace('.', ',');
+                    let decimalPlaces = 4 - k;
+                    if (decimalPlaces < 0) decimalPlaces = 0;
+                    resultValue = (baseValue * Math.pow(10, k)).toFixed(decimalPlaces).replace('.', ',');
                 } else {
                     multiplier = ": " + Math.pow(10, Math.abs(k));
                     resultValue = (baseValue / Math.pow(10, Math.abs(k))).toFixed(4 + Math.abs(k)).replace('.', ',');
