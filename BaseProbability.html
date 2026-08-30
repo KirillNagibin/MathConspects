@@ -210,13 +210,13 @@
                 </div>
             </div>
 
-            <div class="formula-grid">
-                <div class="formula-box" style="border-color: var(--brand-blue);">
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0;">
+                <div class="formula-box" style="flex: 1; min-width: 200px; border-color: var(--brand-blue); margin: 0;">
                     <div style="font-size: 0.95rem; color: var(--brand-blue); margin-bottom: 5px;">Несовместные события</div>
                     $$P(A \text{ или } B) = P(A) + P(B)$$
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Они как непересекающиеся круги. Нельзя вытащить карту, которая одновременно является и "Червой", и "Крефой". Просто складываем шансы.</p>
                 </div>
-                <div class="formula-box" style="border-color: var(--brand-pink);">
+                <div class="formula-box" style="flex: 1.6; min-width: 280px; border-color: var(--brand-pink); margin: 0;">
                     <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 5px;">Совместные события (Ловушка!)</div>
                     $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
                     <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Круги пересекаются! Если мы сложим вероятность "Туз" и вероятность "Пики", мы посчитаем Туза Пик <b>дважды</b>! Эту "серединку" нужно вычесть один раз.</p>
@@ -263,9 +263,13 @@
                 </div>
             </div>
 
-            <div class="dice-grid-container">
-                <div class="dice-grid" id="sim-grid">
-                    <!-- Заполняется JS -->
+            <div class="dice-grid-container" style="flex-direction: column; align-items: center;">
+                <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; font-weight: bold;">Очки на 2-м кубике ➔</div>
+                <div style="display: flex; align-items: center;">
+                    <div style="writing-mode: vertical-rl; transform: rotate(180deg); color: var(--text-muted); font-size: 0.85rem; margin-right: 8px; font-weight: bold; text-align: center;">Очки на 1-м кубике ➔</div>
+                    <div class="dice-grid" id="sim-grid">
+                        <!-- Заполняется JS -->
+                    </div>
                 </div>
             </div>
 
@@ -282,9 +286,9 @@
                     <div class="dashboard-label">Пересечение: $P(A \cap B)$</div>
                     <div class="dashboard-value" id="dash-pand" style="color: var(--brand-purple);">0 / 36</div>
                 </div>
-                <div class="dashboard-item" style="border-left: 4px solid var(--accent); background: rgba(76, 175, 80, 0.05);">
+                <div class="dashboard-item" style="grid-column: 1 / -1; border-left: 4px solid var(--accent); background: rgba(76, 175, 80, 0.05); align-items: center; text-align: center;">
                     <div class="dashboard-label" style="color: var(--accent);">Объединение (ИЛИ): $P(A \cup B)$</div>
-                    <div class="dashboard-value" id="dash-por" style="color: #fff; font-size: 1.3rem;">0 / 36 = 0%</div>
+                    <div class="dashboard-value" id="dash-por" style="color: #fff; font-size: 1.3rem; justify-content: center;">0 / 36 = 0%</div>
                 </div>
             </div>
             
