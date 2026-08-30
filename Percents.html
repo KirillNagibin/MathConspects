@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Проценты и как их считать</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+            text-align: center;
+        }
+        .prop-title { font-size: 1.5rem; color: var(--text-main); font-weight: bold; margin-bottom: 5px; }
+        .prop-subtitle { font-size: 0.95rem; color: var(--accent); margin-bottom: 10px; }
+        
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.1rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 15px;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.2rem; font-weight: bold; transition: opacity 0.15s ease-in-out; min-height: 30px; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+
+        .fraction-tag {
+            display: inline-block; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 1.1rem;
+        }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Проценты и быстрый счет</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="percent" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Что такое процент?</strong><br>
+                <span style="color: var(--text-muted);">Слово «процент» (pro centum) переводится с латыни как «за сотню» или «со ста». <b>Процент — это просто другая запись дроби $\frac{1}{100}$ (одной сотой части).</b> Математики придумали специальный значок $\%$, чтобы каждый раз не писать длинный знаменатель 100.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="blocks"></i> 1. Метод "Блоков": Считаем в уме за 3 секунды</h2>
+        <div class="card">
+            <p style="margin-top: 0; color: var(--text-muted);">Главный секрет быстрого счета процентов — это превращение их в удобные обыкновенные дроби (части целого). Запомни эту таблицу, как таблицу умножения!</p>
+            
+            <div class="props-grid">
+                <div class="prop-card" style="border-top: 4px solid var(--error-text);">
+                    <div class="prop-title">50%</div>
+                    <div class="prop-subtitle" style="color: var(--error-text);">Половина</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Это $\frac{50}{100} = $ <span class="fraction-tag">1/2</span>.<br>Чтобы найти 50%, просто <b>подели число на 2</b>.</p>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--brand-purple);">
+                    <div class="prop-title">25%</div>
+                    <div class="prop-subtitle" style="color: var(--brand-purple);">Четверть</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Это $\frac{25}{100} = $ <span class="fraction-tag">1/4</span>.<br>Подели число на 2, а потом <b>еще раз на 2</b>.</p>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--brand-green);">
+                    <div class="prop-title">20%</div>
+                    <div class="prop-subtitle" style="color: var(--brand-green);">Пятая часть</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Это $\frac{20}{100} = $ <span class="fraction-tag">1/5</span>.<br>Чтобы найти 20%, просто <b>подели число на 5</b>.</p>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--info-text);">
+                    <div class="prop-title">10%</div>
+                    <div class="prop-subtitle" style="color: var(--info-text);">Десятая часть</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">Это $\frac{10}{100} = $ <span class="fraction-tag">1/10</span>.<br>Самый полезный блок! Просто <b>отбрось один ноль</b> в конце (сдвинь запятую влево).</p>
+                </div>
+            </div>
+
+            <div class="alert-box alert-warning" style="margin-bottom: 0; margin-top: 20px;">
+                <div class="icon-box"><i data-lucide="zap" color="var(--warn-text)"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Как это комбинировать? (Лайфхак для магазина)</strong><br>
+                    <span style="color: var(--text-muted);">Допустим, скидка на куртку <b>15%</b> от 4000 руб. Не надо считать в столбик! <br>Разбейте 15% на блоки: <b>$15\% = 10\% + 5\%$</b>.<br>
+                    • $10\%$ от 4000 — это 400 руб (просто отбросили ноль).<br>
+                    • $5\%$ — это ровно половина от 10%, то есть 200 руб.<br>
+                    • Значит, $15\%$ — это $400 + 200 = \mathbf{600}$ руб. Вы великолепны!</span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="layout-template"></i> 2. Лаборатория: Визуальный калькулятор</h2>
+        <p style="color: var(--text-muted);">Большой квадрат — это $100\%$, он разделен на 100 маленьких клеточек (каждая по $1\%$). Задайте базовое число и желаемый процент. Посмотрите, как программа визуально "отрезает" нужный кусок и раскладывает его на удобные математические блоки!</p>
+        
+        <div class="simulator" style="border-color: var(--accent);">
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: #fff;">Базовое число ($100\%$): <span id="val-base" style="font-weight: bold;">400</span></label>
+                    <input type="range" id="sim-base" min="100" max="1000" value="400" step="50" style="accent-color: #fff;">
+                </div>
+                <div class="control-group">
+                    <label style="color: var(--accent);">Искомый процент: <span id="val-pct" style="font-weight: bold; font-size: 1.1rem;">15%</span></label>
+                    <input type="range" id="sim-pct" min="1" max="100" value="15" step="1" style="accent-color: var(--accent);">
+                </div>
+            </div>
+
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="dashboard-item" style="border: 1px solid var(--border);">
+                    <div class="dashboard-label">Прямой расчет (Школьный)</div>
+                    <div class="dashboard-value" id="dash-calc-direct" style="color: #fff;">$400 \cdot 0.15 = 60$</div>
+                </div>
+                <div class="dashboard-item" style="border: 1px solid var(--accent); background: rgba(6, 182, 212, 0.05);">
+                    <div class="dashboard-label" style="color: var(--accent);">Разбивка на блоки (В уме)</div>
+                    <div class="dashboard-value" id="dash-calc-blocks" style="color: var(--accent);">$40 + 20 = 60$</div>
+                </div>
+            </div>
+
+            <div class="canvas-container" style="padding: 20px;">
+                <canvas id="canvas-grid" width="400" height="400" style="background: transparent; margin: 0 auto; display: block; border: none;"></canvas>
+            </div>
+            <p id="grid-legend" style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 10px; font-family: monospace;">1 клеточка (1%) = 4 ед.</p>
+        </div>
+
+        <h2><i data-lucide="calculator"></i> 3. Три главных типа задач на проценты</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Все задачи на проценты делятся ровно на три категории. Главное — правильно перевести процент в десятичную дробь (разделить на 100), а затем выполнить одно действие.</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--info-text);">
+                    <div style="font-size: 0.95rem; color: var(--info-text); margin-bottom: 5px;">1. Найти % от числа (УМНОЖАЕМ)</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Найти $20\%$ от числа $150$.<br>Переводим $20\%$ в $0,20$.</p>
+                    $$150 \cdot 0,2 = 30$$
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-pink);">
+                    <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 5px;">2. Найти число по его % (ДЕЛИМ)</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Найти число, если $40\%$ от него равны $120$.<br>Переводим $40\%$ в $0,40$.</p>
+                    $$120 : 0,4 = 300$$
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-green);">
+                    <div style="font-size: 0.95rem; color: var(--brand-green); margin-bottom: 5px;">3. Сколько % одно число от другого?</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0;">Сколько % составляет $15$ от $60$?<br>Делим часть на целое и множим на 100.</p>
+                    $$\frac{15}{60} \cdot 100\% = 25\%$$
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="alert-triangle"></i> 4. Главная ловушка: Эффект "базы"</h2>
+        <div class="card" style="border-color: var(--error-text); background: rgba(239, 68, 68, 0.03);">
+            <p style="margin-top: 0;">Самая частая ошибка на экзаменах и в жизни. Многие думают, что если прибавить процент, а потом отнять такой же, получится исходное число. <b>Это не так!</b></p>
+            
+            <p style="font-size: 1.1rem; text-align: center; font-weight: bold; color: #fff;">$+10\%$ и затем $-10\% \neq 0\%$ изменений!</p>
+            
+            <p style="color: var(--text-muted);">Давайте проверим: товар стоил $1000$ руб. <br>
+            1) Цена выросла на $10\%$ ($+100$ руб). Новая цена: <b>$1100$ руб</b>.<br>
+            2) Магазин делает скидку $10\%$ от <i>НОВОЙ цены</i>. Теперь мы считаем $10\%$ от $1100$, а это $110$ руб! <br>
+            3) Итоговая цена: $1100 - 110 = $ <b style="color: var(--error-text);">990 руб</b>.</p>
+            
+            <p style="color: var(--warn-text); font-weight: bold; text-align: center; margin-bottom: 0;">Всегда следите за тем, ОТ КАКОГО ЧИСЛА (от какой "базы") берется процент на каждом шаге!</p>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика (Задание на ВПР/ОГЭ)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Банковский вклад</h3>
+            <p>Клиент положил в банк $50\ 000$ рублей под $8\%$ годовых. Проценты начисляются в конце года и добавляются к сумме вклада (капитализация). Какая сумма будет на счету клиента ровно через 2 года?</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')" style="width: auto;"><i data-lucide="help-circle" style="width: 16px;"></i> Подсказка</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Помните про ловушку "базы"! В первый год $8\%$ считаются от $50\ 000$. Но во второй год на счету будет лежать уже бóльшая сумма, и новые $8\%$ нужно будет считать <i>от этой новой суммы</i>. Считайте поэтапно (год за годом) или используйте множитель $1.08$.
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение (Поэтапное):</strong></p>
+                <p>1. <b>Конец первого года:</b> Найдем $8\%$ от $50\ 000$.<br>
+                $8\%$ — это $0,08$.<br>
+                Начислено процентов: $50\ 000 \cdot 0,08 = 4000$ руб.<br>
+                Сумма на счету стала: $50\ 000 + 4000 = \mathbf{54\ 000}$ <b>руб</b>.</p>
+                
+                <p>2. <b>Конец второго года:</b> Теперь база изменилась! Ищем $8\%$ от <i>новой</i> суммы $54\ 000$.<br>
+                Начислено процентов: $54\ 000 \cdot 0,08 = 4320$ руб.<br>
+                Итоговая сумма на счету: $54\ 000 + 4320 = \mathbf{58\ 320}$ <b>руб</b>.</p>
+                
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 10px;">
+                    <i>Продвинутый способ (Формула сложных процентов):</i> Если сумма увеличивается на $8\%$, она становится равной $108\%$ от прошлой, то есть умножается на $1,08$. За два года: <br>
+                    $$ 50\ 000 \cdot 1,08 \cdot 1,08 = 50\ 000 \cdot 1,08^2 = 58\ 320 $$
+                </p>
+
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 58 320 рублей</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Запуск иконок
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Очередь рендера MathJax
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* --- СИМУЛЯТОР: СЕТКА ПРОЦЕНТОВ --- */
+            const canvasG = document.getElementById('canvas-grid');
+            const ctxG = canvasG.getContext('2d');
+            const inBase = document.getElementById('sim-base');
+            const inPct = document.getElementById('sim-pct');
+            
+            const valBase = document.getElementById('val-base');
+            const valPct = document.getElementById('val-pct');
+            const dashDirect = document.getElementById('dash-calc-direct');
+            const dashBlocks = document.getElementById('dash-calc-blocks');
+            const gridLegend = document.getElementById('grid-legend');
+
+            let mathTimeout = null;
+
+            // Логика "умной разбивки на блоки" (как человек считает в уме)
+            function getSmartBreakdown(pct, baseValue) {
+                let remaining = pct;
+                let blocks = [];
+                let calculations = [];
+                let totalResult = 0;
+
+                // Разбираем процент на удобные куски: 50, 25, 10, 5, 1
+                const chunks = [50, 25, 10, 5, 1];
+                
+                for (let chunk of chunks) {
+                    while (remaining >= chunk) {
+                        blocks.push(chunk);
+                        let val = baseValue * (chunk / 100);
+                        calculations.push(val);
+                        totalResult += val;
+                        remaining -= chunk;
+                    }
+                }
+
+                return { blocks, calculations, totalResult };
+            }
+
+            function updateGridSim() {
+                const base = parseInt(inBase.value);
+                const pct = parseInt(inPct.value);
+                
+                valBase.textContent = base;
+                valPct.textContent = pct + '%';
+
+                const unitValue = base / 100; // Чему равен 1%
+                gridLegend.textContent = `1 клеточка (1%) = ${unitValue} ед.`;
+
+                // Математические строки
+                const result = base * (pct / 100);
+                const directStr = `$$ ${base} \\cdot ${(pct/100).toFixed(2)} = ${result} $$`;
+                
+                const breakdown = getSmartBreakdown(pct, base);
+                let blockStr = "";
+                if (breakdown.calculations.length > 1) {
+                    // Например: 200 (50%) + 40 (10%) = 240
+                    const sumParts = breakdown.calculations.join(' + ');
+                    blockStr = `$$ ${sumParts} = ${result} $$`;
+                } else if (breakdown.calculations.length === 1) {
+                    blockStr = `$$ ${breakdown.calculations[0]} = ${result} $$`;
+                } else {
+                    blockStr = `$$ 0 = 0 $$`;
+                }
+
+                dashDirect.style.opacity = '0';
+                dashBlocks.style.opacity = '0';
+                
+                if (mathTimeout) clearTimeout(mathTimeout);
+                mathTimeout = setTimeout(() => {
+                    dashDirect.innerHTML = directStr;
+                    dashBlocks.innerHTML = blockStr;
+                    safeMathRender([dashDirect, dashBlocks]);
+                    dashDirect.style.opacity = '1';
+                    dashBlocks.style.opacity = '1';
+                }, 150);
+
+                // Отрисовка сетки 10x10
+                drawGrid(pct, breakdown.blocks);
+            }
+
+            function drawGrid(pct, blocks) {
+                const w = canvasG.width;
+                const h = canvasG.height;
+                ctxG.clearRect(0, 0, w, h);
+
+                const padding = 10;
+                const cols = 10;
+                const rows = 10;
+                const cellW = (w - padding * 2) / cols;
+                const cellH = (h - padding * 2) / rows;
+
+                // Цвета для разных блоков, чтобы визуально их разделять
+                const colors = ['#06B6D4', '#8B5CF6', '#4CAF50', '#EC4899', '#F59E0B'];
+                
+                // Создаем карту соответствия клеточки -> цвет
+                let cellColors = new Array(100).fill(null);
+                let colorIndex = 0;
+                let cellCounter = 0;
+
+                for (let b of blocks) {
+                    let currentColor = colors[colorIndex % colors.length];
+                    for (let i = 0; i < b; i++) {
+                        if (cellCounter < 100) {
+                            cellColors[cellCounter] = currentColor;
+                            cellCounter++;
+                        }
+                    }
+                    colorIndex++;
+                }
+
+                // Рисуем сетку
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        let idx = r * cols + c;
+                        let x = padding + c * cellW;
+                        let y = padding + r * cellH;
+
+                        // Заливка если клетка входит в процент
+                        if (cellColors[idx] !== null) {
+                            ctxG.fillStyle = cellColors[idx];
+                            ctxG.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+                            
+                            // Легкое свечение для активных клеток
+                            ctxG.shadowColor = cellColors[idx];
+                            ctxG.shadowBlur = 5;
+                            ctxG.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+                            ctxG.shadowBlur = 0;
+                        }
+
+                        // Рамка клетки
+                        ctxG.strokeStyle = '#333333';
+                        ctxG.lineWidth = 1;
+                        ctxG.strokeRect(x, y, cellW, cellH);
+                    }
+                }
+                
+                // Внешняя жирная рамка (все 100%)
+                ctxG.strokeStyle = '#ffffff';
+                ctxG.lineWidth = 3;
+                ctxG.strokeRect(padding, padding, w - padding * 2, h - padding * 2);
+            }
+
+            inBase.addEventListener('input', updateGridSim);
+            inPct.addEventListener('input', updateGridSim);
+
+            // Инициализация
+            updateGridSim();
+        });
+    </script>
+</body>
+</html>
