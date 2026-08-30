@@ -137,9 +137,12 @@
             display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; 
             background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
         }
-        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
-        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
-        .dashboard-value { font-size: 1.2rem; min-height: 35px; display: flex; align-items: center;}
+        .dashboard-item { 
+            display: flex; flex-direction: column; align-items: flex-start; text-align: left; 
+            padding: 10px 15px; background: rgba(255,255,255,0.02); border-radius: 6px; width: 100%; box-sizing: border-box; overflow: hidden;
+        }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; line-height: 1.3; word-break: break-word; }
+        .dashboard-value { font-size: 1.2rem; min-height: 35px; display: flex; align-items: center; width: 100%; overflow-x: auto; }
 
         .btn {
             background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
@@ -156,6 +159,8 @@
         @media (max-width: 600px) {
             .card { padding: 15px; }
             .dice-cell { width: 30px; height: 30px; font-size: 0.9rem; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .formula-box { font-size: 1rem; padding: 10px; }
         }
     </style>
 </head>
@@ -277,8 +282,8 @@
                     <div class="dashboard-label">Пересечение: $P(A \cap B)$</div>
                     <div class="dashboard-value" id="dash-pand" style="color: var(--brand-purple);">0 / 36</div>
                 </div>
-                <div class="dashboard-item" style="border-left: 4px solid var(--accent); grid-column: 1 / -1; background: rgba(76, 175, 80, 0.05);">
-                    <div class="dashboard-label" style="color: var(--accent);">Объединение (ИЛИ): $P(A \cup B) = P(A) + P(B) - P(A \cap B)$</div>
+                <div class="dashboard-item" style="border-left: 4px solid var(--accent); background: rgba(76, 175, 80, 0.05);">
+                    <div class="dashboard-label" style="color: var(--accent);">Объединение (ИЛИ): $P(A \cup B)$</div>
                     <div class="dashboard-value" id="dash-por" style="color: #fff; font-size: 1.3rem;">0 / 36 = 0%</div>
                 </div>
             </div>
@@ -435,8 +440,8 @@
                 dashPand.innerHTML = `$$${countAnd} / 36$$`;
                 
                 const pct = ((countOr / 36) * 100).toFixed(1);
-                // Формируем красивую формулу для объединения
-                dashPor.innerHTML = `$$${countA}/36 + ${countB}/36 - ${countAnd}/36 = ${countOr}/36 \\approx ${pct}\\%$$`;
+                // Формируем красивую и компактную формулу для объединения
+                dashPor.innerHTML = `$$ \\frac{${countA} + ${countB} - ${countAnd}}{36} = \\frac{${countOr}}{36} \\approx ${pct}\\% $$`;
 
                 safeMathRender([dashPa, dashPb, dashPand, dashPor]);
             };
