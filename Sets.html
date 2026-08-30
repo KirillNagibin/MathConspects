@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Введение в теорию множеств</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .props-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; margin-top: 15px; }
+        .prop-card { 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            padding: 15px; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .prop-title { font-size: 1.1rem; color: var(--text-main); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 10px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 150px; text-align: center; font-size: 0.95rem;
+            transition: all 0.2s; user-select: none;
+        }
+        .process-btn.active {
+            background: rgba(6, 182, 212, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.2rem; min-height: 35px; display: flex; align-items: center;}
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Элементы теории множеств</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Основа современной математики</strong><br>
+                <span style="color: var(--text-muted);">Теория множеств — это язык, на котором говорят вероятность, статистика и информатика. Множество — это просто "коробка" или "пакет", куда мы складываем объекты по какому-то признаку. Понимание того, как эти "коробки" объединяются и пересекаются, решает 90% сложных задач на теорию вероятностей в ЕГЭ.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="box"></i> 1. Анатомия множеств</h2>
+        <div class="card">
+            <p style="margin-top: 0; color: var(--text-muted);">Множества обозначают заглавными латинскими буквами ($A, B, C$), а объекты внутри них (элементы) — строчными ($a, b, c$) или числами.</p>
+            
+            <div class="props-grid">
+                <div class="prop-card" style="border-top: 4px solid var(--brand-purple);">
+                    <div class="prop-title" style="color: var(--brand-purple);">Элемент множества ($\in$)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Если объект лежит в "коробке", мы говорим, что он принадлежит множеству. <br><br>Запись: $a \in A$ (читается: элемент $a$ принадлежит множеству $A$).</p>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--info-text);">
+                    <div class="prop-title" style="color: var(--info-text);">Пустое множество ($\varnothing$)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Множество, в котором вообще нет элементов. Например: "множество живых динозавров в Москве". Важно: пустое множество является подмножеством абсолютно любого множества!</p>
+                </div>
+                <div class="prop-card" style="border-top: 4px solid var(--warn-text);">
+                    <div class="prop-title" style="color: var(--warn-text);">Подмножество ($\subset$)</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">Если все элементы "маленькой коробки" $B$ уже лежат в "большой коробке" $A$, то $B$ — подмножество $A$.<br><br>Запись: $B \subset A$ (например, кошки $\subset$ млекопитающие).</p>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="git-merge"></i> 2. Операции над множествами</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">Множества можно складывать и вычитать друг из друга. В теории вероятностей это напрямую связано с логическими «И» и «ИЛИ».</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--accent);">
+                    <div style="font-size: 0.95rem; color: var(--accent); margin-bottom: 5px;">Объединение (Логическое ИЛИ)</div>
+                    $$A \cup B$$
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Берем всё, что есть в $A$, и всё, что есть в $B$, ссыпаем в одну большую кучу (дубликаты пишем один раз).</p>
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-pink);">
+                    <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 5px;">Пересечение (Логическое И)</div>
+                    $$A \cap B$$
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Ищем общие элементы. Берем только то, что лежит <b>ОДНОВРЕМЕННО</b> и в $A$, и в $B$.</p>
+                </div>
+                <div class="formula-box" style="border-color: var(--warn-text);">
+                    <div style="font-size: 0.95rem; color: var(--warn-text); margin-bottom: 5px;">Разность (Только $A$)</div>
+                    $$A \setminus B$$
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 5px 0 0 0; white-space: normal;">Берем множество $A$ и выкидываем из него всё, что есть во множестве $B$.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="circle-dashed"></i> 3. Лаборатория: Диаграммы Эйлера-Венна</h2>
+        <p style="color: var(--text-muted);">Лучший способ понять множества — нарисовать их в виде кругов. <br>Пусть $A$ — это множество $\{1, 2, 3, 4\}$, а $B$ — множество $\{3, 4, 5, 6\}$. Выбирайте операции ниже, чтобы увидеть, какие числа попадут в результат (они будут закрашены).</p>
+
+        <div class="simulator" style="border-color: var(--accent);">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-op-union" onclick="setOperation('union')">Объединение ($A \cup B$)</div>
+                <div class="process-btn" id="btn-op-intersect" onclick="setOperation('intersect')">Пересечение ($A \cap B$)</div>
+                <div class="process-btn" id="btn-op-diffA" onclick="setOperation('diffA')">Разность ($A \setminus B$)</div>
+                <div class="process-btn" id="btn-op-diffB" onclick="setOperation('diffB')">Разность ($B \setminus A$)</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-item" style="border-color: var(--accent); background: rgba(6, 182, 212, 0.05);">
+                    <div class="dashboard-label" style="color: var(--accent);">Итоговое множество (Результат)</div>
+                    <div class="dashboard-value" id="dash-result-set" style="color: #fff; font-size: 1.3rem;">$\{1, 2, 3, 4, 5, 6\}$</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-venn" width="600" height="300"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="alert-triangle"></i> 4. Как это бьет по баллам на ОГЭ/ЕГЭ</h2>
+        <div class="card" style="border-color: var(--error-text); background: rgba(239, 68, 68, 0.03);">
+            <p style="margin-top: 0; color: var(--text-main);">В теории вероятностей множества — это события. И здесь кроется главная ловушка сложных задач.</p>
+            
+            <div class="alert-box alert-warning" style="margin-bottom: 15px; margin-top: 20px;">
+                <div class="icon-box"><i data-lucide="search" color="var(--warn-text)"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Связь операций и вероятности</strong><br>
+                    <ul style="color: var(--text-muted); margin: 5px 0 0 0; padding-left: 15px;">
+                        <li>Если в задаче стоит условие <b>"ИЛИ"</b> (выпадет орел ИЛИ решка) — это <strong style="color: var(--accent);">ОБЪЕДИНЕНИЕ</strong> ($A \cup B$). В вероятности объединение часто означает сложение: $P(A \cup B) = P(A) + P(B)$.</li>
+                        <li>Если в задаче стоит условие <b>"И"</b> (выпадет орел И монета блестящая) — это <strong style="color: var(--brand-pink);">ПЕРЕСЕЧЕНИЕ</strong> ($A \cap B$). В вероятности пересечение часто означает умножение.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert-box alert-error" style="margin-bottom: 0;">
+                <div class="icon-box"><i data-lucide="x-circle" color="var(--error-text)"></i></div>
+                <div>
+                    <strong style="color: var(--error-text);">Ловушка сложения (Несовместные события)</strong><br>
+                    <span style="color: var(--text-muted);">Многие школьники слепо складывают вероятности, если видят слово "ИЛИ". Но если круги Венна пересекаются (то есть события могут произойти одновременно), то при объединении вы посчитаете их "серединку" дважды!<br>
+                    Правильная формула из ЕГЭ: $P(A \cup B) = P(A) + P(B) \mathbf{- P(A \cap B)}$. <br>
+                    Если круги не пересекаются (пересечение пустое, $A \cap B = \varnothing$), то события называются <b>несовместными</b>, и только тогда серединку можно не вычитать.</span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика (Логика множеств)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Чай и Кофе</h3>
+            <p>В классе 30 учеников. 20 из них пьют чай (множество $A$), 15 пьют кофе (множество $B$). Известно, что 5 человек пьют и чай, и кофе. Сколько учеников в классе не пьют ни чай, ни кофе?</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')" style="width: auto;"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение (через круги Эйлера-Венна):</strong></p>
+                <p>1. Пересечение множеств ($A \cap B$) — это те 5 человек, которые пьют оба напитка. Они лежат в середине (в пересечении кругов).</p>
+                
+                <p>2. Сколько человек пьют <b>только</b> чай ($A \setminus B$)?<br>
+                Всего любителей чая 20, но 5 из них мы уже посчитали в середине. Значит, только чай пьют: $20 - 5 = 15$ человек.</p>
+                
+                <p>3. Сколько человек пьют <b>только</b> кофе ($B \setminus A$)?<br>
+                Аналогично: $15 - 5 = 10$ человек.</p>
+
+                <p>4. Посчитаем объединение ($A \cup B$) — сколько вообще людей что-то пьют:<br>
+                (Только чай) + (И то и другое) + (Только кофе) = $15 + 5 + 10 = 30$ человек.</p>
+                
+                <p style="font-size: 0.95rem; color: var(--text-muted);"><i>Альтернативный расчет по формуле из ловушки ЕГЭ: $|A \cup B| = |A| + |B| - |A \cap B| = 20 + 15 - 5 = 30$.</i></p>
+
+                <p>5. Так как в классе всего 30 человек, и мы выяснили, что ровно 30 человек пьют хотя бы один напиток, то тех, кто ничего не пьет: $30 - 30 = 0$.</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 0 учеников</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация иконок
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Безопасный рендеринг MathJax
+            let mathRenderQueue = Promise.resolve();
+            function safeMathRender(elements) {
+                if (window.MathJax && window.MathJax.typesetPromise && window.mathJaxLoaded) {
+                    mathRenderQueue = mathRenderQueue
+                        .then(() => MathJax.typesetPromise(elements))
+                        .catch(err => console.error('MathJax Render Error:', err));
+                } else {
+                    setTimeout(() => safeMathRender(elements), 300);
+                }
+            }
+
+            window.showStep = function(stepId, btnId) {
+                const el = document.getElementById(stepId);
+                el.classList.add('active');
+                if (btnId) {
+                    const btn = document.getElementById(btnId);
+                    if(btn) btn.style.display = 'none';
+                }
+                safeMathRender([el]);
+            };
+
+            /* --- СИМУЛЯТОР: ДИАГРАММЫ ЭЙЛЕРА-ВЕННА --- */
+            const canvasVenn = document.getElementById('canvas-venn');
+            const ctxVenn = canvasVenn.getContext('2d');
+            const dashResultSet = document.getElementById('dash-result-set');
+
+            let currentOp = 'union';
+
+            window.setOperation = function(op) {
+                currentOp = op;
+                
+                // Update UI Buttons
+                document.querySelectorAll('.process-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.borderColor = "var(--border)";
+                });
+                const activeBtn = document.getElementById(`btn-op-${op}`);
+                activeBtn.classList.add('active');
+                activeBtn.style.borderColor = "var(--accent)";
+
+                updateVenn();
+            };
+
+            function updateVenn() {
+                const w = canvasVenn.width;
+                const h = canvasVenn.height;
+                const cxA = w / 2 - 60;
+                const cxB = w / 2 + 60;
+                const cy = h / 2;
+                const R = 100;
+
+                ctxVenn.clearRect(0, 0, w, h);
+
+                // Определение цветов и логики
+                const colorA_fill = 'rgba(59, 130, 246, 0.5)'; // Синий
+                const colorB_fill = 'rgba(239, 68, 68, 0.5)';  // Красный
+                const colorA_stroke = '#3B82F6';
+                const colorB_stroke = '#EF4444';
+                const colorActive = 'rgba(6, 182, 212, 0.8)'; // Бирюзовый акцент для выбранной области
+
+                // Логика отрисовки закрашенных областей
+                ctxVenn.save();
+
+                if (currentOp === 'union') {
+                    // Объединение: Закрашиваем оба круга
+                    ctxVenn.beginPath(); ctxVenn.arc(cxA, cy, R, 0, Math.PI*2); ctxVenn.fillStyle = colorActive; ctxVenn.fill();
+                    ctxVenn.beginPath(); ctxVenn.arc(cxB, cy, R, 0, Math.PI*2); ctxVenn.fillStyle = colorActive; ctxVenn.fill();
+                    dashResultSet.innerHTML = `$\\{1, 2, 3, 4, 5, 6\\}$`;
+                } 
+                else if (currentOp === 'intersect') {
+                    // Пересечение: Закрашиваем только общую часть через clip()
+                    ctxVenn.beginPath(); ctxVenn.arc(cxA, cy, R, 0, Math.PI*2); ctxVenn.clip();
+                    ctxVenn.beginPath(); ctxVenn.arc(cxB, cy, R, 0, Math.PI*2); ctxVenn.fillStyle = colorActive; ctxVenn.fill();
+                    dashResultSet.innerHTML = `$\\{3, 4\\}$`;
+                }
+                else if (currentOp === 'diffA') {
+                    // Разность A \ B
+                    ctxVenn.beginPath(); ctxVenn.arc(cxA, cy, R, 0, Math.PI*2); ctxVenn.fillStyle = colorActive; ctxVenn.fill();
+                    ctxVenn.globalCompositeOperation = 'destination-out'; // Вырезаем B
+                    ctxVenn.beginPath(); ctxVenn.arc(cxB, cy, R, 0, Math.PI*2); ctxVenn.fill();
+                    dashResultSet.innerHTML = `$\\{1, 2\\}$`;
+                }
+                else if (currentOp === 'diffB') {
+                    // Разность B \ A
+                    ctxVenn.beginPath(); ctxVenn.arc(cxB, cy, R, 0, Math.PI*2); ctxVenn.fillStyle = colorActive; ctxVenn.fill();
+                    ctxVenn.globalCompositeOperation = 'destination-out'; // Вырезаем A
+                    ctxVenn.beginPath(); ctxVenn.arc(cxA, cy, R, 0, Math.PI*2); ctxVenn.fill();
+                    dashResultSet.innerHTML = `$\\{5, 6\\}$`;
+                }
+
+                ctxVenn.restore();
+                
+                // Рендер формулы ответа
+                safeMathRender([dashResultSet]);
+
+                // Отрисовка контуров кругов (поверх всего)
+                ctxVenn.beginPath(); ctxVenn.arc(cxA, cy, R, 0, Math.PI*2);
+                ctxVenn.strokeStyle = colorA_stroke; ctxVenn.lineWidth = 3; ctxVenn.stroke();
+                
+                ctxVenn.beginPath(); ctxVenn.arc(cxB, cy, R, 0, Math.PI*2);
+                ctxVenn.strokeStyle = colorB_stroke; ctxVenn.lineWidth = 3; ctxVenn.stroke();
+
+                // Подписи множеств
+                ctxVenn.fillStyle = colorA_stroke; ctxVenn.font = 'bold 24px sans-serif'; ctxVenn.fillText('A', cxA - 110, cy - 80);
+                ctxVenn.fillStyle = colorB_stroke; ctxVenn.fillText('B', cxB + 90, cy - 80);
+
+                // Отрисовка элементов (чисел)
+                ctxVenn.fillStyle = '#ffffff';
+                ctxVenn.font = 'bold 20px sans-serif';
+                ctxVenn.textAlign = 'center';
+                ctxVenn.textBaseline = 'middle';
+
+                // Только A: {1, 2}
+                ctxVenn.fillText('1', cxA - 40, cy - 20);
+                ctxVenn.fillText('2', cxA - 40, cy + 30);
+
+                // Пересечение: {3, 4}
+                ctxVenn.fillText('3', w/2, cy - 20);
+                ctxVenn.fillText('4', w/2, cy + 30);
+
+                // Только B: {5, 6}
+                ctxVenn.fillText('5', cxB + 40, cy - 20);
+                ctxVenn.fillText('6', cxB + 40, cy + 30);
+            }
+
+            // Инициализация
+            updateVenn();
+
+        });
+    </script>
+</body>
+</html>
