@@ -84,13 +84,13 @@
             padding: 15px; border-radius: 8px;
             display: flex; flex-direction: column; justify-content: flex-start;
         }
-        .prop-title { font-size: 1.1rem; color: var(--text-main); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        .prop-title { font-size: 1.05rem; color: var(--text-main); font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; line-height: 1.3;}
         
         .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
         .formula-box {
             background: rgba(0,0,0,0.3); border: 1px solid var(--border);
             padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
-            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+            overflow-x: auto; overflow-y: hidden; white-space: normal;
         }
         
         mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
@@ -203,12 +203,17 @@
                 <div class="process-btn" id="btn-op-intersect" onclick="setOperation('intersect')">Пересечение ($A \cap B$)</div>
                 <div class="process-btn" id="btn-op-diffA" onclick="setOperation('diffA')">Разность ($A \setminus B$)</div>
                 <div class="process-btn" id="btn-op-diffB" onclick="setOperation('diffB')">Разность ($B \setminus A$)</div>
+                <div class="process-btn" id="btn-op-symdiff" onclick="setOperation('symdiff')">Симметричная разн. ($A \Delta B$)</div>
             </div>
 
             <div class="dashboard-grid">
                 <div class="dashboard-item" style="border-color: var(--accent); background: rgba(6, 182, 212, 0.05);">
                     <div class="dashboard-label" style="color: var(--accent);">Итоговое множество (Результат)</div>
                     <div class="dashboard-value" id="dash-result-set" style="color: #fff; font-size: 1.3rem;">$\{1, 2, 3, 4, 5, 6\}$</div>
+                </div>
+                <div class="dashboard-item" style="grid-column: 1 / -1; border-color: var(--border); background: rgba(255,255,255,0.02);">
+                    <div class="dashboard-label">Смысл операции в реальной жизни</div>
+                    <div class="dashboard-value" id="dash-explanation" style="font-size: 0.95rem; font-weight: normal; color: var(--text-muted); min-height: auto; margin-top: 5px;">Подходит хотя бы под одно условие (Логическое ИЛИ).<br>Например: «Берем на работу тех, кто знает Python (A) ИЛИ знает Java (B)». Подойдут и те, кто знает только один язык, и те, кто знает оба.</div>
                 </div>
             </div>
 
@@ -309,6 +314,14 @@
 
             let currentOp = 'union';
 
+            const explanations = {
+                union: "Подходит хотя бы под одно условие (Логическое ИЛИ).<br>Например: «Берем на работу тех, кто знает Python (A) ИЛИ знает Java (B)». Подойдут и те, кто знает только один язык, и те, кто знает оба.",
+                intersect: "Строгое выполнение обоих условий одновременно (Логическое И).<br>Например: «Нужна машина красного цвета (A) И с автоматической коробкой (B)». Ищем пересечение требований.",
+                diffA: "Выполнение первого условия с исключением второго.<br>Например: «Купить билеты на комедию (A), но чтобы там НЕ играл определенный актер (B)».",
+                diffB: "Выполнение второго условия с исключением первого.<br>Например: «Выбрать из меню десерты (B), которые НЕ содержат шоколад (A)».",
+                symdiff: "Строгое ИЛИ (Исключающее ИЛИ / XOR). Выполняется ровно одно из двух условий.<br>Например: «К обеду в столовой можно выбрать либо суп (A), либо десерт (B), но не оба блюда сразу»."
+            };
+
             window.setOperation = function(op) {
                 currentOp = op;
                 
@@ -320,6 +333,8 @@
                 const activeBtn = document.getElementById(`btn-op-${op}`);
                 activeBtn.classList.add('active');
                 activeBtn.style.borderColor = "var(--accent)";
+                
+                document.getElementById('dash-explanation').innerHTML = explanations[op];
 
                 updateVenn();
             };
@@ -369,6 +384,13 @@
                     ctxVenn.globalCompositeOperation = 'destination-out'; // Вырезаем A
                     ctxVenn.beginPath(); ctxVenn.arc(cxA, cy, R, 0, Math.PI*2); ctxVenn.fill();
                     dashResultSet.innerHTML = `$\\{5, 6\\}$`;
+                }
+                else if (currentOp === 'symdiff') {
+                    // Симметричная разность
+                    ctxVenn.globalCompositeOperation = 'xor';
+                    ctxVenn.beginPath(); ctxVenn.arc(cxA, cy, R, 0, Math.PI*2); ctxVenn.fillStyle = colorActive; ctxVenn.fill();
+                    ctxVenn.beginPath(); ctxVenn.arc(cxB, cy, R, 0, Math.PI*2); ctxVenn.fill();
+                    dashResultSet.innerHTML = `$\\{1, 2, 5, 6\\}$`;
                 }
 
                 ctxVenn.restore();
