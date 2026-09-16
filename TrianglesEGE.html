@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Треугольники (Углубленный уровень ЕГЭ)</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --border: #333333;
+            --accent: #4CAF50;
+            --accent-hover: #45a049;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-orange: #F97316;
+            --brand-cyan: #06B6D4;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        .table-container { overflow-x: auto; margin-bottom: 20px; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600;}
+        .data-table td { color: var(--text-muted); }
+
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        /* Симулятор */
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 10px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 200px; text-align: center; font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .process-btn.active { background: rgba(76, 175, 80, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold; }
+
+        .sim-controls { margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #1a1a1a; border-radius: 8px; border: 1px solid #333; padding: 10px;}
+        canvas { max-width: 100%; display: block; touch-action: none; cursor: crosshair;}
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.1rem; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(76, 175, 80, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .process-selector { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Треугольники: Взлом планиметрии ЕГЭ</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Почему треугольник — это 90% геометрии?</strong><br>
+                <span style="color: var(--text-muted);">В первой части ЕГЭ треугольник встречается почти везде. Во второй части (Задача №18) любая сложная фигура — трапеция, параллелограмм, произвольный многоугольник — решается через её разбиение на треугольники (достройку или проведение диагоналей). Если вы понимаете треугольник, вы понимаете всю планиметрию.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="triangle-right"></i> 1. Метрические соотношения (Прямоугольный треугольник)</h2>
+        <div class="card">
+            <p style="color: var(--text-muted); margin-top: 0;">В ЕГЭ обожают давать прямоугольный треугольник, в котором проведена высота к гипотенузе. Эта высота $h$ разбивает большой треугольник на два маленьких, и <b>все три треугольника подобны друг другу!</b> Отсюда выводятся мощнейшие формулы (без зубрёжки, просто из пропорций подобия):</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--accent);">
+                    <div style="font-size: 0.9rem; color: var(--accent); margin-bottom: 5px;">Высота (Квадрат высоты)</div>
+                    $$h_c^2 = a_c \cdot b_c$$
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">где $a_c$ и $b_c$ — проекции катетов на гипотенузу.</span>
+                </div>
+                <div class="formula-box" style="border-color: var(--info-text);">
+                    <div style="font-size: 0.9rem; color: var(--info-text); margin-bottom: 5px;">Катет (Квадрат катета)</div>
+                    $$a^2 = c \cdot a_c$$
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Катет — среднее пропорциональное между гипотенузой и проекцией.</span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="swords"></i> 2. Универсальные решалы (Теоремы Синусов и Косинусов)</h2>
+        <div class="card">
+            <p>Это тяжелая артиллерия, которая работает для <b>ЛЮБЫХ</b> треугольников (не только прямоугольных).</p>
+            
+            <h3 style="color: var(--brand-purple); margin-top: 15px;">Теорема косинусов</h3>
+            <div class="formula-box" style="border-color: var(--brand-purple);">
+                $$c^2 = a^2 + b^2 - 2ab \cos \gamma$$
+            </div>
+            <ul style="color: var(--text-muted);">
+                <li>Позволяет найти третью сторону, если известны две другие и угол между ними.</li>
+                <li><strong style="color: var(--text-main);">Лайфхак для ЕГЭ:</strong> Если косинус отрицательный (угол тупой), то "минус на минус даст плюс", и формула превратится в $c^2 = a^2 + b^2 + 2ab|\cos\gamma|$.</li>
+            </ul>
+
+            <h3 style="color: var(--brand-cyan); margin-top: 25px;">Теорема синусов</h3>
+            <div class="formula-box" style="border-color: var(--brand-cyan);">
+                $$\frac{a}{\sin \alpha} = \frac{b}{\sin \beta} = \frac{c}{\sin \gamma} = 2R$$
+            </div>
+            <p style="color: var(--text-muted);">Здесь $R$ — радиус <b>описанной</b> окружности. Именно этот «хвост» $= 2R$ решает половину задач первой части, когда дан треугольник вписанный в окружность.</p>
+        </div>
+
+        <h2><i data-lucide="crosshairs"></i> 3. Замечательные точки треугольника</h2>
+        <div class="card table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Линия</th>
+                        <th>Где пересекаются?</th>
+                        <th>Свойства для ЕГЭ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Медианы</strong></td>
+                        <td>Центр масс (центроид)</td>
+                        <td>Пересекаются в отношении <strong style="color: var(--accent);">2:1</strong>, считая от вершины. Делят треугольник на 6 <b>равновеликих</b> (равных по площади) треугольников.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Биссектрисы</strong></td>
+                        <td>Центр <strong style="color: var(--brand-orange);">вписанной</strong> окружности</td>
+                        <td>Биссектриса делит противоположную сторону на отрезки, пропорциональные прилежащим сторонам: $\frac{a}{b} = \frac{x}{y}$. Формула длины: $l^2 = ab - xy$.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Высоты</strong></td>
+                        <td>Ортоцентр</td>
+                        <td>Ортоцентр остроугольного треугольника лежит внутри, прямоугольного — совпадает с вершиной прямого угла, тупоугольного — лежит <b>ВНЕ</b> треугольника!</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Серединные перпендикуляры</strong></td>
+                        <td>Центр <strong style="color: var(--info-text);">описанной</strong> окружности</td>
+                        <td>У прямоугольного треугольника этот центр лежит строго на <b>середине гипотенузы</b>. Медиана, проведенная к гипотенузе, равна радиусу $R$.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2><i data-lucide="layers"></i> 4. Мастерская: Площади и Отношения</h2>
+        <p style="color: var(--text-muted);">Площадь — мощнейший инструмент. Одну и ту же площадь можно выразить 5 разными способами! А отношения площадей — это ключ к задаче №18.<br>
+        <b>Управление симулятором:</b> Перетаскивайте вершины треугольника $A, B, C$ мышкой. Переключайте режимы для изучения разных свойств.</p>
+
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-mode-area" onclick="setMode('area')">Единая матрица площадей</div>
+                <div class="process-btn" id="btn-mode-cevian" onclick="setMode('cevian')">Отношения (Чевиана)</div>
+                <div class="process-btn" id="btn-mode-similar" onclick="setMode('similar')">Отношения (Подобие)</div>
+            </div>
+
+            <div id="controls-relations" class="sim-controls" style="display: none; margin-bottom: 10px;">
+                <div class="control-group">
+                    <label style="color: var(--accent);"><span>Точка сечения $t$:</span> <span id="val-t" style="font-weight: bold;">0.50</span></label>
+                    <input type="range" id="sim-t" min="0.05" max="0.95" value="0.5" step="0.01" style="accent-color: var(--accent);">
+                </div>
+            </div>
+
+            <!-- Dashboard 1: Площади -->
+            <div id="dash-area" class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Через высоту ($S = \frac{1}{2}ah$)</div>
+                    <div class="dashboard-value" id="val-s1" style="color: #fff;">0.0</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Через синус ($S = \frac{1}{2}ab\sin\gamma$)</div>
+                    <div class="dashboard-value" id="val-s2" style="color: #fff;">0.0</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">По Герону ($\sqrt{p(p-a)(p-b)(p-c)}$)</div>
+                    <div class="dashboard-value" id="val-s3" style="color: #fff;">0.0</div>
+                </div>
+                <div class="dashboard-item" style="border: 1px solid var(--brand-orange); background: rgba(249, 115, 22, 0.1);">
+                    <div class="dashboard-label">Вписанная окр. ($S = pr$)</div>
+                    <div class="dashboard-value" id="val-s4" style="color: var(--brand-orange);">0.0</div>
+                </div>
+                <div class="dashboard-item" style="border: 1px solid var(--info-text); background: rgba(59, 130, 246, 0.1);">
+                    <div class="dashboard-label">Описанная окр. ($S = \frac{abc}{4R}$)</div>
+                    <div class="dashboard-value" id="val-s5" style="color: var(--info-text);">0.0</div>
+                </div>
+            </div>
+
+            <!-- Dashboard 2: Отношения -->
+            <div id="dash-relations" class="dashboard-grid" style="display: none; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="dashboard-item" style="border: 1px solid var(--accent); background: rgba(76, 175, 80, 0.1);">
+                    <div class="dashboard-label">Отношение площадей ($S_1 / S_2$)</div>
+                    <div class="dashboard-value" id="val-rel-s" style="color: var(--accent); font-size: 1.4rem;">0.0</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label" id="lbl-rel-rule">Правило</div>
+                    <div class="dashboard-value" id="val-rel-rule" style="color: #fff; font-size: 1.1rem;">Относятся как основания</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-geom" width="700" height="400"></canvas>
+            </div>
+            
+            <p id="helper-text" style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 15px;">
+                Двигайте вершины A, B и C! Вы увидите, что все 5 формул всегда дают <b>идентичный</b> результат площади.
+            </p>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика (ЕГЭ)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Отношение площадей</h3>
+            <p>В треугольнике $ABC$ на стороне $AC$ отмечена точка $D$ так, что $AD : DC = 2 : 3$. Через точку $D$ проведена прямая, параллельная стороне $AB$, пересекающая сторону $BC$ в точке $E$. Найдите отношение площади треугольника $DEC$ к площади треугольника $ABC$.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. Так как прямая $DE \parallel AB$, то треугольник $DEC$ <b>подобен</b> большому треугольнику $ABC$ (по двум углам: угол $C$ общий, а соответственные углы при параллельных прямых равны).</p>
+                
+                <p>2. Найдем коэффициент подобия $k$. По условию $AD : DC = 2 : 3$. Пусть $AD = 2x$, $DC = 3x$.<br>
+                Тогда вся сторона $AC = 2x + 3x = 5x$.<br>
+                Коэффициент подобия малого треугольника к большому равен отношению их сходственных сторон:<br>
+                $$k = \frac{DC}{AC} = \frac{3x}{5x} = \frac{3}{5}$$</p>
+                
+                <p>3. Отношение площадей подобных треугольников равно квадрату коэффициента подобия:<br>
+                $$\frac{S_{DEC}}{S_{ABC}} = k^2 = \left(\frac{3}{5}\right)^2 = \frac{9}{25}$$</p>
+
+                <p>Переведем в десятичную дробь: $9 / 25 = 0.36$.</p>
+                
+                <div style="background: rgba(76, 175, 80, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 0.36</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        function forceMathJaxRender() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.error(err));
+            } else {
+                window.setTimeout(forceMathJaxRender, 200);
+            }
+        }
+        window.setTimeout(forceMathJaxRender, 100);
+
+        function showStep(stepId, btnId) {
+            const el = document.getElementById(stepId);
+            el.classList.add('active');
+            if (btnId) {
+                const btn = document.getElementById(btnId);
+                if(btn) btn.style.display = 'none';
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([el]).catch(err => console.error(err));
+            }
+        }
+
+        /* ==========================================
+           СИМУЛЯТОР: ТРЕУГОЛЬНИКИ
+           ========================================== */
+        const canvas = document.getElementById('canvas-geom');
+        const ctx = canvas.getContext('2d');
+        
+        let simMode = 'area'; // 'area', 'cevian', 'similar'
+        
+        // Вершины
+        let P = [
+            { x: 150, y: 300, id: 'A', isDragging: false },
+            { x: 350, y: 100, id: 'B', isDragging: false },
+            { x: 550, y: 300, id: 'C', isDragging: false }
+        ];
+
+        let dragTarget = null;
+        
+        // Controls
+        const inT = document.getElementById('sim-t');
+        const valT = document.getElementById('val-t');
+
+        // Математика векторов и треугольника
+        function dist(p1, p2) {
+            return Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2);
+        }
+
+        function getArea(A, B, C) {
+            return Math.abs((A.x*(B.y - C.y) + B.x*(C.y - A.y) + C.x*(A.y - B.y)) / 2);
+        }
+
+        // Центр вписанной окружности (баритектурические координаты)
+        function getIncenter(A, B, C, a, b, c) {
+            let P = a + b + c;
+            return {
+                x: (a*A.x + b*B.x + c*C.x) / P,
+                y: (a*A.y + b*B.y + c*C.y) / P
+            };
+        }
+
+        // Центр описанной окружности
+        function getCircumcenter(A, B, C) {
+            let D = 2 * (A.x*(B.y - C.y) + B.x*(C.y - A.y) + C.x*(A.y - B.y));
+            if (Math.abs(D) < 0.1) return {x: 0, y: 0}; // degenerate
+            let Ux = ((A.x**2 + A.y**2)*(B.y - C.y) + (B.x**2 + B.y**2)*(C.y - A.y) + (C.x**2 + C.y**2)*(A.y - B.y)) / D;
+            let Uy = ((A.x**2 + A.y**2)*(C.x - B.x) + (B.x**2 + B.y**2)*(A.x - C.x) + (C.x**2 + C.y**2)*(B.x - A.x)) / D;
+            return {x: Ux, y: Uy};
+        }
+
+        // Угол по теореме косинусов
+        function getAngle(a, b, c) {
+            let cosC = (a*a + b*b - c*c) / (2*a*b);
+            cosC = Math.max(-1, Math.min(1, cosC)); // precision clamp
+            return Math.acos(cosC);
+        }
+
+        window.setMode = function(mode) {
+            simMode = mode;
+            document.querySelectorAll('.process-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-mode-${mode}`).classList.add('active');
+
+            if (mode === 'area') {
+                document.getElementById('controls-relations').style.display = 'none';
+                document.getElementById('dash-area').style.display = 'grid';
+                document.getElementById('dash-relations').style.display = 'none';
+                document.getElementById('helper-text').innerHTML = "Двигайте вершины A, B и C! Вы увидите, что все 5 формул всегда дают <b>идентичный</b> результат площади.";
+            } else {
+                document.getElementById('controls-relations').style.display = 'block';
+                document.getElementById('dash-area').style.display = 'none';
+                document.getElementById('dash-relations').style.display = 'grid';
+                if (mode === 'cevian') {
+                    document.getElementById('helper-text').innerHTML = "<b>Чевиана</b> (отрезок из вершины к основанию) делит треугольник на два. Площади относятся так же, как отрезки основания: $S_1/S_2 = t / (1-t)$.";
+                } else {
+                    document.getElementById('helper-text').innerHTML = "<b>Подобные треугольники:</b> Прямая параллельна основанию. Площадь отсеченного подобного треугольника относится к площади большого как $k^2 = t^2$.";
+                }
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+            updateSimulation();
+        };
+
+        // Pointer Events
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * (canvas.width / rect.width),
+                y: (clientY - rect.top) * (canvas.height / rect.height)
+            };
+        }
+
+        function onDown(e) {
+            const pos = getPos(e);
+            for (let i=0; i<P.length; i++) {
+                if (dist(pos, P[i]) < 20) {
+                    dragTarget = P[i];
+                    dragTarget.isDragging = true;
+                    e.preventDefault();
+                    break;
+                }
+            }
+        }
+
+        function onMove(e) {
+            if (!dragTarget) return;
+            const pos = getPos(e);
+            dragTarget.x = Math.max(20, Math.min(canvas.width - 20, pos.x));
+            dragTarget.y = Math.max(20, Math.min(canvas.height - 20, pos.y));
+            updateSimulation();
+            e.preventDefault();
+        }
+
+        function onUp(e) {
+            if (dragTarget) {
+                dragTarget.isDragging = false;
+                dragTarget = null;
+            }
+        }
+
+        canvas.addEventListener('mousedown', onDown);
+        canvas.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+        canvas.addEventListener('touchstart', onDown, {passive: false});
+        canvas.addEventListener('touchmove', onMove, {passive: false});
+        window.addEventListener('touchend', onUp);
+        inT.addEventListener('input', updateSimulation);
+
+        function drawPoint(ctx, p, color) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 6, 0, Math.PI*2);
+            ctx.fillStyle = p.isDragging ? '#fff' : color;
+            ctx.fill();
+            if (p.isDragging) {
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(p.id, p.x, p.y - 15);
+        }
+
+        function updateSimulation() {
+            const A = P[0], B = P[1], C = P[2];
+            
+            // Стороны: a (BC), b (AC), c (AB)
+            const a = dist(B, C);
+            const b = dist(A, C);
+            const c = dist(A, B);
+            
+            // Площадь (в пикселях квадратных, масштабируем для UI / 100)
+            const S_px = getArea(A, B, C);
+            const S_ui = S_px / 100;
+
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // Режим "Матрица Площадей"
+            if (simMode === 'area') {
+                const p = (a + b + c) / 2;
+                const r = S_px / p;
+                const R = (a * b * c) / (4 * S_px);
+
+                const I = getIncenter(A, B, C, a, b, c);
+                const O = getCircumcenter(A, B, C);
+
+                // Отрисовка базового треугольника
+                ctx.beginPath();
+                ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                ctx.fill();
+                ctx.strokeStyle = '#888';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Вписанная окружность
+                ctx.beginPath();
+                ctx.arc(I.x, I.y, r, 0, Math.PI*2);
+                ctx.strokeStyle = 'rgba(249, 115, 22, 0.8)'; // orange
+                ctx.stroke();
+                ctx.fillStyle = 'var(--brand-orange)';
+                ctx.fillRect(I.x-2, I.y-2, 4, 4);
+
+                // Описанная окружность (с защитой от слишком больших радиусов при вырождении)
+                if (R < 2000) {
+                    ctx.beginPath();
+                    ctx.arc(O.x, O.y, R, 0, Math.PI*2);
+                    ctx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // blue
+                    ctx.stroke();
+                    ctx.fillStyle = 'var(--info-text)';
+                    ctx.fillRect(O.x-2, O.y-2, 4, 4);
+                }
+
+                // Высота из B на AC
+                // Проекция B на AC:
+                const AC_dx = C.x - A.x, AC_dy = C.y - A.y;
+                const AC_len2 = AC_dx**2 + AC_dy**2;
+                const t_h = ((B.x - A.x)*AC_dx + (B.y - A.y)*AC_dy) / AC_len2;
+                const H_proj = { x: A.x + t_h*AC_dx, y: A.y + t_h*AC_dy };
+                
+                ctx.beginPath();
+                ctx.moveTo(B.x, B.y);
+                ctx.lineTo(H_proj.x, H_proj.y);
+                ctx.strokeStyle = 'rgba(76, 175, 80, 0.8)';
+                ctx.setLineDash([5,5]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Обновляем дашборды (показываем, что они равны)
+                // Все формулы математически должны давать S_ui
+                const f1 = (0.5 * b * dist(B, H_proj)) / 100; // 1/2 ah
+                const gamma = getAngle(a, b, c);
+                const f2 = (0.5 * a * b * Math.sin(gamma)) / 100;
+                const f3 = Math.sqrt(p * (p-a) * (p-b) * (p-c)) / 100;
+                const f4 = (p * r) / 100;
+                const f5 = (a * b * c) / (4 * R) / 100;
+
+                document.getElementById('val-s1').textContent = f1.toFixed(1);
+                document.getElementById('val-s2').textContent = f2.toFixed(1);
+                document.getElementById('val-s3').textContent = f3.toFixed(1);
+                document.getElementById('val-s4').textContent = f4.toFixed(1);
+                document.getElementById('val-s5').textContent = f5.toFixed(1);
+            } 
+            // Режим Отношений (Чевиана или Подобие)
+            else {
+                const t = parseFloat(inT.value);
+                valT.textContent = t.toFixed(2);
+
+                if (simMode === 'cevian') {
+                    // Точка D на AC
+                    const D = { x: A.x + t*(C.x - A.x), y: A.y + t*(C.y - A.y) };
+
+                    // Треугольник ABD (слева, зеленый)
+                    ctx.beginPath();
+                    ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(D.x, D.y); ctx.closePath();
+                    ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Треугольник BDC (справа, синий)
+                    ctx.beginPath();
+                    ctx.moveTo(B.x, B.y); ctx.lineTo(D.x, D.y); ctx.lineTo(C.x, C.y); ctx.closePath();
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.3)';
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Чевиана BD
+                    ctx.beginPath(); ctx.moveTo(B.x, B.y); ctx.lineTo(D.x, D.y); 
+                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+
+                    ctx.fillStyle = '#fff'; ctx.fillText('D', D.x, D.y + 15);
+
+                    // Ratio
+                    const ratio = t / (1 - t);
+                    document.getElementById('val-rel-s').textContent = ratio.toFixed(2);
+                    document.getElementById('lbl-rel-rule').textContent = "Отношение отрезков (t / 1-t)";
+                    document.getElementById('val-rel-rule').textContent = `${t.toFixed(2)} / ${(1-t).toFixed(2)}`;
+                } 
+                else if (simMode === 'similar') {
+                    // Точки D на AB, E на BC так, что DE || AC.
+                    // Коэффициент подобия = t. (Если t=1, это сам треугольник. t=0 это точка B).
+                    // Расстояние от B. 
+                    // D = B + t*(A - B)
+                    // E = B + t*(C - B)
+                    const D = { x: B.x + t*(A.x - B.x), y: B.y + t*(A.y - B.y) };
+                    const E = { x: B.x + t*(C.x - B.x), y: B.y + t*(C.y - B.y) };
+
+                    // Весь треугольник (серый)
+                    ctx.beginPath();
+                    ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath();
+                    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#888'; ctx.lineWidth = 2; ctx.stroke();
+
+                    // Подобный треугольник BDE (зеленый)
+                    ctx.beginPath();
+                    ctx.moveTo(B.x, B.y); ctx.lineTo(D.x, D.y); ctx.lineTo(E.x, E.y); ctx.closePath();
+                    ctx.fillStyle = 'rgba(76, 175, 80, 0.4)';
+                    ctx.fill();
+                    ctx.strokeStyle = '#4CAF50'; ctx.stroke();
+
+                    ctx.fillStyle = '#fff'; 
+                    ctx.fillText('D', D.x - 15, D.y);
+                    ctx.fillText('E', E.x + 15, E.y);
+
+                    // Ratio S_small / S_big
+                    const ratio = t * t;
+                    document.getElementById('val-rel-s').textContent = ratio.toFixed(2);
+                    document.getElementById('lbl-rel-rule').textContent = "Квадрат коэффициента подобия";
+                    document.getElementById('val-rel-rule').textContent = `k² = (${t.toFixed(2)})²`;
+                }
+            }
+
+            // Рисуем вершины поверх всего
+            drawPoint(ctx, A, '#EF4444');
+            drawPoint(ctx, B, '#4CAF50');
+            drawPoint(ctx, C, '#3B82F6');
+        }
+
+        // Init
+        updateSimulation();
+
+    </script>
+</body>
+</html>
