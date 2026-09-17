@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Конспект: Векторы (Задание №2 ЕГЭ)</title>
+    <title>Конспект: Векторы и их свойства</title>
     
     <script>
         window.MathJax = {
@@ -114,7 +114,7 @@
             margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
         }
         .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
-        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; min-height: 20px;}
         .dashboard-value { font-size: 1.1rem; font-family: monospace; }
 
         .btn {
@@ -136,17 +136,19 @@
             .process-selector { flex-direction: column; }
         }
     </style>
+    <link rel="stylesheet" href="loading_animation.css">
 </head>
 <body>
+    <script src="loading_script.js"></script>
 
     <div class="container">
-        <h1>Векторы: Взлом задачи №2 ЕГЭ</h1>
+        <h1>Векторы</h1>
         
         <div class="alert-box alert-info">
             <div class="icon-box"><i data-lucide="crosshair" color="var(--info-text)"></i></div>
             <div>
                 <strong style="color: var(--info-text);">О чем этот конспект?</strong><br>
-                <span style="color: var(--text-muted);">Задание 2 в ЕГЭ по математике — это векторы. Вектор — это просто направленный отрезок. У него есть длина (модуль) и направление. Это один из самых «халявных» баллов на экзамене, если перестать путаться в координатах и запомнить всего одно «золотое» правило скалярного произведения.</span>
+                <span style="color: var(--text-muted);">Вектор — это направленный отрезок. У него есть длина (модуль) и направление. Это мощный математический аппарат, который применяется повсеместно в физике и геометрии. Главное здесь — не путаться в координатах и запомнить правило скалярного произведения.</span>
             </div>
         </div>
 
@@ -169,7 +171,7 @@
 
         <h2><i data-lucide="layers"></i> 2. Сложение и Вычитание векторов</h2>
         <div class="card table-container">
-            <p>С векторами можно работать двумя способами: алгебраически (через числа) и геометрически (через рисунки). На ЕГЭ чаще спасает алгебра, но геометрия помогает проверить себя.</p>
+            <p>С векторами можно работать двумя способами: алгебраически (через числа) и геометрически (через рисунки).</p>
             
             <table class="data-table">
                 <thead>
@@ -199,11 +201,11 @@
             </table>
         </div>
 
-        <h2><i data-lucide="asterisk"></i> 3. «Босс» задания: Скалярное произведение</h2>
+        <h2><i data-lucide="asterisk"></i> 3. Скалярное произведение</h2>
         <div class="card">
-            <p>Скалярное произведение векторов $\vec{a} \cdot \vec{b}$ — это операция, которая на вход берет два вектора, а на выходе выдает <b>простое число (скаляр)</b>. Это ключ к нахождению угла между векторами.</p>
+            <p>Скалярное произведение векторов $\vec{a} \cdot \vec{b}$ — это операция, которая на вход берет два вектора, а на выходе выдает <b>простое число (скаляр)</b>.</p>
             
-            <p style="color: var(--text-muted); margin-bottom: 5px;">У него есть ДВЕ формулы. Вся суть задач ЕГЭ — приравнять их друг к другу:</p>
+            <p style="color: var(--text-muted); margin-bottom: 5px;">У него есть ДВЕ формулы. Приравнивая их друг к другу, можно легко найти угол между векторами:</p>
             <div class="formula-grid">
                 <div class="formula-box" style="border-color: var(--accent);">
                     <div style="font-size: 0.9rem; color: var(--accent); margin-bottom: 5px;">Алгебраическая (Координатная)</div>
@@ -246,7 +248,7 @@
                     <div style="font-size: 0.8rem; color: #888;">|b| = <span id="dash-len-b">3.6</span></div>
                 </div>
                 <div class="dashboard-item" id="dash-result-box" style="border: 1px solid var(--green); background: rgba(76, 175, 80, 0.1);">
-                    <div class="dashboard-label" id="dash-res-label">Результат ($\vec{a} + \vec{b}$)</div>
+                    <div class="dashboard-label" id="dash-res-label">Результат $\vec{a} + \vec{b}$</div>
                     <div class="dashboard-value" id="dash-res-val" style="color: var(--green);">c = {6; 0}</div>
                     <div style="font-size: 0.8rem; color: #ccc;" id="dash-res-sub">|c| = 6.0</div>
                 </div>
@@ -257,11 +259,11 @@
             </div>
         </div>
 
-        <h2><i data-lucide="alert-triangle"></i> 5. Ловушки ЕГЭ</h2>
+        <h2><i data-lucide="alert-triangle"></i> 5. Частые ошибки и ловушки</h2>
         <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
             <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
                 <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
-                    <i data-lucide="x-circle" style="width: 18px;"></i> Типичные ошибки
+                    <i data-lucide="x-circle" style="width: 18px;"></i> В чем обычно ошибаются
                 </strong>
                 <ul style="margin: 10px 0 0 0; padding-left: 15px;">
                     <li><strong>Начало минус Конец:</strong> Самая частая и обидная ошибка. Ищут координаты вектора $\vec{AB}$, вычитая из координат точки А координаты точки B. <b>СТРОГО: Из Конца (B) вычитаем Начало (A).</b></li>
@@ -393,8 +395,8 @@
         function handleDown(e) {
             const { mathX, mathY } = getMouseGridCoords(e);
             
-            // Hit box (radius 1 unit = 20px)
-            const hitRadius = 1.0;
+            // Hit box for touch/mouse (radius 1 unit = 20px)
+            const hitRadius = 1.0; 
             
             const distA = Math.sqrt((mathX - vA.x)**2 + (mathY - vA.y)**2);
             const distB = Math.sqrt((mathX - vB.x)**2 + (mathY - vB.y)**2);
@@ -439,7 +441,6 @@
         canvas.addEventListener('touchmove', handleMove, {passive: false});
         window.addEventListener('touchend', handleUp);
 
-
         window.setMode = function(mode) {
             simMode = mode;
             document.querySelectorAll('.process-btn').forEach(btn => {
@@ -459,7 +460,7 @@
                 
                 dashResBox.style.borderColor = 'var(--green)';
                 dashResBox.style.background = 'rgba(76, 175, 80, 0.1)';
-                dashResLabel.textContent = 'Результат (\u2192a + \u2192b)';
+                dashResLabel.innerHTML = 'Результат \\(\\vec{a} + \\vec{b}\\)';
                 dashResVal.style.color = 'var(--green)';
             } else if (mode === 'sub') {
                 activeBtn.style.borderColor = 'var(--pink)';
@@ -468,7 +469,7 @@
                 
                 dashResBox.style.borderColor = 'var(--pink)';
                 dashResBox.style.background = 'rgba(236, 72, 153, 0.1)';
-                dashResLabel.textContent = 'Результат (\u2192a - \u2192b)';
+                dashResLabel.innerHTML = 'Результат \\(\\vec{a} - \\vec{b}\\)';
                 dashResVal.style.color = 'var(--pink)';
             } else if (mode === 'dot') {
                 activeBtn.style.borderColor = 'var(--warn-text)';
@@ -477,8 +478,12 @@
                 
                 dashResBox.style.borderColor = 'var(--warn-text)';
                 dashResBox.style.background = 'rgba(245, 158, 11, 0.1)';
-                dashResLabel.textContent = 'Скалярное произведение';
+                dashResLabel.innerHTML = 'Скалярное произв. \\(\\vec{a} \\cdot \\vec{b}\\)';
                 dashResVal.style.color = 'var(--warn-text)';
+            }
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([dashResLabel]);
             }
 
             updatePhysics();
@@ -563,22 +568,22 @@
             dashB.textContent = `b = {${vB.x}; ${vB.y}}`;
             dashLenB.textContent = lenB.toFixed(1);
 
-            let resText = '';
-            let subText = '';
+            let resHtml = '';
+            let subHtml = '';
 
             if (simMode === 'add') {
                 const rx = vA.x + vB.x;
                 const ry = vA.y + vB.y;
                 const rLen = Math.sqrt(rx*rx + ry*ry);
-                resText = `c = {${rx}; ${ry}}`;
-                subText = `|c| = ${rLen.toFixed(1)}`;
+                resHtml = `c = {${rx}; ${ry}}`;
+                subHtml = `|c| = ${rLen.toFixed(1)}`;
                 dashResSub.style.display = 'block';
             } else if (simMode === 'sub') {
                 const rx = vA.x - vB.x;
                 const ry = vA.y - vB.y;
                 const rLen = Math.sqrt(rx*rx + ry*ry);
-                resText = `c = {${rx}; ${ry}}`;
-                subText = `|c| = ${rLen.toFixed(1)}`;
+                resHtml = `c = {${rx}; ${ry}}`;
+                subHtml = `|c| = ${rLen.toFixed(1)}`;
                 dashResSub.style.display = 'block';
             } else if (simMode === 'dot') {
                 const dot = vA.x * vB.x + vA.y * vB.y;
@@ -586,17 +591,18 @@
                 let angleDeg = 0;
                 if (lenA > 0 && lenB > 0) {
                     cosAlpha = dot / (lenA * lenB);
-                    // clamp cos to avoid NaN due to float precision
                     cosAlpha = Math.max(-1, Math.min(1, cosAlpha));
                     angleDeg = Math.acos(cosAlpha) * 180 / Math.PI;
                 }
-                resText = `${vA.x}·${vB.x} + ${vA.y}·(${vB.y}) = ${dot}`;
-                subText = `Угол \u2248 ${angleDeg.toFixed(0)}°`;
+                
+                resHtml = `<div style="font-size: 0.95rem; margin-bottom: 5px;">Алгебра: ${vA.x}·${vB.x} + ${vA.y}·(${vB.y}) = <b>${dot}</b></div>`;
+                subHtml = `<div style="font-size: 0.9rem; color: #ccc; line-height: 1.3;">Геометрия: ${lenA.toFixed(1)}·${lenB.toFixed(1)}·cos(${angleDeg.toFixed(0)}&deg;) &approx; <b>${dot}</b></div>
+                           <div style="font-size: 0.8rem; color: #888; margin-top: 4px;">Угол &alpha; &approx; ${angleDeg.toFixed(0)}&deg;</div>`;
                 dashResSub.style.display = 'block';
             }
 
-            dashResVal.textContent = resText;
-            dashResSub.textContent = subText;
+            dashResVal.innerHTML = resHtml;
+            dashResSub.innerHTML = subHtml;
 
             draw();
         }
@@ -606,18 +612,18 @@
             const py = originY - mathY * gridSize;
             
             ctx.beginPath();
-            ctx.arc(px, py, 8, 0, Math.PI*2);
+            ctx.arc(px, py, 4, 0, Math.PI*2); // Уменьшенный размер точки
             ctx.fillStyle = isDragging ? '#fff' : color;
             ctx.fill();
             
             if (isDragging) {
                 ctx.shadowColor = color;
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 10;
                 ctx.fill();
                 ctx.shadowBlur = 0;
             }
             
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1.5;
             ctx.strokeStyle = '#fff';
             ctx.stroke();
         }
@@ -643,8 +649,7 @@
             } else if (simMode === 'sub') {
                 // Difference vector (from B to A)
                 drawArrowVisual(ctx, vB.x, vB.y, vA.x, vA.y, colSub, 4, false, 'c');
-                // Ghost of vector parallel from origin for reference
-                drawArrowVisual(ctx, 0, 0, vA.x - vB.x, vA.y - vB.y, 'rgba(236, 72, 153, 0.3)', 2, true);
+                // Убрана пунктирная линия сдвига к началу координат для наглядности!
             } else if (simMode === 'dot') {
                 // Draw angle arc
                 if ((vA.x!==0 || vA.y!==0) && (vB.x!==0 || vB.y!==0)) {
@@ -674,7 +679,7 @@
             drawArrowVisual(ctx, 0, 0, vA.x, vA.y, colA, 4, false, 'a');
             drawArrowVisual(ctx, 0, 0, vB.x, vB.y, colB, 4, false, 'b');
 
-            // Draw interactive handles
+            // Draw interactive handles (уменьшенного размера)
             drawPointHandle(ctx, vA.x, vA.y, colA, vA.isDragging);
             drawPointHandle(ctx, vB.x, vB.y, colB, vB.isDragging);
         }
