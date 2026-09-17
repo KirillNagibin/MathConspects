@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Векторы (Задание №2 ЕГЭ)</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --purple: #8B5CF6;
+            --green: #4CAF50;
+            --pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        .table-container { overflow-x: auto; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
+        .data-table td { color: var(--text-muted); }
+
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        /* Simulator Styles */
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 150px; text-align: center; font-size: 0.95rem;
+        }
+        .process-btn.active {
+            background: rgba(6, 182, 212, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #0a0a0a; border-radius: 8px; border: 1px solid #333; padding: 0; touch-action: none;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .dashboard-value { font-size: 1.1rem; font-family: monospace; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .process-selector { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Векторы: Взлом задачи №2 ЕГЭ</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="crosshair" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">О чем этот конспект?</strong><br>
+                <span style="color: var(--text-muted);">Задание 2 в ЕГЭ по математике — это векторы. Вектор — это просто направленный отрезок. У него есть длина (модуль) и направление. Это один из самых «халявных» баллов на экзамене, если перестать путаться в координатах и запомнить всего одно «золотое» правило скалярного произведения.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="navigation"></i> 1. База: Координаты и Длина вектора</h2>
+        <div class="card">
+            <p>Вектор $\vec{a}$ на координатной плоскости задается двумя числами (координатами) по осям X и Y: $\vec{a} = \{x; y\}$.</p>
+            
+            <h3 style="color: var(--info-text); margin-top: 20px;">Как найти координаты вектора по точкам?</h3>
+            <p style="color: var(--text-muted);">Вектор имеет начало (точка $A$) и конец (точка $B$, где стрелочка). Главное правило: <b>из координат КОНЦА вычитаем координаты НАЧАЛА</b>.</p>
+            <div class="formula-box" style="border-color: var(--info-text);">
+                $$\vec{AB} = \{x_B - x_A; y_B - y_A\}$$
+            </div>
+            
+            <h3 style="color: var(--pink); margin-top: 25px;">Как найти длину (модуль) вектора?</h3>
+            <p style="color: var(--text-muted);">Длина вектора обозначается модулем $|\vec{a}|$. Это просто теорема Пифагора, где координаты вектора выступают в роли катетов прямоугольного треугольника.</p>
+            <div class="formula-box" style="border-color: var(--pink);">
+                $$|\vec{a}| = \sqrt{x^2 + y^2}$$
+            </div>
+        </div>
+
+        <h2><i data-lucide="layers"></i> 2. Сложение и Вычитание векторов</h2>
+        <div class="card table-container">
+            <p>С векторами можно работать двумя способами: алгебраически (через числа) и геометрически (через рисунки). На ЕГЭ чаще спасает алгебра, но геометрия помогает проверить себя.</p>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Операция</th>
+                        <th>Алгебраически (по координатам)</th>
+                        <th>Геометрически (на рисунке)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong style="color: var(--green);">Сложение $\vec{a} + \vec{b}$</strong></td>
+                        <td>Складываем соответствующие координаты: <br>$\vec{c} = \{x_a + x_b; y_a + y_b\}$</td>
+                        <td><b>Правило треугольника:</b> Конец первого соединяем с началом второго. <br><b>Параллелограмм:</b> Выводим из одной точки и достраиваем до параллелограмма. Диагональ — это сумма.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--error-text);">Вычитание $\vec{a} - \vec{b}$</strong></td>
+                        <td>Вычитаем соответствующие координаты: <br>$\vec{c} = \{x_a - x_b; y_a - y_b\}$</td>
+                        <td>Выводим из одной точки. Вектор разности соединяет их концы. <i>Стрелочка направлена к тому вектору, ИЗ которого вычитают!</i></td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--purple);">Умножение на число $k\vec{a}$</strong></td>
+                        <td>Умножаем каждую координату: <br>$k\vec{a} = \{k \cdot x_a; k \cdot y_a\}$</td>
+                        <td>Вектор растягивается в $k$ раз. Если $k < 0$, он разворачивается в противоположную сторону.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2><i data-lucide="asterisk"></i> 3. «Босс» задания: Скалярное произведение</h2>
+        <div class="card">
+            <p>Скалярное произведение векторов $\vec{a} \cdot \vec{b}$ — это операция, которая на вход берет два вектора, а на выходе выдает <b>простое число (скаляр)</b>. Это ключ к нахождению угла между векторами.</p>
+            
+            <p style="color: var(--text-muted); margin-bottom: 5px;">У него есть ДВЕ формулы. Вся суть задач ЕГЭ — приравнять их друг к другу:</p>
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--accent);">
+                    <div style="font-size: 0.9rem; color: var(--accent); margin-bottom: 5px;">Алгебраическая (Координатная)</div>
+                    $$\vec{a} \cdot \vec{b} = x_1 \cdot x_2 + y_1 \cdot y_2$$
+                </div>
+                <div class="formula-box" style="border-color: var(--warn-text);">
+                    <div style="font-size: 0.9rem; color: var(--warn-text); margin-bottom: 5px;">Геометрическая (Через косинус)</div>
+                    $$\vec{a} \cdot \vec{b} = |\vec{a}| \cdot |\vec{b}| \cdot \cos\alpha$$
+                </div>
+            </div>
+
+            <div class="alert-box alert-info" style="margin-top: 20px;">
+                <div class="icon-box"><i data-lucide="zap" color="var(--info-text)"></i></div>
+                <div>
+                    <strong style="color: var(--info-text);">Секрет ортогональности (перпендикулярности)</strong><br>
+                    <span style="color: var(--text-muted);">Если векторы перпендикулярны, угол между ними $90^\circ$. Косинус $90^\circ$ равен нулю. <br>Следовательно, <b>векторы перпендикулярны тогда и только тогда, когда их скалярное произведение равно НУЛЮ</b>: $\quad x_1 x_2 + y_1 y_2 = 0$.</span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="monitor-play"></i> 4. Векторный полигон</h2>
+        <p style="color: var(--text-muted);">Перемещайте концы векторов <strong style="color: var(--info-text);">$\vec{a}$ (синий)</strong> и <strong style="color: var(--error-text);">$\vec{b}$ (красный)</strong> за кружочки. Выберите операцию, чтобы увидеть результат алгебраически и геометрически на графике.</p>
+        
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-mode-add" onclick="setMode('add')">Сложение $\vec{a} + \vec{b}$</div>
+                <div class="process-btn" id="btn-mode-sub" onclick="setMode('sub')">Вычитание $\vec{a} - \vec{b}$</div>
+                <div class="process-btn" id="btn-mode-dot" onclick="setMode('dot')" style="border-color: var(--warn-text); color: var(--warn-text);">Скалярное произв. $\vec{a} \cdot \vec{b}$</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Вектор $\vec{a}$</div>
+                    <div class="dashboard-value" id="dash-a" style="color: var(--info-text);">a = {4; 3}</div>
+                    <div style="font-size: 0.8rem; color: #888;">|a| = <span id="dash-len-a">5.0</span></div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Вектор $\vec{b}$</div>
+                    <div class="dashboard-value" id="dash-b" style="color: var(--error-text);">b = {2; -3}</div>
+                    <div style="font-size: 0.8rem; color: #888;">|b| = <span id="dash-len-b">3.6</span></div>
+                </div>
+                <div class="dashboard-item" id="dash-result-box" style="border: 1px solid var(--green); background: rgba(76, 175, 80, 0.1);">
+                    <div class="dashboard-label" id="dash-res-label">Результат ($\vec{a} + \vec{b}$)</div>
+                    <div class="dashboard-value" id="dash-res-val" style="color: var(--green);">c = {6; 0}</div>
+                    <div style="font-size: 0.8rem; color: #ccc;" id="dash-res-sub">|c| = 6.0</div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-vectors" width="800" height="400"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="alert-triangle"></i> 5. Ловушки ЕГЭ</h2>
+        <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="x-circle" style="width: 18px;"></i> Типичные ошибки
+                </strong>
+                <ul style="margin: 10px 0 0 0; padding-left: 15px;">
+                    <li><strong>Начало минус Конец:</strong> Самая частая и обидная ошибка. Ищут координаты вектора $\vec{AB}$, вычитая из координат точки А координаты точки B. <b>СТРОГО: Из Конца (B) вычитаем Начало (A).</b></li>
+                    <li><strong>Минус на минус:</strong> При вычислении длины $\sqrt{x^2 + y^2}$, если координата отрицательная (например, $-3$), ее квадрат — это $+9$. Школьники иногда пишут $\sqrt{16 - 9}$, получая бред. Под корнем ВСЕГДА плюс!</li>
+                    <li><strong>Путаница координат точек и векторов:</strong> В задаче дают точки $A, B, C$, а просят найти $\vec{a} = \vec{AB} - \vec{BC}$. Сначала нужно найти КООРДИНАТЫ САМИХ ВЕКТОРОВ $\vec{AB}$ и $\vec{BC}$, и только потом их вычитать!</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 6. Практика (ЕГЭ)</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Угол между векторами</h3>
+            <p>Даны векторы $\vec{a} = \{4; 3\}$ и $\vec{b} = \{8; 6\}$. Найдите косинус угла между этими векторами.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')"><i data-lucide="help-circle" style="width: 16px;"></i> Подсказка</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+            
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Вспомните, где у нас есть косинус? В геометрической формуле скалярного произведения: $\vec{a}\cdot\vec{b} = |\vec{a}||\vec{b}|\cos\alpha$. <br>Вам нужно: 1) Найти скалярное произведение алгебраически ($x_1x_2 + y_1y_2$). 2) Найти длины обоих векторов по теореме Пифагора. 3) Выразить косинус.
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. Вычислим скалярное произведение по координатам:<br>
+                $$\vec{a} \cdot \vec{b} = x_a x_b + y_a y_b = 4 \cdot 8 + 3 \cdot 6 = 32 + 18 = 50$$</p>
+                
+                <p>2. Найдем длины векторов по теореме Пифагора:<br>
+                $$|\vec{a}| = \sqrt{4^2 + 3^2} = \sqrt{16 + 9} = \sqrt{25} = 5$$
+                $$|\vec{b}| = \sqrt{8^2 + 6^2} = \sqrt{64 + 36} = \sqrt{100} = 10$$</p>
+
+                <p>3. Приравниваем к формуле через косинус:<br>
+                $$\vec{a} \cdot \vec{b} = |\vec{a}| \cdot |\vec{b}| \cdot \cos\alpha$$
+                $$50 = 5 \cdot 10 \cdot \cos\alpha$$
+                $$50 = 50 \cdot \cos\alpha$$
+                $$\cos\alpha = 1$$</p>
+                
+                <p style="font-size: 0.9rem; color: var(--text-muted);">*Угол, косинус которого равен 1, это $0^\circ$. Векторы сонаправлены (они пропорциональны: вектор b в 2 раза длиннее вектора a).*</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 1</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        function forceMathJaxRender() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.error(err));
+            } else {
+                window.setTimeout(forceMathJaxRender, 200);
+            }
+        }
+        window.setTimeout(forceMathJaxRender, 100);
+
+        function showStep(stepId, btnId) {
+            const el = document.getElementById(stepId);
+            el.classList.add('active');
+            if (btnId) {
+                const btn = document.getElementById(btnId);
+                if(btn) btn.style.display = 'none';
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([el]).catch(err => console.error(err));
+            }
+        }
+
+        /* ==========================================
+           СИМУЛЯТОР: ВЕКТОРНЫЙ ПОЛИГОН
+           ========================================== */
+        
+        const canvas = document.getElementById('canvas-vectors');
+        const ctx = canvas.getContext('2d');
+        
+        let simMode = 'add'; // 'add', 'sub', 'dot'
+
+        // Dashboards
+        const dashA = document.getElementById('dash-a');
+        const dashLenA = document.getElementById('dash-len-a');
+        const dashB = document.getElementById('dash-b');
+        const dashLenB = document.getElementById('dash-len-b');
+        
+        const dashResBox = document.getElementById('dash-result-box');
+        const dashResLabel = document.getElementById('dash-res-label');
+        const dashResVal = document.getElementById('dash-res-val');
+        const dashResSub = document.getElementById('dash-res-sub');
+
+        // Grid configurations
+        const gridSize = 20; // px per unit
+        let originX = 0;
+        let originY = 0;
+
+        // Vectors (from origin)
+        let vA = { x: 4, y: 3, isDragging: false };
+        let vB = { x: 2, y: -3, isDragging: false };
+
+        function updateCanvasSize() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            // fixed height 400
+            originX = Math.floor(canvas.width / 2 / gridSize) * gridSize;
+            originY = Math.floor(canvas.height / 2 / gridSize) * gridSize;
+            draw();
+        }
+
+        window.addEventListener('resize', updateCanvasSize);
+
+        // --- Interaction ---
+        let dragTarget = null;
+
+        function getMouseGridCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const px = (clientX - rect.left) * (canvas.width / rect.width);
+            const py = (clientY - rect.top) * (canvas.height / rect.height);
+
+            // Convert to math coordinates
+            const mathX = (px - originX) / gridSize;
+            const mathY = -(py - originY) / gridSize; // Y is inverted on screen
+            
+            return { mathX, mathY, px, py };
+        }
+
+        function handleDown(e) {
+            const { mathX, mathY } = getMouseGridCoords(e);
+            
+            // Hit box (radius 1 unit = 20px)
+            const hitRadius = 1.0;
+            
+            const distA = Math.sqrt((mathX - vA.x)**2 + (mathY - vA.y)**2);
+            const distB = Math.sqrt((mathX - vB.x)**2 + (mathY - vB.y)**2);
+
+            if (distA <= hitRadius) { dragTarget = vA; }
+            else if (distB <= hitRadius) { dragTarget = vB; }
+
+            if (dragTarget) {
+                dragTarget.isDragging = true;
+                e.preventDefault();
+            }
+        }
+
+        function handleMove(e) {
+            if (!dragTarget) return;
+            const { mathX, mathY } = getMouseGridCoords(e);
+            
+            // Snap to grid integers
+            dragTarget.x = Math.round(mathX);
+            dragTarget.y = Math.round(mathY);
+            
+            // Clamp to avoid disappearing
+            dragTarget.x = Math.max(-20, Math.min(20, dragTarget.x));
+            dragTarget.y = Math.max(-10, Math.min(10, dragTarget.y));
+
+            updatePhysics();
+            e.preventDefault();
+        }
+
+        function handleUp(e) {
+            if (dragTarget) {
+                dragTarget.isDragging = false;
+                dragTarget = null;
+            }
+        }
+
+        canvas.addEventListener('mousedown', handleDown);
+        canvas.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleUp);
+        
+        canvas.addEventListener('touchstart', handleDown, {passive: false});
+        canvas.addEventListener('touchmove', handleMove, {passive: false});
+        window.addEventListener('touchend', handleUp);
+
+
+        window.setMode = function(mode) {
+            simMode = mode;
+            document.querySelectorAll('.process-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.borderColor = 'var(--border)';
+                btn.style.color = 'var(--text-muted)';
+                btn.style.background = 'var(--bg-card)';
+            });
+
+            const activeBtn = document.getElementById(`btn-mode-${mode}`);
+            activeBtn.classList.add('active');
+
+            if (mode === 'add') {
+                activeBtn.style.borderColor = 'var(--green)';
+                activeBtn.style.color = 'var(--green)';
+                activeBtn.style.background = 'rgba(76, 175, 80, 0.1)';
+                
+                dashResBox.style.borderColor = 'var(--green)';
+                dashResBox.style.background = 'rgba(76, 175, 80, 0.1)';
+                dashResLabel.textContent = 'Результат (\u2192a + \u2192b)';
+                dashResVal.style.color = 'var(--green)';
+            } else if (mode === 'sub') {
+                activeBtn.style.borderColor = 'var(--pink)';
+                activeBtn.style.color = 'var(--pink)';
+                activeBtn.style.background = 'rgba(236, 72, 153, 0.1)';
+                
+                dashResBox.style.borderColor = 'var(--pink)';
+                dashResBox.style.background = 'rgba(236, 72, 153, 0.1)';
+                dashResLabel.textContent = 'Результат (\u2192a - \u2192b)';
+                dashResVal.style.color = 'var(--pink)';
+            } else if (mode === 'dot') {
+                activeBtn.style.borderColor = 'var(--warn-text)';
+                activeBtn.style.color = 'var(--warn-text)';
+                activeBtn.style.background = 'rgba(245, 158, 11, 0.1)';
+                
+                dashResBox.style.borderColor = 'var(--warn-text)';
+                dashResBox.style.background = 'rgba(245, 158, 11, 0.1)';
+                dashResLabel.textContent = 'Скалярное произведение';
+                dashResVal.style.color = 'var(--warn-text)';
+            }
+
+            updatePhysics();
+        };
+
+        function drawGridLayer(ctx, w, h) {
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#222';
+            
+            // Vertical lines
+            for (let x = originX % gridSize; x < w; x += gridSize) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+            // Horizontal lines
+            for (let y = originY % gridSize; y < h; y += gridSize) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+
+            // Axes
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke(); // X
+            ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke(); // Y
+
+            // Origin
+            ctx.fillStyle = '#888';
+            ctx.font = '12px sans-serif';
+            ctx.fillText('0', originX - 12, originY + 14);
+            ctx.fillText('X', w - 15, originY - 10);
+            ctx.fillText('Y', originX + 10, 15);
+        }
+
+        function drawArrowVisual(ctx, mathX1, mathY1, mathX2, mathY2, color, width=3, isDashed=false, label='') {
+            const px1 = originX + mathX1 * gridSize;
+            const py1 = originY - mathY1 * gridSize;
+            const px2 = originX + mathX2 * gridSize;
+            const py2 = originY - mathY2 * gridSize;
+
+            const dx = px2 - px1;
+            const dy = py2 - py1;
+            
+            // Return if too small
+            if (dx*dx + dy*dy < 1) return;
+
+            const angle = Math.atan2(dy, dx);
+            const headLen = 12;
+
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = width;
+            if (isDashed) ctx.setLineDash([5, 5]);
+            else ctx.setLineDash([]);
+
+            ctx.beginPath();
+            ctx.moveTo(px1, py1);
+            ctx.lineTo(px2, py2);
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset immediately
+
+            // Arrow head
+            ctx.beginPath();
+            ctx.moveTo(px2, py2);
+            ctx.lineTo(px2 - headLen * Math.cos(angle - Math.PI/6), py2 - headLen * Math.sin(angle - Math.PI/6));
+            ctx.lineTo(px2 - headLen * Math.cos(angle + Math.PI/6), py2 - headLen * Math.sin(angle + Math.PI/6));
+            ctx.fill();
+
+            if (label) {
+                ctx.font = 'bold 16px sans-serif';
+                ctx.fillText(label, px2 + 10 * Math.cos(angle), py2 + 10 * Math.sin(angle));
+            }
+        }
+
+        function updatePhysics() {
+            const lenA = Math.sqrt(vA.x*vA.x + vA.y*vA.y);
+            const lenB = Math.sqrt(vB.x*vB.x + vB.y*vB.y);
+
+            dashA.textContent = `a = {${vA.x}; ${vA.y}}`;
+            dashLenA.textContent = lenA.toFixed(1);
+            dashB.textContent = `b = {${vB.x}; ${vB.y}}`;
+            dashLenB.textContent = lenB.toFixed(1);
+
+            let resText = '';
+            let subText = '';
+
+            if (simMode === 'add') {
+                const rx = vA.x + vB.x;
+                const ry = vA.y + vB.y;
+                const rLen = Math.sqrt(rx*rx + ry*ry);
+                resText = `c = {${rx}; ${ry}}`;
+                subText = `|c| = ${rLen.toFixed(1)}`;
+                dashResSub.style.display = 'block';
+            } else if (simMode === 'sub') {
+                const rx = vA.x - vB.x;
+                const ry = vA.y - vB.y;
+                const rLen = Math.sqrt(rx*rx + ry*ry);
+                resText = `c = {${rx}; ${ry}}`;
+                subText = `|c| = ${rLen.toFixed(1)}`;
+                dashResSub.style.display = 'block';
+            } else if (simMode === 'dot') {
+                const dot = vA.x * vB.x + vA.y * vB.y;
+                let cosAlpha = 0;
+                let angleDeg = 0;
+                if (lenA > 0 && lenB > 0) {
+                    cosAlpha = dot / (lenA * lenB);
+                    // clamp cos to avoid NaN due to float precision
+                    cosAlpha = Math.max(-1, Math.min(1, cosAlpha));
+                    angleDeg = Math.acos(cosAlpha) * 180 / Math.PI;
+                }
+                resText = `${vA.x}·${vB.x} + ${vA.y}·(${vB.y}) = ${dot}`;
+                subText = `Угол \u2248 ${angleDeg.toFixed(0)}°`;
+                dashResSub.style.display = 'block';
+            }
+
+            dashResVal.textContent = resText;
+            dashResSub.textContent = subText;
+
+            draw();
+        }
+
+        function drawPointHandle(ctx, mathX, mathY, color, isDragging) {
+            const px = originX + mathX * gridSize;
+            const py = originY - mathY * gridSize;
+            
+            ctx.beginPath();
+            ctx.arc(px, py, 8, 0, Math.PI*2);
+            ctx.fillStyle = isDragging ? '#fff' : color;
+            ctx.fill();
+            
+            if (isDragging) {
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 15;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+            
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#fff';
+            ctx.stroke();
+        }
+
+        function draw() {
+            const w = canvas.width;
+            const h = canvas.height;
+            drawGridLayer(ctx, w, h);
+
+            const colA = '#3B82F6';
+            const colB = '#EF4444';
+            const colAdd = '#4CAF50';
+            const colSub = '#EC4899';
+            const colDot = '#F59E0B';
+
+            if (simMode === 'add') {
+                // Parallelogram rule visualization
+                drawArrowVisual(ctx, vA.x, vA.y, vA.x + vB.x, vA.y + vB.y, 'rgba(239, 68, 68, 0.4)', 2, true); // ghost B from A
+                drawArrowVisual(ctx, vB.x, vB.y, vA.x + vB.x, vA.y + vB.y, 'rgba(59, 130, 246, 0.4)', 2, true); // ghost A from B
+                
+                // Result vector
+                drawArrowVisual(ctx, 0, 0, vA.x + vB.x, vA.y + vB.y, colAdd, 4, false, 'c');
+            } else if (simMode === 'sub') {
+                // Difference vector (from B to A)
+                drawArrowVisual(ctx, vB.x, vB.y, vA.x, vA.y, colSub, 4, false, 'c');
+                // Ghost of vector parallel from origin for reference
+                drawArrowVisual(ctx, 0, 0, vA.x - vB.x, vA.y - vB.y, 'rgba(236, 72, 153, 0.3)', 2, true);
+            } else if (simMode === 'dot') {
+                // Draw angle arc
+                if ((vA.x!==0 || vA.y!==0) && (vB.x!==0 || vB.y!==0)) {
+                    const angA = Math.atan2(-vA.y, vA.x); // Inverted Y for canvas
+                    const angB = Math.atan2(-vB.y, vB.x);
+                    
+                    ctx.beginPath();
+                    ctx.arc(originX, originY, 30, Math.min(angA, angB), Math.max(angA, angB));
+                    // Handle large angle wrap around
+                    if (Math.abs(angA - angB) > Math.PI) {
+                        ctx.beginPath();
+                        ctx.arc(originX, originY, 30, Math.max(angA, angB), Math.min(angA, angB) + Math.PI*2);
+                    }
+                    
+                    ctx.strokeStyle = colDot;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    // Shade area lightly
+                    ctx.lineTo(originX, originY);
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
+                    ctx.fill();
+                }
+            }
+
+            // Draw primary vectors (on top)
+            drawArrowVisual(ctx, 0, 0, vA.x, vA.y, colA, 4, false, 'a');
+            drawArrowVisual(ctx, 0, 0, vB.x, vB.y, colB, 4, false, 'b');
+
+            // Draw interactive handles
+            drawPointHandle(ctx, vA.x, vA.y, colA, vA.isDragging);
+            drawPointHandle(ctx, vB.x, vB.y, colB, vB.isDragging);
+        }
+
+        // Init
+        updateCanvasSize();
+        setMode('add');
+        
+    </script>
+</body>
+</html>
