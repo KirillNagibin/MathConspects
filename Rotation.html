@@ -454,8 +454,8 @@
                 color: colorHex, 
                 metalness: 0.1,
                 roughness: 0.9,
-                transparent: true,
-                opacity: 0.85,
+                transparent: false,
+                opacity: 1.0,
                 side: THREE.DoubleSide
             });
             
@@ -503,7 +503,7 @@
 
             // Handle Auto-Sweep Animation
             if (isAnimatingSweep) {
-                animProgress += 0.0075; // Animation speed (замедлено в 2 раза)
+                animProgress += 0.0025; // Animation speed (еще медленнее, в 3 раза)
                 if (animProgress > 1.0) {
                     animProgress = 1.0;
                     isAnimatingSweep = false;
