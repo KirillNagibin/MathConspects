@@ -329,7 +329,7 @@
            ========================================== */
         
         let scene, camera, renderer, controls;
-        let sweptMesh, sweepingLine;
+        let sweptGroup; // Группа для хранения 3D тела и плоских "крышек"
         let currentShape = 'cylinder'; // 'cylinder', 'cone', 'sphere'
         let currentAngle = Math.PI * 2; // Full sweep
         
@@ -399,10 +399,11 @@
             renderer.setAnimationLoop(animate);
         }
 
+        // Получение точек для построения периметра фигуры
         function getShapePoints(type) {
             const points = [];
             const R = 2.5;
-            const H = 2; // Половина высоты (от -2 до 2)
+            const H = 2; // Половина высоты
 
             if (type === 'cylinder') {
                 points.push(new THREE.Vector2(0, -H));
@@ -414,70 +415,67 @@
                 points.push(new THREE.Vector2(R, -H));
                 points.push(new THREE.Vector2(0, H));
             } else if (type === 'sphere') {
-                for (let i = 0; i <= 30; i++) {
+                points.push(new THREE.Vector2(0, -R));
+                for (let i = 1; i < 30; i++) {
                     const a = Math.PI * i / 30; 
                     points.push(new THREE.Vector2(Math.sin(a) * R, -Math.cos(a) * R));
                 }
+                points.push(new THREE.Vector2(0, R));
             }
             return points;
         }
 
+        // Создание плоской заглушки (сечения) на основе точек
+        function createCapGeometry(type) {
+            const shape = new THREE.Shape();
+            const points = getShapePoints(type);
+            
+            shape.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                shape.lineTo(points[i].x, points[i].y);
+            }
+            return new THREE.ShapeGeometry(shape);
+        }
+
         function updateShapeGeometry() {
-            // Удаляем старые объекты со сцены
-            if (sweptMesh) scene.remove(sweptMesh);
-            if (sweepingLine) scene.remove(sweepingLine);
+            // Удаляем старую группу со сцены
+            if (sweptGroup) scene.remove(sweptGroup);
+            sweptGroup = new THREE.Group();
 
             const points = getShapePoints(currentShape);
             
-            // Если угол слишком маленький, Three.js может выдать ошибку, поэтому минимум 0.01
-            const sweepAngle = Math.max(currentAngle, 0.01);
-            
-            // 1. Создание 3D тела
-            const latheGeo = new THREE.LatheGeometry(points, 64, 0, sweepAngle);
+            // Если угол слишком маленький, LatheGeometry не построится
+            const sweepAngle = Math.max(currentAngle, 0.001);
             
             // Выбор цвета
             let colorHex = '#06B6D4'; // Цилиндр - Голубой
             if (currentShape === 'cone') colorHex = '#8B5CF6'; // Конус - Фиолетовый
             if (currentShape === 'sphere') colorHex = '#4CAF50'; // Шар - Зеленый
 
-            // Матовый, непрозрачный материал
-            const latheMat = new THREE.MeshStandardMaterial({ 
+            // Единый матовый, непрозрачный материал
+            const solidMat = new THREE.MeshStandardMaterial({ 
                 color: colorHex, 
-                roughness: 1.0,     // Полная матовость (нет отблесков)
+                roughness: 1.0,     // Полная матовость
                 metalness: 0.0,     // Не металл
-                transparent: false, // Непрозрачный
-                opacity: 1.0,
                 side: THREE.DoubleSide
             });
             
-            sweptMesh = new THREE.Mesh(latheGeo, latheMat);
-            scene.add(sweptMesh);
+            // 1. Построение объемной поверхности вращения
+            const latheGeo = new THREE.LatheGeometry(points, 64, 0, sweepAngle);
+            const latheMesh = new THREE.Mesh(latheGeo, solidMat);
+            sweptGroup.add(latheMesh);
 
-            // 2. Создание ЕДИНСТВЕННОГО контура, который жестко привязан к краю 3D фигуры
-            const linePoints = [];
-            points.forEach(p => {
-                // Вычисляем координаты X и Z точно так же, как это делает LatheGeometry
-                linePoints.push(new THREE.Vector3(
-                    p.x * Math.cos(sweepAngle), 
-                    p.y, 
-                    p.x * Math.sin(sweepAngle)
-                ));
-            });
-            
-            // Замыкаем контур, чтобы визуально завершить фигуру
-            if(linePoints.length > 0) {
-                linePoints.push(new THREE.Vector3(
-                    points[0].x * Math.cos(sweepAngle), 
-                    points[0].y, 
-                    points[0].x * Math.sin(sweepAngle)
-                ));
-            }
+            // 2. Построение стартовой плоской фигуры (стоит на месте при 0°)
+            const capGeo = createCapGeometry(currentShape);
+            const startCap = new THREE.Mesh(capGeo, solidMat);
+            sweptGroup.add(startCap);
 
-            const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
-            const lineMat = new THREE.LineBasicMaterial({ color: '#FFC107', depthTest: false, linewidth: 2 }); 
-            sweepingLine = new THREE.Line(lineGeo, lineMat);
-            
-            scene.add(sweepingLine);
+            // 3. Построение ведущей плоской фигуры (крутится вместе с телом)
+            const endCap = new THREE.Mesh(capGeo, solidMat);
+            endCap.rotation.y = sweepAngle; // Идеальная синхронизация с краем
+            sweptGroup.add(endCap);
+
+            scene.add(sweptGroup);
         }
 
         function onWindowResize() {
@@ -491,9 +489,9 @@
         function animate() {
             controls.update();
 
-            // Анимация развертки (Вращения)
+            // Анимация развертки (Вращения 2D фигуры)
             if (isAnimatingSweep) {
-                animProgress += 0.0008; // Замедлено в 3 раза для лучшего восприятия
+                animProgress += 0.002; // Комфортная скорость вращения
                 if (animProgress > 1.0) {
                     animProgress = 1.0;
                     isAnimatingSweep = false;
@@ -569,7 +567,6 @@
         sliderAngle.addEventListener('mouseup', () => { controls.autoRotate = true; });
         sliderAngle.addEventListener('touchstart', () => { controls.autoRotate = false; });
         sliderAngle.addEventListener('touchend', () => { controls.autoRotate = true; });
-
 
         // Init 3D Engine once window loads
         window.addEventListener('load', () => {
