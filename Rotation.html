@@ -23,7 +23,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Подключение Three.js и OrbitControls для 3D графики -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
     <style>
@@ -144,7 +144,7 @@
         
         .overlay-instruction {
             position: absolute; top: 15px; left: 15px; color: rgba(255,255,255,0.6);
-            font-size: 0.85rem; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px; pointer-events: none; z-index: 10;
+            font-size: 0.85rem; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px; pointer-events: none;
         }
 
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -166,7 +166,7 @@
             <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
             <div>
                 <strong style="color: var(--info-text);">Что такое тела вращения?</strong><br>
-                <span style="color: var(--text-muted);">Представьте гончарный круг. Вы ставите на него плоский закрашенный шаблон (например, треугольник) и начинаете его вращать вокруг оси. След, который оставляет эта плоская фигура в пространстве, образует монолитную объемную фигуру. <b>Цилиндр, конус и шар</b> — это классические тела вращения, которые получаются из самых простых плоских шаблонов.</span>
+                <span style="color: var(--text-muted);">Представьте гончарный круг. Вы ставите на него плоский шаблон и начинаете вращать с огромной скоростью. След, который оставит этот шаблон в пространстве, образует объемную фигуру. <b>Цилиндр, конус и шар</b> — это самые классические тела вращения, которые получаются из простых плоских фигур.</span>
             </div>
         </div>
 
@@ -232,8 +232,8 @@
             </div>
         </div>
 
-        <h2><i data-lucide="box"></i> 4. 3D Лаборатория: Построение тел вращения</h2>
-        <p style="color: var(--text-muted);">Потяните ползунок угла развертки. Вы увидите, как <b>плоская закрашенная фигура</b> (прямоугольник, треугольник или полукруг) поворачивается вокруг оси и оставляет за собой плотный трехмерный след. Вы можете <strong style="color: #fff;">крутить сцену мышкой</strong>, чтобы рассмотреть деталь с разных сторон.</p>
+        <h2><i data-lucide="box"></i> 4. 3D Лаборатория: Гончарный круг</h2>
+        <p style="color: var(--text-muted);">Выберите плоскую фигуру и наблюдайте, как при её вращении вокруг вертикальной оси рождается объемное тело. Вы можете <strong style="color: #fff;">крутить камеру мышкой</strong> (или пальцем) для обзора со всех сторон.</p>
         
         <div class="simulator">
             <div class="process-selector">
@@ -255,18 +255,18 @@
 
             <div class="sim-controls">
                 <div class="control-group">
-                    <label style="color: var(--accent);">Угол развертки: <span id="val-angle" style="font-weight: bold; color: #fff;">0°</span></label>
-                    <input type="range" id="sim-angle" min="0" max="360" value="0" step="1">
+                    <label style="color: var(--accent);">Угол развертки (Вращение): <span id="val-angle" style="font-weight: bold; color: #fff;">360°</span></label>
+                    <input type="range" id="sim-angle" min="0" max="360" value="360" step="1">
                 </div>
                 <div>
                     <button class="btn btn-outline" onclick="animateSweep()" style="width: 100%; border-color: var(--accent); color: var(--accent);">
-                        <i data-lucide="play" style="width: 16px;"></i> Запустить анимацию
+                        <i data-lucide="play" style="width: 16px;"></i> Анимация вращения
                     </button>
                 </div>
             </div>
 
             <div class="canvas-container" id="3d-container">
-                <div class="overlay-instruction"><i data-lucide="mouse-pointer-2" style="width: 14px; vertical-align: middle;"></i> Вращайте сцену мышкой (свайпом)</div>
+                <div class="overlay-instruction"><i data-lucide="mouse-pointer-2" style="width: 14px; vertical-align: middle;"></i> Вращайте фигуру мышкой</div>
                 <!-- Three.js Canvas will be injected here -->
             </div>
         </div>
@@ -329,12 +329,12 @@
            ========================================== */
         
         let scene, camera, renderer, controls;
-        let sweptGroup; 
-        let currentShape = 'cylinder'; 
-        let currentAngle = 0; // Начинаем с 0 градусов
+        let sweptGroup; // Группа для хранения 3D тела и плоских "крышек"
+        let currentShape = 'cylinder'; // 'cylinder', 'cone', 'sphere'
+        let currentAngle = Math.PI * 2; // Full sweep
         
         let isAnimatingSweep = false;
-        let animProgress = 0; // от 0 до 1
+        let animProgress = 0;
         const sliderAngle = document.getElementById('sim-angle');
         const valAngle = document.getElementById('val-angle');
 
@@ -343,29 +343,30 @@
             const w = container.clientWidth;
             const h = 400;
 
-            // Сцена
+            // 1. Сцена
             scene = new THREE.Scene();
             scene.background = new THREE.Color('#0a0a0a');
 
-            // Камера
+            // 2. Камера
             camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
             camera.position.set(6, 5, 8);
 
-            // Рендерер
+            // 3. Рендерер
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(w, h);
             renderer.setPixelRatio(window.devicePixelRatio);
             container.appendChild(renderer.domElement);
 
-            // Управление камерой (Без авто-вращения!)
+            // 4. Управление камерой (Орбита)
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.autoRotate = false; 
+            controls.autoRotate = true; 
+            controls.autoRotateSpeed = 1.0;
             controls.enablePan = false;
             controls.maxPolarAngle = Math.PI / 2 + 0.2; 
 
-            // Освещение
+            // 5. Освещение (Усиливаем для матовых объектов)
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
@@ -377,7 +378,7 @@
             dirLight2.position.set(-10, -10, -10);
             scene.add(dirLight2);
 
-            // Сетка и ось вращения (Y)
+            // 6. Сетка и ось вращения (Y)
             const gridHelper = new THREE.GridHelper(10, 10, '#333', '#222');
             gridHelper.position.y = -2;
             scene.add(gridHelper);
@@ -398,78 +399,69 @@
             renderer.setAnimationLoop(animate);
         }
 
-        // Получение 2D-точек для построения контура фигуры
+        // Получение точек для построения периметра фигуры
         function getShapePoints(type) {
             const points = [];
             const R = 2.5;
-            const H = 2;
+            const H = 2; // Половина высоты
 
             if (type === 'cylinder') {
-                points.push(new THREE.Vector2(0, -H)); // Ось низ
-                points.push(new THREE.Vector2(R, -H)); // Право низ
-                points.push(new THREE.Vector2(R, H));  // Право верх
-                points.push(new THREE.Vector2(0, H));  // Ось верх
+                points.push(new THREE.Vector2(0, -H));
+                points.push(new THREE.Vector2(R, -H));
+                points.push(new THREE.Vector2(R, H));
+                points.push(new THREE.Vector2(0, H));
             } else if (type === 'cone') {
-                points.push(new THREE.Vector2(0, -H)); // Ось низ
-                points.push(new THREE.Vector2(R, -H)); // Основание право
-                points.push(new THREE.Vector2(0, H));  // Вершина
+                points.push(new THREE.Vector2(0, -H));
+                points.push(new THREE.Vector2(R, -H));
+                points.push(new THREE.Vector2(0, H));
             } else if (type === 'sphere') {
-                // Создаем полукруг в правой полуплоскости (от оси Y направо)
-                for (let i = 0; i <= 30; i++) {
+                points.push(new THREE.Vector2(0, -R));
+                for (let i = 1; i < 30; i++) {
                     const a = Math.PI * i / 30; 
                     points.push(new THREE.Vector2(Math.sin(a) * R, -Math.cos(a) * R));
                 }
+                points.push(new THREE.Vector2(0, R));
             }
             return points;
         }
 
-        // Ключевая функция построения монолитного тела
         function updateShapeGeometry() {
+            // Удаляем старую группу со сцены
             if (sweptGroup) scene.remove(sweptGroup);
             sweptGroup = new THREE.Group();
 
             const points = getShapePoints(currentShape);
+            const sweepAngle = Math.max(currentAngle, 0.0001);
             
-            // Защита от нулевого угла для LatheGeometry (движок требует хотя бы микроскопический угол)
-            const sweepAngle = Math.max(currentAngle, 0.0001); 
+            // Выбор цвета
+            let colorHex = '#06B6D4'; // Цилиндр - Голубой
+            if (currentShape === 'cone') colorHex = '#8B5CF6'; // Конус - Фиолетовый
+            if (currentShape === 'sphere') colorHex = '#4CAF50'; // Шар - Зеленый
 
-            let colorHex = '#06B6D4'; // Цилиндр (голубой)
-            if (currentShape === 'cone') colorHex = '#8B5CF6'; // Конус (фиолетовый)
-            if (currentShape === 'sphere') colorHex = '#4CAF50'; // Шар (зеленый)
-
-            // Делаем материал полностью матовым и непрозрачным
+            // 1. Основная 3D поверхность вращения (Только чистый объем, никаких крышек)
             const solidMat = new THREE.MeshStandardMaterial({ 
                 color: colorHex, 
-                roughness: 1.0, 
+                roughness: 1.0,
                 metalness: 0.0,
                 side: THREE.DoubleSide
             });
             
-            // 1. Оболочка (След вращения)
-            // Строим её от 0 до текущего угла развертки
             const latheGeo = new THREE.LatheGeometry(points, 64, 0, sweepAngle);
             const latheMesh = new THREE.Mesh(latheGeo, solidMat);
             sweptGroup.add(latheMesh);
 
-            // 2. Ведущая грань (Та самая 2D фигура, которая оставляет след)
-            // Создаем замкнутый контур по тем же самым математическим точкам
-            const shape = new THREE.Shape();
-            shape.moveTo(0, points[0].y);
-            for(let i = 0; i < points.length; i++) {
-                shape.lineTo(points[i].x, points[i].y);
-            }
-            shape.lineTo(0, points[points.length-1].y); // Замыкаем на ось Y
+            // 2. ИСПРАВЛЕННЫЙ Неоновый каркас
+            // В Three.js LatheGeometry при нулевом угле строит точки в плоскости YZ (где X=0, Z=R).
+            // Поэтому белый контур тоже нужно строить строго в этих же координатах!
+            const linePoints = points.map(p => new THREE.Vector3(0, p.y, p.x));
+            // Замыкаем контур
+            linePoints.push(new THREE.Vector3(0, points[0].y, points[0].x));
             
-            const shapeGeo = new THREE.ShapeGeometry(shape);
-            const leadingFace = new THREE.Mesh(shapeGeo, solidMat);
-
-            // КРИТИЧЕСКИЙ ШАГ СИНХРОНИЗАЦИИ:
-            // LatheGeometry в Three.js строит точки, вращаясь в сторону отрицательного Z.
-            // Поэтому, чтобы плоская ведущая грань ИДЕАЛЬНО совпадала с краем следа,
-            // мы поворачиваем её вокруг оси Y ровно на отрицательный угол развертки.
-            leadingFace.rotation.y = -sweepAngle;
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+            const lineMat = new THREE.LineBasicMaterial({ color: '#ffffff', linewidth: 2 });
+            const shapeOutline = new THREE.Line(lineGeo, lineMat);
             
-            sweptGroup.add(leadingFace);
+            sweptGroup.add(shapeOutline);
 
             scene.add(sweptGroup);
         }
@@ -485,19 +477,19 @@
         function animate() {
             controls.update();
 
-            // Анимация кнопки "Запустить"
+            // Анимация развертки (Вращения 2D фигуры)
             if (isAnimatingSweep) {
-                // Очень медленное и плавное развертывание (замедлено)
-                animProgress += 0.005; 
+                animProgress += 0.002; // Комфортная скорость вращения
                 if (animProgress > 1.0) {
                     animProgress = 1.0;
                     isAnimatingSweep = false;
                 }
                 
-                // Плавное движение с замедлением в конце (Ease-out)
+                // Плавное замедление к концу (Ease-out)
                 const ease = 1 - Math.pow(1 - animProgress, 3);
                 currentAngle = ease * Math.PI * 2;
                 
+                // Обновление ползунка и текста
                 const deg = Math.round(currentAngle * 180 / Math.PI);
                 sliderAngle.value = deg;
                 valAngle.textContent = deg + '°';
@@ -508,14 +500,18 @@
             renderer.render(scene, camera);
         }
 
+        // --- UI Interactions ---
+
         window.setShape = function(shape) {
             currentShape = shape;
             
+            // UI Button states
             document.querySelectorAll('.process-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.getElementById('btn-shape-' + shape).classList.add('active');
 
+            // Update Dashboards
             const dash2D = document.getElementById('dash-2d-shape');
             const dashAxis = document.getElementById('dash-axis');
 
@@ -533,11 +529,8 @@
                 dash2D.style.color = "var(--brand-green)";
             }
 
-            // При смене фигуры сбрасываем угол на 0
-            currentAngle = 0;
-            sliderAngle.value = 0;
-            valAngle.textContent = '0°';
-            updateShapeGeometry();
+            // Restart animation to show formation
+            window.animateSweep();
         };
 
         window.animateSweep = function() {
@@ -546,18 +539,24 @@
             currentAngle = 0;
             sliderAngle.value = 0;
             valAngle.textContent = '0°';
-            updateShapeGeometry();
+            controls.autoRotate = true; // ensure rotation is on
         };
 
+        // Slider interaction
         sliderAngle.addEventListener('input', function() {
-            isAnimatingSweep = false; // Останавливаем авто-анимацию, если пользователь двигает ползунок
+            isAnimatingSweep = false; // Stop animation if user overrides
             const deg = parseFloat(this.value);
             currentAngle = deg * Math.PI / 180;
             valAngle.textContent = deg + '°';
             updateShapeGeometry();
         });
 
-        // Запуск движка
+        sliderAngle.addEventListener('mousedown', () => { controls.autoRotate = false; });
+        sliderAngle.addEventListener('mouseup', () => { controls.autoRotate = true; });
+        sliderAngle.addEventListener('touchstart', () => { controls.autoRotate = false; });
+        sliderAngle.addEventListener('touchend', () => { controls.autoRotate = true; });
+
+        // Init 3D Engine once window loads
         window.addEventListener('load', () => {
             if (typeof THREE !== 'undefined') {
                 init3D();
