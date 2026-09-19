@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Тела вращения</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Подключение Three.js и OrbitControls для 3D графики -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        .table-container { overflow-x: auto; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
+        .data-table td { color: var(--text-muted); }
+
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 10px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 120px; text-align: center; font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .process-btn.active {
+            background: rgba(6, 182, 212, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; align-items: center;}
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { 
+            display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; 
+            background: #0a0a0a; border-radius: 8px; border: 1px solid #333; padding: 0;
+            height: 400px;
+        }
+        canvas { display: block; outline: none; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; min-height: 20px;}
+        .dashboard-value { font-size: 1.1rem; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        .overlay-instruction {
+            position: absolute; top: 15px; left: 15px; color: rgba(255,255,255,0.6);
+            font-size: 0.85rem; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px; pointer-events: none;
+        }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+    <link rel="stylesheet" href="loading_animation.css">
+</head>
+<body>
+    <script src="loading_script.js"></script>
+
+    <div class="container">
+        <h1>Тела вращения в пространстве</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="info" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Что такое тела вращения?</strong><br>
+                <span style="color: var(--text-muted);">Представьте гончарный круг. Вы ставите на него плоский шаблон и начинаете вращать с огромной скоростью. След, который оставит этот шаблон в пространстве, образует объемную фигуру. <b>Цилиндр, конус и шар</b> — это самые классические тела вращения, которые получаются из простых плоских фигур.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="cylinder"></i> 1. Цилиндр</h2>
+        <div class="card">
+            <p><strong>Цилиндр</strong> получается при вращении <b>прямоугольника</b> вокруг одной из его сторон.</p>
+            <ul>
+                <li>Сторона, вокруг которой происходит вращение, становится <b>осью</b> и <b>высотой ($H$)</b> цилиндра.</li>
+                <li>Вторая (свободная) сторона прямоугольника очерчивает круг и становится <b>радиусом основания ($R$)</b>.</li>
+                <li>Сторона, параллельная оси, образует боковую поверхность (её называют <i>образующей</i>).</li>
+            </ul>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--info-text);">
+                    <div style="font-size: 0.9rem; color: var(--info-text); margin-bottom: 5px;">Объем цилиндра</div>
+                    $$V = \pi R^2 H$$
+                </div>
+                <div class="formula-box" style="border-color: var(--text-muted);">
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">Площадь боковой поверхности</div>
+                    $$S_{бок} = 2\pi R H$$
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="triangle"></i> 2. Конус</h2>
+        <div class="card">
+            <p><strong>Конус</strong> образуется при вращении <b>прямоугольного треугольника</b> вокруг одного из его катетов.</p>
+            <ul>
+                <li>Катет, служащий осью вращения, становится <b>высотой ($H$)</b> конуса.</li>
+                <li>Второй катет очерчивает основание и становится <b>радиусом ($R$)</b>.</li>
+                <li>Гипотенуза треугольника становится <b>образующей ($L$)</b> конуса. Связь между ними — это теорема Пифагора: $L^2 = R^2 + H^2$.</li>
+            </ul>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--brand-purple);">
+                    <div style="font-size: 0.9rem; color: var(--brand-purple); margin-bottom: 5px;">Объем конуса</div>
+                    $$V = \frac{1}{3} \pi R^2 H$$
+                </div>
+                <div class="formula-box" style="border-color: var(--text-muted);">
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">Площадь боковой поверхности</div>
+                    $$S_{бок} = \pi R L$$
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="circle"></i> 3. Шар и Сфера</h2>
+        <div class="card">
+            <p>Вращая <b>полукруг</b> вокруг его диаметра, мы получаем <strong>шар</strong>. Поверхность этого шара называется <strong>сферой</strong>.</p>
+            <ul>
+                <li>Любое сечение шара плоскостью — это круг. Сечение, проходящее через центр шара, называется <b>большим кругом</b>.</li>
+                <li>В отличие от цилиндра и конуса, у шара нет развертки на плоскость.</li>
+            </ul>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--brand-pink);">
+                    <div style="font-size: 0.9rem; color: var(--brand-pink); margin-bottom: 5px;">Объем шара</div>
+                    $$V = \frac{4}{3} \pi R^3$$
+                </div>
+                <div class="formula-box" style="border-color: var(--text-muted);">
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">Площадь сферы</div>
+                    $$S_{сферы} = 4\pi R^2$$
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="box"></i> 4. 3D Лаборатория: Гончарный круг</h2>
+        <p style="color: var(--text-muted);">Выберите плоскую фигуру и наблюдайте, как при её вращении вокруг вертикальной оси рождается объемное тело. Вы можете <strong style="color: #fff;">крутить камеру мышкой</strong> (или пальцем) для обзора со всех сторон.</p>
+        
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-shape-cylinder" onclick="setShape('cylinder')">Цилиндр</div>
+                <div class="process-btn" id="btn-shape-cone" onclick="setShape('cone')">Конус</div>
+                <div class="process-btn" id="btn-shape-sphere" onclick="setShape('sphere')">Шар</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Исходная 2D фигура</div>
+                    <div class="dashboard-value" id="dash-2d-shape" style="color: var(--info-text);">Прямоугольник</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Ось вращения</div>
+                    <div class="dashboard-value" id="dash-axis" style="color: var(--text-muted);">Одна из сторон</div>
+                </div>
+            </div>
+
+            <div class="sim-controls">
+                <div class="control-group">
+                    <label style="color: var(--accent);">Угол развертки (Вращение): <span id="val-angle" style="font-weight: bold; color: #fff;">360°</span></label>
+                    <input type="range" id="sim-angle" min="0" max="360" value="360" step="1">
+                </div>
+                <div>
+                    <button class="btn btn-outline" onclick="animateSweep()" style="width: 100%; border-color: var(--accent); color: var(--accent);">
+                        <i data-lucide="play" style="width: 16px;"></i> Анимация вращения
+                    </button>
+                </div>
+            </div>
+
+            <div class="canvas-container" id="3d-container">
+                <div class="overlay-instruction"><i data-lucide="mouse-pointer-2" style="width: 14px; vertical-align: middle;"></i> Вращайте фигуру мышкой</div>
+                <!-- Three.js Canvas will be injected here -->
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 5. Практика</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Вращение треугольника</h3>
+            <p>Прямоугольный треугольник с катетами $3\text{ см}$ и $4\text{ см}$ вращается вокруг большего катета. Найдите объем получившегося тела вращения. В ответе запишите $\frac{V}{\pi}$.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. При вращении прямоугольного треугольника вокруг катета получается <b>конус</b>.</p>
+                
+                <p>2. Больший катет ($4\text{ см}$) является осью вращения, значит это <b>высота конуса</b>: $H = 4$.<br>
+                Второй катет ($3\text{ см}$) очерчивает основание, значит это <b>радиус основания</b>: $R = 3$.</p>
+                
+                <p>3. Вычислим объем конуса по формуле:<br>
+                $$V = \frac{1}{3} \pi R^2 H$$
+                $$V = \frac{1}{3} \pi \cdot 3^2 \cdot 4 = \frac{1}{3} \pi \cdot 9 \cdot 4 = \pi \cdot 3 \cdot 4 = 12\pi$$</p>
+
+                <p>4. В ответе требуется указать $\frac{V}{\pi}$:<br>
+                $$\frac{12\pi}{\pi} = 12$$</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">Ответ: 12</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        function forceMathJaxRender() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.error(err));
+            } else {
+                window.setTimeout(forceMathJaxRender, 200);
+            }
+        }
+        window.setTimeout(forceMathJaxRender, 100);
+
+        function showStep(stepId, btnId) {
+            const el = document.getElementById(stepId);
+            el.classList.add('active');
+            if (btnId) {
+                const btn = document.getElementById(btnId);
+                if(btn) btn.style.display = 'none';
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([el]).catch(err => console.error(err));
+            }
+        }
+
+        /* ==========================================
+           3D СИМУЛЯТОР (THREE.JS)
+           ========================================== */
+        
+        let scene, camera, renderer, controls;
+        let sweptMesh, contourLine;
+        let currentShape = 'cylinder'; // 'cylinder', 'cone', 'sphere'
+        let currentAngle = Math.PI * 2; // Full sweep
+        
+        let isAnimatingSweep = false;
+        let animProgress = 0;
+        const sliderAngle = document.getElementById('sim-angle');
+        const valAngle = document.getElementById('val-angle');
+
+        function init3D() {
+            const container = document.getElementById('3d-container');
+            const w = container.clientWidth;
+            const h = 400;
+
+            // 1. Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color('#0a0a0a');
+
+            // 2. Camera setup
+            camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+            camera.position.set(6, 5, 8);
+
+            // 3. Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // 4. Controls setup
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = true; // Slowly rotate to show 3D nature
+            controls.autoRotateSpeed = 1.0;
+            controls.enablePan = false;
+            // Prevent camera from going under the grid
+            controls.maxPolarAngle = Math.PI / 2 + 0.2; 
+
+            // 5. Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(10, 20, 10);
+            scene.add(dirLight);
+            
+            const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
+            dirLight2.position.set(-10, -10, -10);
+            scene.add(dirLight2);
+
+            // 6. Helpers (Grid and Axis)
+            const gridHelper = new THREE.GridHelper(10, 10, '#333', '#222');
+            gridHelper.position.y = -2;
+            scene.add(gridHelper);
+
+            // Draw Y Axis (Axis of rotation)
+            const materialY = new THREE.LineBasicMaterial({ color: '#fff', linewidth: 2 });
+            const pointsY = [];
+            pointsY.push(new THREE.Vector3(0, -3, 0));
+            pointsY.push(new THREE.Vector3(0, 4, 0));
+            const geometryY = new THREE.BufferGeometry().setFromPoints(pointsY);
+            const lineY = new THREE.Line(geometryY, materialY);
+            scene.add(lineY);
+
+            // Initialize shape
+            updateShapeGeometry();
+
+            // Handle resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Render Loop
+            renderer.setAnimationLoop(animate);
+        }
+
+        function getShapePoints(type) {
+            const points = [];
+            const R = 2.5;
+            const H = 2; // Half height (from -2 to 2)
+
+            if (type === 'cylinder') {
+                // Rectangle
+                points.push(new THREE.Vector2(0, -H));
+                points.push(new THREE.Vector2(R, -H));
+                points.push(new THREE.Vector2(R, H));
+                points.push(new THREE.Vector2(0, H));
+            } else if (type === 'cone') {
+                // Right Triangle
+                points.push(new THREE.Vector2(0, -H));
+                points.push(new THREE.Vector2(R, -H));
+                points.push(new THREE.Vector2(0, H));
+            } else if (type === 'sphere') {
+                // Semicircle
+                for (let i = 0; i <= 30; i++) {
+                    const a = Math.PI * i / 30; // from 0 to PI
+                    // x is radius, y is height
+                    // We map from bottom (-R) to top (+R)
+                    points.push(new THREE.Vector2(Math.sin(a) * R, -Math.cos(a) * R));
+                }
+            }
+            return points;
+        }
+
+        function updateShapeGeometry() {
+            // Remove old meshes
+            if (sweptMesh) scene.remove(sweptMesh);
+            if (contourLine) scene.remove(contourLine);
+
+            const points = getShapePoints(currentShape);
+            
+            // 1. Create the Swept 3D Volume (Lathe)
+            // If angle is less than extremely small, Three.js might error, so clamp to min 0.01
+            const sweepAngle = Math.max(currentAngle, 0.01);
+            
+            const latheGeo = new THREE.LatheGeometry(points, 64, 0, sweepAngle);
+            
+            // Choose color based on shape
+            let colorHex = '#06B6D4'; // Cyan for cylinder
+            if (currentShape === 'cone') colorHex = '#8B5CF6'; // Purple
+            if (currentShape === 'sphere') colorHex = '#EC4899'; // Pink
+
+            const latheMat = new THREE.MeshPhysicalMaterial({ 
+                color: colorHex, 
+                metalness: 0.1,
+                roughness: 0.2,
+                transparent: true,
+                opacity: 0.85,
+                side: THREE.DoubleSide,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.1
+            });
+            
+            sweptMesh = new THREE.Mesh(latheGeo, latheMat);
+            scene.add(sweptMesh);
+
+            // 2. Create the 2D Generator Line Outline (The template)
+            // We draw the outline of the points to clearly show the 2D shape generating it
+            const linePoints = [];
+            points.forEach(p => {
+                linePoints.push(new THREE.Vector3(p.x, p.y, 0));
+            });
+            // Close the loop to show the full 2D area
+            if(points.length > 0) {
+                linePoints.push(new THREE.Vector3(points[0].x, points[0].y, 0));
+            }
+
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+            const lineMat = new THREE.LineBasicMaterial({ color: '#FFC107', depthTest: false }); // Always visible on top
+            contourLine = new THREE.Line(lineGeo, lineMat);
+            
+            // Rotate the line to match the leading edge of the sweep
+            contourLine.rotation.y = sweepAngle;
+            
+            scene.add(contourLine);
+        }
+
+        function onWindowResize() {
+            if(!camera || !renderer) return;
+            const container = document.getElementById('3d-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        function animate() {
+            controls.update();
+
+            // Handle Auto-Sweep Animation
+            if (isAnimatingSweep) {
+                animProgress += 0.015; // Animation speed
+                if (animProgress > 1.0) {
+                    animProgress = 1.0;
+                    isAnimatingSweep = false;
+                }
+                
+                // Ease out cubic
+                const ease = 1 - Math.pow(1 - animProgress, 3);
+                currentAngle = ease * Math.PI * 2;
+                
+                // Update slider UI
+                const deg = Math.round(currentAngle * 180 / Math.PI);
+                sliderAngle.value = deg;
+                valAngle.textContent = deg + '°';
+                
+                updateShapeGeometry();
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // --- UI Interactions ---
+
+        window.setShape = function(shape) {
+            currentShape = shape;
+            
+            // UI Button states
+            document.querySelectorAll('.process-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('btn-shape-' + shape).classList.add('active');
+
+            // Update Dashboards
+            const dash2D = document.getElementById('dash-2d-shape');
+            const dashAxis = document.getElementById('dash-axis');
+
+            if (shape === 'cylinder') {
+                dash2D.textContent = "Прямоугольник";
+                dashAxis.textContent = "Одна из сторон";
+                dash2D.style.color = "var(--accent)";
+            } else if (shape === 'cone') {
+                dash2D.textContent = "Прямоугольный треугольник";
+                dashAxis.textContent = "Один из катетов";
+                dash2D.style.color = "var(--brand-purple)";
+            } else if (shape === 'sphere') {
+                dash2D.textContent = "Полукруг";
+                dashAxis.textContent = "Диаметр";
+                dash2D.style.color = "var(--brand-pink)";
+            }
+
+            // Restart animation to show formation
+            window.animateSweep();
+        };
+
+        window.animateSweep = function() {
+            isAnimatingSweep = true;
+            animProgress = 0;
+            currentAngle = 0;
+            sliderAngle.value = 0;
+            valAngle.textContent = '0°';
+            controls.autoRotate = true; // ensure rotation is on
+        };
+
+        // Slider interaction
+        sliderAngle.addEventListener('input', function() {
+            isAnimatingSweep = false; // Stop animation if user overrides
+            const deg = parseFloat(this.value);
+            currentAngle = deg * Math.PI / 180;
+            valAngle.textContent = deg + '°';
+            updateShapeGeometry();
+        });
+
+        sliderAngle.addEventListener('mousedown', () => { controls.autoRotate = false; });
+        sliderAngle.addEventListener('mouseup', () => { controls.autoRotate = true; });
+        sliderAngle.addEventListener('touchstart', () => { controls.autoRotate = false; });
+        sliderAngle.addEventListener('touchend', () => { controls.autoRotate = true; });
+
+
+        // Init 3D Engine once window loads
+        window.addEventListener('load', () => {
+            if (typeof THREE !== 'undefined') {
+                init3D();
+            } else {
+                console.error("Three.js not loaded.");
+                document.getElementById('3d-container').innerHTML = "<div style='color:red; padding:20px;'>Ошибка: Не удалось загрузить 3D-движок. Пожалуйста, проверьте подключение к интернету.</div>";
+            }
+        });
+
+    </script>
+</body>
+</html>
