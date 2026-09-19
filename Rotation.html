@@ -431,8 +431,6 @@
             sweptGroup = new THREE.Group();
 
             const points = getShapePoints(currentShape);
-            
-            // Если угол 0, ставим минимальное значение, чтобы LatheGeometry не выдавала ошибку
             const sweepAngle = Math.max(currentAngle, 0.0001);
             
             // Выбор цвета
@@ -440,7 +438,7 @@
             if (currentShape === 'cone') colorHex = '#8B5CF6'; // Конус - Фиолетовый
             if (currentShape === 'sphere') colorHex = '#4CAF50'; // Шар - Зеленый
 
-            // Единый матовый материал с отображением обеих сторон
+            // 1. Основная 3D поверхность вращения (Только чистый объем, никаких крышек)
             const solidMat = new THREE.MeshStandardMaterial({ 
                 color: colorHex, 
                 roughness: 1.0,
@@ -448,24 +446,23 @@
                 side: THREE.DoubleSide
             });
             
-            // 1. Основная изогнутая поверхность вращения
             const latheGeo = new THREE.LatheGeometry(points, 64, 0, sweepAngle);
             const latheMesh = new THREE.Mesh(latheGeo, solidMat);
             sweptGroup.add(latheMesh);
 
-            // 2. Неподвижная стартовая грань (закрашивает изначальный 2D-шаблон на 0 градусов)
-            const shape = new THREE.Shape();
-            shape.moveTo(points[0].x, points[0].y);
-            for (let i = 1; i < points.length; i++) {
-                shape.lineTo(points[i].x, points[i].y);
-            }
-            shape.lineTo(points[0].x, points[0].y); // Замыкаем контур
-
-            const shapeGeo = new THREE.ShapeGeometry(shape);
-            const startCap = new THREE.Mesh(shapeGeo, solidMat);
+            // 2. АЛЬТЕРНАТИВА: Белый контур исходной 2D-фигуры
+            // Создаем линию строго по тем же точкам, откуда начинается развертка
+            const linePoints = points.map(p => new THREE.Vector3(p.x, p.y, 0));
+            // Замыкаем контур, чтобы фигура была целой
+            linePoints.push(new THREE.Vector3(points[0].x, points[0].y, 0));
             
-            // Добавляем стартовую грань в группу. Она никуда не двигается.
-            sweptGroup.add(startCap);
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+            // Яркая белая линия
+            const lineMat = new THREE.LineBasicMaterial({ color: '#ffffff', linewidth: 2 });
+            const shapeOutline = new THREE.Line(lineGeo, lineMat);
+            
+            // Контур неподвижен, он просто показывает "скелет"
+            sweptGroup.add(shapeOutline);
 
             scene.add(sweptGroup);
         }
