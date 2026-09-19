@@ -329,7 +329,7 @@
            ========================================== */
         
         let scene, camera, renderer, controls;
-        let sweptMesh, baseLine, sweepingLine;
+        let sweptMesh, sweepingLine;
         let currentShape = 'cylinder'; // 'cylinder', 'cone', 'sphere'
         let currentAngle = Math.PI * 2; // Full sweep
         
@@ -343,88 +343,79 @@
             const w = container.clientWidth;
             const h = 400;
 
-            // 1. Scene setup
+            // 1. Сцена
             scene = new THREE.Scene();
             scene.background = new THREE.Color('#0a0a0a');
 
-            // 2. Camera setup
+            // 2. Камера
             camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
             camera.position.set(6, 5, 8);
 
-            // 3. Renderer setup
+            // 3. Рендерер
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(w, h);
             renderer.setPixelRatio(window.devicePixelRatio);
             container.appendChild(renderer.domElement);
 
-            // 4. Controls setup
+            // 4. Управление камерой (Орбита)
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.autoRotate = true; // Slowly rotate to show 3D nature
+            controls.autoRotate = true; 
             controls.autoRotateSpeed = 1.0;
             controls.enablePan = false;
-            // Prevent camera from going under the grid
             controls.maxPolarAngle = Math.PI / 2 + 0.2; 
 
-            // 5. Lighting
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            // 5. Освещение (Усиливаем для матовых объектов)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
             scene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
             dirLight.position.set(10, 20, 10);
             scene.add(dirLight);
             
-            const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.4);
+            const dirLight2 = new THREE.DirectionalLight(0xffffff, 0.3);
             dirLight2.position.set(-10, -10, -10);
             scene.add(dirLight2);
 
-            // 6. Helpers (Grid and Axis)
+            // 6. Сетка и ось вращения (Y)
             const gridHelper = new THREE.GridHelper(10, 10, '#333', '#222');
             gridHelper.position.y = -2;
             scene.add(gridHelper);
 
-            // Draw Y Axis (Axis of rotation)
             const materialY = new THREE.LineBasicMaterial({ color: '#fff', linewidth: 2 });
-            const pointsY = [];
-            pointsY.push(new THREE.Vector3(0, -3, 0));
-            pointsY.push(new THREE.Vector3(0, 4, 0));
+            const pointsY = [new THREE.Vector3(0, -3, 0), new THREE.Vector3(0, 4, 0)];
             const geometryY = new THREE.BufferGeometry().setFromPoints(pointsY);
             const lineY = new THREE.Line(geometryY, materialY);
             scene.add(lineY);
 
-            // Initialize shape
+            // Инициализация формы
             updateShapeGeometry();
 
-            // Handle resize
+            // Изменение размера окна
             window.addEventListener('resize', onWindowResize);
             
-            // Render Loop
+            // Запуск цикла анимации
             renderer.setAnimationLoop(animate);
         }
 
         function getShapePoints(type) {
             const points = [];
             const R = 2.5;
-            const H = 2; // Half height (from -2 to 2)
+            const H = 2; // Половина высоты (от -2 до 2)
 
             if (type === 'cylinder') {
-                // Rectangle
                 points.push(new THREE.Vector2(0, -H));
                 points.push(new THREE.Vector2(R, -H));
                 points.push(new THREE.Vector2(R, H));
                 points.push(new THREE.Vector2(0, H));
             } else if (type === 'cone') {
-                // Right Triangle
                 points.push(new THREE.Vector2(0, -H));
                 points.push(new THREE.Vector2(R, -H));
                 points.push(new THREE.Vector2(0, H));
             } else if (type === 'sphere') {
-                // Semicircle
                 for (let i = 0; i <= 30; i++) {
-                    const a = Math.PI * i / 30; // from 0 to PI
-                    // x is radius, y is height
-                    // We map from bottom (-R) to top (+R)
+                    const a = Math.PI * i / 30; 
                     points.push(new THREE.Vector2(Math.sin(a) * R, -Math.cos(a) * R));
                 }
             }
@@ -432,29 +423,29 @@
         }
 
         function updateShapeGeometry() {
-            // Remove old meshes
+            // Удаляем старые объекты со сцены
             if (sweptMesh) scene.remove(sweptMesh);
-            if (baseLine) scene.remove(baseLine);
             if (sweepingLine) scene.remove(sweepingLine);
 
             const points = getShapePoints(currentShape);
             
-            // 1. Create the Swept 3D Volume (Lathe)
-            // If angle is less than extremely small, Three.js might error, so clamp to min 0.01
+            // Если угол слишком маленький, Three.js может выдать ошибку, поэтому минимум 0.01
             const sweepAngle = Math.max(currentAngle, 0.01);
             
+            // 1. Создание 3D тела
             const latheGeo = new THREE.LatheGeometry(points, 64, 0, sweepAngle);
             
-            // Choose color based on shape
-            let colorHex = '#06B6D4'; // Cyan for cylinder
-            if (currentShape === 'cone') colorHex = '#8B5CF6'; // Purple
-            if (currentShape === 'sphere') colorHex = '#4CAF50'; // Green
+            // Выбор цвета
+            let colorHex = '#06B6D4'; // Цилиндр - Голубой
+            if (currentShape === 'cone') colorHex = '#8B5CF6'; // Конус - Фиолетовый
+            if (currentShape === 'sphere') colorHex = '#4CAF50'; // Шар - Зеленый
 
+            // Матовый, непрозрачный материал
             const latheMat = new THREE.MeshStandardMaterial({ 
                 color: colorHex, 
-                metalness: 0.1,
-                roughness: 0.9,
-                transparent: false,
+                roughness: 1.0,     // Полная матовость (нет отблесков)
+                metalness: 0.0,     // Не металл
+                transparent: false, // Непрозрачный
                 opacity: 1.0,
                 side: THREE.DoubleSide
             });
@@ -462,31 +453,30 @@
             sweptMesh = new THREE.Mesh(latheGeo, latheMat);
             scene.add(sweptMesh);
 
-            // 2. Create the 2D Generator Line Outline (The template)
-            // We draw the outline of the points to clearly show the 2D shape generating it
+            // 2. Создание ЕДИНСТВЕННОГО контура, который жестко привязан к краю 3D фигуры
             const linePoints = [];
             points.forEach(p => {
-                linePoints.push(new THREE.Vector3(p.x, p.y, 0));
+                // Вычисляем координаты X и Z точно так же, как это делает LatheGeometry
+                linePoints.push(new THREE.Vector3(
+                    p.x * Math.cos(sweepAngle), 
+                    p.y, 
+                    p.x * Math.sin(sweepAngle)
+                ));
             });
-            // Close the loop to show the full 2D area
-            if(points.length > 0) {
-                linePoints.push(new THREE.Vector3(points[0].x, points[0].y, 0));
+            
+            // Замыкаем контур, чтобы визуально завершить фигуру
+            if(linePoints.length > 0) {
+                linePoints.push(new THREE.Vector3(
+                    points[0].x * Math.cos(sweepAngle), 
+                    points[0].y, 
+                    points[0].x * Math.sin(sweepAngle)
+                ));
             }
 
             const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
-            const lineMat = new THREE.LineBasicMaterial({ color: '#FFC107', depthTest: false }); // Always visible on top
-            
-            // Базовый неподвижный шаблон (откуда начинается вращение)
-            baseLine = new THREE.Line(lineGeo, lineMat);
-            baseLine.rotation.y = 0;
-            scene.add(baseLine);
-            
-            // Вращающийся шаблон (на переднем крае фигуры)
-            // Внимание: Three.js LatheGeometry генерирует Z = x * sin(a), 
-            // а стандартное вращение rotation.y дает Z = -x * sin(a). 
-            // Поэтому вращаем линию в обратную сторону (-sweepAngle).
+            const lineMat = new THREE.LineBasicMaterial({ color: '#FFC107', depthTest: false, linewidth: 2 }); 
             sweepingLine = new THREE.Line(lineGeo, lineMat);
-            sweepingLine.rotation.y = -sweepAngle;
+            
             scene.add(sweepingLine);
         }
 
@@ -501,19 +491,19 @@
         function animate() {
             controls.update();
 
-            // Handle Auto-Sweep Animation
+            // Анимация развертки (Вращения)
             if (isAnimatingSweep) {
-                animProgress += 0.0025; // Animation speed (еще медленнее, в 3 раза)
+                animProgress += 0.0008; // Замедлено в 3 раза для лучшего восприятия
                 if (animProgress > 1.0) {
                     animProgress = 1.0;
                     isAnimatingSweep = false;
                 }
                 
-                // Ease out cubic
+                // Плавное замедление к концу (Ease-out)
                 const ease = 1 - Math.pow(1 - animProgress, 3);
                 currentAngle = ease * Math.PI * 2;
                 
-                // Update slider UI
+                // Обновление ползунка и текста
                 const deg = Math.round(currentAngle * 180 / Math.PI);
                 sliderAngle.value = deg;
                 valAngle.textContent = deg + '°';
