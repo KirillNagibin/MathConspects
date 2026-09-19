@@ -444,8 +444,8 @@
 
             const points = getShapePoints(currentShape);
             
-            // Если угол слишком маленький, LatheGeometry не построится
-            const sweepAngle = Math.max(currentAngle, 0.001);
+            // Если угол 0, ставим минимальное значение, чтобы LatheGeometry не выдавала ошибку
+            const sweepAngle = Math.max(currentAngle, 0.0001);
             
             // Выбор цвета
             let colorHex = '#06B6D4'; // Цилиндр - Голубой
@@ -465,15 +465,22 @@
             const latheMesh = new THREE.Mesh(latheGeo, solidMat);
             sweptGroup.add(latheMesh);
 
-            // 2. Построение стартовой плоской фигуры (стоит на месте при 0°)
-            const capGeo = createCapGeometry(currentShape);
-            const startCap = new THREE.Mesh(capGeo, solidMat);
-            sweptGroup.add(startCap);
+            // 2. Построение закрашенных плоских граней (чтобы фигура была полнотельной)
+            // Добавляем их только если фигура не замкнута в полный круг
+            if (currentAngle < Math.PI * 2 - 0.01) {
+                const capGeo = createCapGeometry(currentShape);
+                
+                // Стартовая грань (стоит на месте при 0°)
+                const startCap = new THREE.Mesh(capGeo, solidMat);
+                sweptGroup.add(startCap);
 
-            // 3. Построение ведущей плоской фигуры (крутится вместе с телом)
-            const endCap = new THREE.Mesh(capGeo, solidMat);
-            endCap.rotation.y = sweepAngle; // Идеальная синхронизация с краем
-            sweptGroup.add(endCap);
+                // Ведущая грань (крутится вместе с краем тела)
+                // ВАЖНО: LatheGeometry в Three.js строит ось Z через +sin, а rotation.y работает через -sin.
+                // Поэтому для идеального совпадения и движения в одну сторону нужен МИНУС.
+                const endCap = new THREE.Mesh(capGeo, solidMat);
+                endCap.rotation.y = -sweepAngle; 
+                sweptGroup.add(endCap);
+            }
 
             scene.add(sweptGroup);
         }
