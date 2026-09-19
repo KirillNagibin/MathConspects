@@ -425,18 +425,6 @@
             return points;
         }
 
-        // Создание плоской заглушки (сечения) на основе точек
-        function createCapGeometry(type) {
-            const shape = new THREE.Shape();
-            const points = getShapePoints(type);
-            
-            shape.moveTo(points[0].x, points[0].y);
-            for (let i = 1; i < points.length; i++) {
-                shape.lineTo(points[i].x, points[i].y);
-            }
-            return new THREE.ShapeGeometry(shape);
-        }
-
         function updateShapeGeometry() {
             // Удаляем старую группу со сцены
             if (sweptGroup) scene.remove(sweptGroup);
@@ -452,35 +440,18 @@
             if (currentShape === 'cone') colorHex = '#8B5CF6'; // Конус - Фиолетовый
             if (currentShape === 'sphere') colorHex = '#4CAF50'; // Шар - Зеленый
 
-            // Единый матовый, непрозрачный материал
+            // Единый матовый материал с отображением обеих сторон
             const solidMat = new THREE.MeshStandardMaterial({ 
                 color: colorHex, 
-                roughness: 1.0,     // Полная матовость
-                metalness: 0.0,     // Не металл
+                roughness: 1.0,
+                metalness: 0.0,
                 side: THREE.DoubleSide
             });
             
-            // 1. Построение объемной поверхности вращения
+            // Оставляем ИСКЛЮЧИТЕЛЬНО саму 3D-поверхность
             const latheGeo = new THREE.LatheGeometry(points, 64, 0, sweepAngle);
             const latheMesh = new THREE.Mesh(latheGeo, solidMat);
             sweptGroup.add(latheMesh);
-
-            // 2. Построение закрашенных плоских граней (чтобы фигура была полнотельной)
-            // Добавляем их только если фигура не замкнута в полный круг
-            if (currentAngle < Math.PI * 2 - 0.01) {
-                const capGeo = createCapGeometry(currentShape);
-                
-                // Стартовая грань (стоит на месте при 0°)
-                const startCap = new THREE.Mesh(capGeo, solidMat);
-                sweptGroup.add(startCap);
-
-                // Ведущая грань (крутится вместе с краем тела)
-                // ВАЖНО: LatheGeometry в Three.js строит ось Z через +sin, а rotation.y работает через -sin.
-                // Поэтому для идеального совпадения и движения в одну сторону нужен МИНУС.
-                const endCap = new THREE.Mesh(capGeo, solidMat);
-                endCap.rotation.y = -sweepAngle; 
-                sweptGroup.add(endCap);
-            }
 
             scene.add(sweptGroup);
         }
