@@ -448,10 +448,33 @@
                 side: THREE.DoubleSide
             });
             
-            // Оставляем ИСКЛЮЧИТЕЛЬНО саму 3D-поверхность
+            // 1. Основная изогнутая поверхность вращения
             const latheGeo = new THREE.LatheGeometry(points, 64, 0, sweepAngle);
             const latheMesh = new THREE.Mesh(latheGeo, solidMat);
             sweptGroup.add(latheMesh);
+
+            // 2. Сплошные плоские сечения (крышки), которые "разрезают" фигуру
+            // Они появляются только если фигура не замкнулась полностью (до 360 градусов)
+            if (sweepAngle < Math.PI * 2 - 0.001) {
+                // Создаем 2D-полигон по тем же точкам
+                const shape = new THREE.Shape();
+                shape.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) {
+                    shape.lineTo(points[i].x, points[i].y);
+                }
+                shape.lineTo(points[0].x, points[0].y); // Замыкаем контур обратно к оси
+
+                const shapeGeo = new THREE.ShapeGeometry(shape);
+
+                // Стартовое сечение (неподвижное, всегда стоит на 0 градусов)
+                const startCap = new THREE.Mesh(shapeGeo, solidMat);
+                sweptGroup.add(startCap);
+
+                // Ведущее сечение (поворачивается ровно на тот же угол, что и край фигуры)
+                const endCap = new THREE.Mesh(shapeGeo, solidMat);
+                endCap.rotation.y = sweepAngle; 
+                sweptGroup.add(endCap);
+            }
 
             scene.add(sweptGroup);
         }
