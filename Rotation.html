@@ -221,8 +221,8 @@
             </ul>
             
             <div class="formula-grid">
-                <div class="formula-box" style="border-color: var(--brand-pink);">
-                    <div style="font-size: 0.9rem; color: var(--brand-pink); margin-bottom: 5px;">Объем шара</div>
+                <div class="formula-box" style="border-color: var(--brand-green);">
+                    <div style="font-size: 0.9rem; color: var(--brand-green); margin-bottom: 5px;">Объем шара</div>
                     $$V = \frac{4}{3} \pi R^3$$
                 </div>
                 <div class="formula-box" style="border-color: var(--text-muted);">
@@ -329,7 +329,7 @@
            ========================================== */
         
         let scene, camera, renderer, controls;
-        let sweptMesh, contourLine;
+        let sweptMesh, baseLine, sweepingLine;
         let currentShape = 'cylinder'; // 'cylinder', 'cone', 'sphere'
         let currentAngle = Math.PI * 2; // Full sweep
         
@@ -434,7 +434,8 @@
         function updateShapeGeometry() {
             // Remove old meshes
             if (sweptMesh) scene.remove(sweptMesh);
-            if (contourLine) scene.remove(contourLine);
+            if (baseLine) scene.remove(baseLine);
+            if (sweepingLine) scene.remove(sweepingLine);
 
             const points = getShapePoints(currentShape);
             
@@ -447,17 +448,15 @@
             // Choose color based on shape
             let colorHex = '#06B6D4'; // Cyan for cylinder
             if (currentShape === 'cone') colorHex = '#8B5CF6'; // Purple
-            if (currentShape === 'sphere') colorHex = '#EC4899'; // Pink
+            if (currentShape === 'sphere') colorHex = '#4CAF50'; // Green
 
-            const latheMat = new THREE.MeshPhysicalMaterial({ 
+            const latheMat = new THREE.MeshStandardMaterial({ 
                 color: colorHex, 
                 metalness: 0.1,
-                roughness: 0.2,
+                roughness: 0.9,
                 transparent: true,
                 opacity: 0.85,
-                side: THREE.DoubleSide,
-                clearcoat: 1.0,
-                clearcoatRoughness: 0.1
+                side: THREE.DoubleSide
             });
             
             sweptMesh = new THREE.Mesh(latheGeo, latheMat);
@@ -476,12 +475,19 @@
 
             const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
             const lineMat = new THREE.LineBasicMaterial({ color: '#FFC107', depthTest: false }); // Always visible on top
-            contourLine = new THREE.Line(lineGeo, lineMat);
             
-            // Rotate the line to match the leading edge of the sweep
-            contourLine.rotation.y = sweepAngle;
+            // Базовый неподвижный шаблон (откуда начинается вращение)
+            baseLine = new THREE.Line(lineGeo, lineMat);
+            baseLine.rotation.y = 0;
+            scene.add(baseLine);
             
-            scene.add(contourLine);
+            // Вращающийся шаблон (на переднем крае фигуры)
+            // Внимание: Three.js LatheGeometry генерирует Z = x * sin(a), 
+            // а стандартное вращение rotation.y дает Z = -x * sin(a). 
+            // Поэтому вращаем линию в обратную сторону (-sweepAngle).
+            sweepingLine = new THREE.Line(lineGeo, lineMat);
+            sweepingLine.rotation.y = -sweepAngle;
+            scene.add(sweepingLine);
         }
 
         function onWindowResize() {
@@ -497,7 +503,7 @@
 
             // Handle Auto-Sweep Animation
             if (isAnimatingSweep) {
-                animProgress += 0.015; // Animation speed
+                animProgress += 0.0075; // Animation speed (замедлено в 2 раза)
                 if (animProgress > 1.0) {
                     animProgress = 1.0;
                     isAnimatingSweep = false;
@@ -544,7 +550,7 @@
             } else if (shape === 'sphere') {
                 dash2D.textContent = "Полукруг";
                 dashAxis.textContent = "Диаметр";
-                dash2D.style.color = "var(--brand-pink)";
+                dash2D.style.color = "var(--brand-green)";
             }
 
             // Restart animation to show formation
