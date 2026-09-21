@@ -506,6 +506,35 @@
             const barWidth = barSpacing * 0.7; // 70% width for bars
             const gap = barSpacing * 0.3;
 
+            // Вспомогательная функция для отрисовки сумм
+            function drawValueIfFits(ctx, value, x, y, barW, barH) {
+                if (barH < 14) return; // Слишком мало высоты для текста
+                
+                const text = Math.round(value).toLocaleString('ru-RU');
+                ctx.font = '11px sans-serif';
+                const textMetrics = ctx.measureText(text);
+                const textW = textMetrics.width;
+                const textH = 11; 
+                
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                const padding = 4;
+                
+                if (textW + padding <= barW && textH + padding <= barH) {
+                    // Помещается горизонтально
+                    ctx.fillText(text, x + barW / 2, y + barH / 2);
+                } else if (textW + padding <= barH && textH + padding <= barW) {
+                    // Помещается вертикально
+                    ctx.save();
+                    ctx.translate(x + barW / 2, y + barH / 2);
+                    ctx.rotate(-Math.PI / 2);
+                    ctx.fillText(text, 0, 0);
+                    ctx.restore();
+                }
+            }
+
             for (let i = 0; i < n; i++) {
                 const item = schedule[i];
                 const x = padding.left + i * barSpacing + gap / 2;
@@ -517,12 +546,14 @@
                 const yInterest = yPrincipal - hInterest;
 
                 // Draw Principal (Blue) at bottom
-                ctx.fillStyle = 'var(--brand-blue)';
+                ctx.fillStyle = '#3B82F6';
                 ctx.fillRect(x, yPrincipal, barWidth, hPrincipal);
+                drawValueIfFits(ctx, item.principal, x, yPrincipal, barWidth, hPrincipal);
                 
                 // Draw Interest (Red) stacked on top
-                ctx.fillStyle = 'var(--brand-red)';
+                ctx.fillStyle = '#EF4444';
                 ctx.fillRect(x, yInterest, barWidth, hInterest);
+                drawValueIfFits(ctx, item.interest, x, yInterest, barWidth, hInterest);
 
                 // Month labels (skip some if too many to avoid overlap)
                 ctx.fillStyle = '#888';
