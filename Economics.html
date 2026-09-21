@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Конспект: Экономические задачи (Кредиты)</title>
+    <title>Конспект: Экономические задачи (Кредиты и Вклады)</title>
     
     <script>
         window.MathJax = {
@@ -148,11 +148,11 @@
     <script src="loading_script.js"></script>
 
     <div class="container">
-        <h1>Экономические задачи (Кредиты)</h1>
+        <h1>Экономические задачи (Кредиты и Вклады)</h1>
 
         <h2><i data-lucide="percent"></i> 1. База: Сложный процент и Коэффициент</h2>
         <div class="card">
-            <p>В любой экономической задаче мы работаем с начислением процентов на сумму долга. Главный секрет быстрого счета — не считать процент отдельно, а сразу использовать <b>повышающий коэффициент $k$</b>.</p>
+            <p>В любой экономической задаче мы работаем с начислением процентов на сумму долга (или вклада). Главный секрет быстрого счета — не считать процент отдельно, а сразу использовать <b>повышающий коэффициент $k$</b>.</p>
             
             <p>Если банк начисляет $r\%$ годовых на сумму $S$, то новая сумма составит:</p>
             <div class="formula-box" style="border-color: var(--brand-green);">
@@ -160,22 +160,28 @@
             </div>
             
             <p style="color: var(--text-muted);">Где $k = 1 + \frac{r}{100}$. <br><i>Пример: банк начисляет 15%. Значит $k = 1 + 0.15 = 1.15$. Чтобы узнать сумму после начисления, просто умножаем старую сумму на $1.15$.</i></p>
-            
-            <h3 style="margin-top: 20px; color: var(--info-text);">Хронология банка (Это очень важно!)</h3>
-            <p>Деньги в банке не живут своей жизнью хаотично. Всё происходит строго по шагам в течение года (или месяца):</p>
-            <ol>
-                <li><b>Долг:</b> Начало периода (у нас есть долг $S$).</li>
-                <li><b>Начисление процентов:</b> Банк увеличивает долг (долг становится $S \cdot k$).</li>
-                <li><b>Платеж:</b> Клиент вносит деньги $X$ (долг уменьшается: $S \cdot k - X$).</li>
-                <li><b>Остаток:</b> Это число переходит на следующий период как новый стартовый долг.</li>
-            </ol>
         </div>
 
-        <h2><i data-lucide="wallet"></i> 2. Кредиты: Аннуитетные платежи</h2>
+        <h2><i data-lucide="piggy-bank"></i> 2. Вклады и капитализация</h2>
         <div class="card">
-            <p><b>Аннуитет</b> — это кредит, который гасится <b>равными платежами</b>. Каждый год или месяц вы платите банку одну и ту же сумму $X$.</p>
+            <p>Вклады работают по тому же принципу, что и кредиты, только теперь банк платит вам. Обычно в задачах ЕГЭ речь идет о <b>сложном проценте (капитализации)</b>: когда процент начисляется не только на начальную сумму, но и на уже накопившиеся проценты прошлых лет.</p>
             
-            <p style="color: var(--text-muted);">При таком кредите удобно составлять уравнение, просто "прокручивая" хронологию до конца срока, пока долг не станет равен нулю.</p>
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border-left: 4px solid var(--info-text); margin-bottom: 15px;">
+                <strong>Хронология вклада (если мы докидываем деньги):</strong>
+                <ol style="margin-top: 5px; margin-bottom: 0;">
+                    <li><b>Начало:</b> Кладем в банк сумму $S$.</li>
+                    <li><b>Начисление %:</b> Банк увеличивает сумму вклада (вклад становится $S \cdot k$).</li>
+                    <li><b>Пополнение:</b> Мы докладываем на счет сумму $X$. Остаток на конец года: $S \cdot k + X$.</li>
+                    <li>В следующем году процент будет начисляться уже на всю эту новую скобку: $(S \cdot k + X) \cdot k$.</li>
+                </ol>
+            </div>
+            
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Если в задаче мы просто положили деньги и ничего не докладываем, то через $n$ лет на счету будет: $\mathbf{S_n = S \cdot k^n}$.</p>
+        </div>
+
+        <h2><i data-lucide="wallet"></i> 3. Кредиты: Аннуитетные платежи</h2>
+        <div class="card">
+            <p><b>Аннуитет</b> — это кредит, который гасится <b>равными платежами</b>. Каждый год или месяц вы платите банку одну и ту же сумму $X$. Здесь происходит цепная реакция: банк увеличил долг в $k$ раз, вы вычли платеж $X$, остаток снова увеличили в $k$ раз, снова вычли $X$... пока долг не станет нулем.</p>
             
             <div class="table-container">
                 <table class="data-table">
@@ -209,23 +215,36 @@
                     </tbody>
                 </table>
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); text-align: center;">Для большинства экзаменационных задач количество лет небольшое (2-3 года). Проще решить уравнение напрямую: $Sk^3 - X(k^2 + k + 1) = 0$, выразив оттуда неизвестную.</p>
+
+            <h3 style="margin-top: 20px; color: var(--accent);">Уравнение в общем виде</h3>
+            <p style="color: var(--text-muted);">Если расписать эту "матрешку" до конца $n$-го года, мы получим цепное уравнение:</p>
+            <div class="formula-box">
+                $$S k^n - X k^{n-1} - X k^{n-2} - \dots - X = 0$$
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Или, вынеся платеж $X$ за скобки: $\quad S k^n - X(k^{n-1} + k^{n-2} + \dots + 1) = 0$. <br>Для задач на 2-3 года проще решать "в лоб" без общих формул, просто раскрывая скобки.</p>
         </div>
 
-        <h2><i data-lucide="trending-down"></i> 3. Кредиты: Дифференцированные платежи</h2>
+        <h2><i data-lucide="trending-down"></i> 4. Кредиты: Дифференцированные платежи</h2>
         <div class="card">
             <p>Это кредит, при котором <b>сам долг уменьшается равномерно</b>. То есть, каждый месяц вы выплачиваете банку фиксированный кусочек основного долга $\frac{S}{n}$ плюс проценты, набежавшие именно на <i>остаток долга</i> в этом месяце.</p>
-            
-            <p style="color: var(--text-muted);">Платежи здесь всегда <b>разные</b> (первый — самый большой, последний — самый маленький). Для таких задач составляется не уравнение-цепочка, а оценивается арифметическая прогрессия переплат.</p>
 
+            <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border-left: 4px solid var(--brand-purple); margin-bottom: 20px;">
+                <strong style="color: var(--brand-purple);">Откуда берется формула? (Секрет арифметической прогрессии)</strong>
+                <p style="font-size: 0.95rem; margin-top: 5px;">Проценты всегда начисляются на остаток долга. А остаток долга падает лесенкой: $S \to S\frac{n-1}{n} \to \dots \to \frac{S}{n}$.</p>
+                <p style="font-size: 0.95rem;">Значит, и сами переплаты (проценты банку) образуют убывающую <b>арифметическую прогрессию</b>. Чтобы найти сумму всех переплат, берем первый процент (самый большой) и последний (самый маленький), складываем, делим на 2 и умножаем на количество месяцев $n$:</p>
+                <div style="overflow-x: auto; white-space: nowrap; margin: 10px 0;">
+                    $$I_{общ} = \frac{I_1 + I_n}{2} \cdot n = \frac{S \cdot \frac{r}{100} + \frac{S}{n} \cdot \frac{r}{100}}{2} \cdot n = S \cdot \frac{r}{100} \cdot \frac{n+1}{2}$$
+                </div>
+            </div>
+
+            <p style="color: var(--text-muted);">Итоговая выплата банку состоит из самого тела кредита $S$ и общей начисленной переплаты $I_{общ}$.</p>
             <div class="formula-box" style="border-color: var(--brand-purple);">
                 <div style="font-size: 0.9rem; color: var(--brand-purple); margin-bottom: 5px;">Общая сумма выплат при диф. платежах</div>
                 $$V_{общ} = S + S \cdot \frac{r}{100} \cdot \frac{n+1}{2}$$
             </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted);">Где $S$ — тело кредита, $n$ — срок кредита, а второе слагаемое — это общая переплата банку (сумма убывающих процентов).</p>
         </div>
 
-        <h2><i data-lucide="bar-chart-3"></i> 4. Лаборатория: Кредитный калькулятор</h2>
+        <h2><i data-lucide="bar-chart-3"></i> 5. Лаборатория: Кредитный калькулятор</h2>
         <p style="color: var(--text-muted);">Давайте визуально посмотрим, куда уходят ваши деньги! Выберите тип кредита. На графике каждый столбец — это ваш платеж в конкретный месяц.<br>
         <span style="color: var(--brand-blue); font-weight: bold;">Синяя часть</span> — это погашение самого долга (тело кредита).<br>
         <span style="color: var(--brand-red); font-weight: bold;">Красная часть</span> — это проценты, которые банк забирает себе за услугу.</p>
@@ -272,15 +291,15 @@
             
             <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 0.9rem; color: var(--text-muted);">
                 <span style="display: flex; align-items: center; gap: 6px;">
-                    <span style="display: inline-block; width: 12px; height: 12px; background: var(--brand-blue); border-radius: 2px;"></span> Основной долг
+                    <span style="display: inline-block; width: 12px; height: 12px; background: #3B82F6; border-radius: 2px;"></span> Основной долг
                 </span>
                 <span style="display: flex; align-items: center; gap: 6px;">
-                    <span style="display: inline-block; width: 12px; height: 12px; background: var(--brand-red); border-radius: 2px;"></span> Проценты банку
+                    <span style="display: inline-block; width: 12px; height: 12px; background: #EF4444; border-radius: 2px;"></span> Проценты банку
                 </span>
             </div>
         </div>
 
-        <h2><i data-lucide="target"></i> 5. Практика (Аннуитет)</h2>
+        <h2><i data-lucide="target"></i> 6. Практика (Аннуитет)</h2>
         <div class="card">
             <h3 style="color: var(--accent); margin-top:0;">Задача: Выплата двумя частями</h3>
             <p>Планируется взять кредит в банке на сумму $210~000$ рублей. Условия его возврата таковы:<br>
@@ -546,12 +565,12 @@
                 const yInterest = yPrincipal - hInterest;
 
                 // Draw Principal (Blue) at bottom
-                ctx.fillStyle = '#3B82F6';
+                ctx.fillStyle = '#3B82F6'; // Непосредственно используем HEX-код для гарантии рендера
                 ctx.fillRect(x, yPrincipal, barWidth, hPrincipal);
                 drawValueIfFits(ctx, item.principal, x, yPrincipal, barWidth, hPrincipal);
                 
                 // Draw Interest (Red) stacked on top
-                ctx.fillStyle = '#EF4444';
+                ctx.fillStyle = '#EF4444'; // Непосредственно используем HEX-код для гарантии рендера
                 ctx.fillRect(x, yInterest, barWidth, hInterest);
                 drawValueIfFits(ctx, item.interest, x, yInterest, barWidth, hInterest);
 
