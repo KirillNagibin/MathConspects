@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Конспект: Тригонометрия в ЕГЭ</title>
+    <title>Конспект: Тригонометрия</title>
     
     <script>
         window.MathJax = {
@@ -42,6 +42,8 @@
             --brand-green: #4CAF50;
             --brand-pink: #EC4899;
             --brand-orange: #F97316;
+            --brand-red: #EF4444;
+            --brand-blue: #3B82F6;
         }
 
         * { box-sizing: border-box; }
@@ -80,17 +82,14 @@
         li { margin-bottom: 10px; }
         strong { color: var(--text-main); font-weight: 600; }
 
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
-        .table-container { overflow-x: auto; }
-        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: top;}
-        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
-        .data-table td { color: var(--text-muted); }
-
         .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        
         .formula-box {
             background: rgba(0,0,0,0.3); border: 1px solid var(--border);
             padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
-            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+            overflow-x: auto; overflow-y: hidden; 
+            /* ИСПРАВЛЕНИЕ: Разрешаем перенос текста, чтобы избежать горизонтальных скроллбаров */
+            white-space: normal; word-wrap: break-word;
         }
         
         mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
@@ -137,13 +136,13 @@
     <script src="loading_script.js"></script>
 
     <div class="container">
-        <h1>Тригонометрия: От базы до второй части ЕГЭ</h1>
+        <h1>Тригонометрия: От базы до уравнений</h1>
         
         <div class="alert-box alert-info">
             <div class="icon-box"><i data-lucide="circle-dashed" color="var(--info-text)"></i></div>
             <div>
                 <strong style="color: var(--info-text);">О чем этот конспект?</strong><br>
-                <span style="color: var(--text-muted);">Тригонометрия — это не просто треугольники, это наука о <b>вращении</b>. В ЕГЭ она требуется повсеместно: преобразование выражений (Часть 1), решение уравнений с отбором корней (Часть 2), стереометрия и планиметрия. Главное оружие здесь — Тригонометрический круг.</span>
+                <span style="color: var(--text-muted);">Тригонометрия — это не просто треугольники, это наука о <b>вращении</b>. Главное оружие здесь — Тригонометрический круг. Поняв его, вам больше никогда не придется зубрить знаки синусов и косинусов по четвертям.</span>
             </div>
         </div>
 
@@ -166,14 +165,14 @@
             <p style="color: var(--text-muted);">Что делать, если внутри функции стоит отрицательный угол? Представьте тригокруг: угол $\alpha$ — это поворот вверх, а угол $-\alpha$ — это поворот вниз на точно такое же расстояние.</p>
             <div class="formula-grid">
                 <div class="formula-box" style="border-color: var(--brand-red);">
-                    <div style="font-size: 0.9rem; color: var(--brand-red); margin-bottom: 5px;">Косинус (Чётная функция)</div>
+                    <div style="font-size: 0.9rem; color: var(--brand-red); margin-bottom: 5px; font-weight: bold;">Косинус (Чётная функция)</div>
                     $$\cos(-\alpha) = \cos \alpha$$
-                    <span style="font-size: 0.8rem; color: var(--text-muted);">Координата X при повороте вниз не меняется. Косинус «съедает» минус.</span>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); display: block; line-height: 1.4; margin-top: 8px;">Координата X при повороте вниз не меняется. Косинус «съедает» минус.</span>
                 </div>
                 <div class="formula-box" style="border-color: var(--brand-blue);">
-                    <div style="font-size: 0.9rem; color: var(--brand-blue); margin-bottom: 5px;">Остальные (Нечётные функции)</div>
+                    <div style="font-size: 0.9rem; color: var(--brand-blue); margin-bottom: 5px; font-weight: bold;">Остальные (Нечётные функции)</div>
                     $$\sin(-\alpha) = -\sin \alpha$$
-                    <span style="font-size: 0.8rem; color: var(--text-muted);">Координата Y меняет знак на противоположный. Функция «выплёвывает» минус. Аналогично для $\tan$ и $\cot$.</span>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); display: block; line-height: 1.4; margin-top: 8px;">Координата Y меняет знак на противоположный. Функция «выплёвывает» минус. Аналогично для $\tan$ и $\cot$.</span>
                 </div>
             </div>
         </div>
@@ -215,13 +214,13 @@
                 <canvas id="canvas-circle" width="500" height="350"></canvas>
             </div>
             <div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 0.85rem; flex-wrap: wrap;">
-                <span style="color: var(--brand-red);">■ Ось X (Косинус)</span>
-                <span style="color: var(--brand-blue);">■ Ось Y (Синус)</span>
-                <span style="color: var(--brand-orange);">■ Ось Тангенсов</span>
+                <span style="color: var(--brand-red);"><b style="font-size:1.2em;">—</b> Косинус (Ось X)</span>
+                <span style="color: var(--brand-blue);"><b style="font-size:1.2em;">—</b> Синус (Ось Y)</span>
+                <span style="color: var(--brand-orange);"><b style="font-size:1.2em;">—</b> Тангенс</span>
             </div>
         </div>
 
-        <h2><i data-lucide="layers"></i> 3. Главные формулы (Минимум для ЕГЭ)</h2>
+        <h2><i data-lucide="layers"></i> 3. Главные формулы</h2>
         <div class="card">
             <h3 style="color: var(--accent); margin-top: 0;">Основное тригонометрическое тождество (ОТТ)</h3>
             <p style="color: var(--text-muted); font-size: 0.9rem;">Это просто Теорема Пифагора ($a^2 + b^2 = c^2$), вписанная в тригокруг, где катеты — это синус и косинус, а гипотенуза равна радиусу (1).</p>
@@ -230,24 +229,17 @@
             </div>
 
             <h3 style="color: var(--brand-purple); margin-top: 30px;">Формулы двойного угла</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Постоянно используются для понижения или повышения аргумента во 2-й части ЕГЭ.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Постоянно используются для понижения или повышения аргумента в сложных уравнениях.</p>
             <div class="formula-grid">
                 <div class="formula-box" style="border-color: var(--brand-blue);">
-                    <div style="font-size: 0.9rem; color: var(--brand-blue); margin-bottom: 5px;">Синус двойного угла</div>
+                    <div style="font-size: 0.9rem; color: var(--brand-blue); margin-bottom: 5px; font-weight: bold;">Синус двойного угла</div>
                     $$\sin 2\alpha = 2\sin\alpha\cos\alpha$$
                 </div>
                 <div class="formula-box" style="border-color: var(--brand-red);">
-                    <div style="font-size: 0.9rem; color: var(--brand-red); margin-bottom: 5px;">Косинус двойного угла (3 формы)</div>
+                    <div style="font-size: 0.9rem; color: var(--brand-red); margin-bottom: 5px; font-weight: bold;">Косинус двойного угла (3 формы)</div>
                     $$\cos 2\alpha = \cos^2\alpha - \sin^2\alpha$$
                     $$= 2\cos^2\alpha - 1 = 1 - 2\sin^2\alpha$$
                 </div>
-            </div>
-
-            <h3 style="margin-top: 30px;">Формулы сложения</h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Даются в справочных материалах на ЕГЭ, но знать их структуру полезно.</p>
-            <div class="formula-box">
-                $$\sin(\alpha \pm \beta) = \sin\alpha\cos\beta \pm \cos\alpha\sin\beta$$
-                $$\cos(\alpha \pm \beta) = \cos\alpha\cos\beta \mp \sin\alpha\sin\beta$$
             </div>
         </div>
 
@@ -280,7 +272,7 @@
             </div>
         </div>
 
-        <h2><i data-lucide="target"></i> 5. Практика (Вторая часть ЕГЭ)</h2>
+        <h2><i data-lucide="target"></i> 5. Практика</h2>
         <div class="card">
             <h3 style="color: var(--accent); margin-top:0;">Задача: Тригонометрическое уравнение</h3>
             <p>Решите уравнение: $\quad 2\cos^2 x + \sin x - 1 = 0$</p>
@@ -362,17 +354,14 @@
         const dashTan = document.getElementById('dash-tan');
         const dashK = document.getElementById('dash-k');
 
-        // Utils for fractional PI rendering
         function formatRad(deg) {
             if (deg === 0) return "0";
             let sign = deg < 0 ? "-" : "";
             let absDeg = Math.abs(deg);
             
-            // Normalize to fundamental fractions if possible
             let num = absDeg;
             let den = 180;
             
-            // gcd
             let a = num; let b = den;
             while(b) { let t = b; b = a % b; a = t; }
             let gcd = a;
@@ -380,30 +369,28 @@
             num = num / gcd;
             den = den / gcd;
             
-            if (num === 1 && den === 1) return `$${sign}\\pi$`;
-            if (num === 1) return `$${sign}\\frac{\\pi}{${den}}$`;
-            if (den === 1) return `$${sign}${num}\\pi$`;
-            return `$${sign}\\frac{${num}\\pi}{${den}}$`;
+            if (num === 1 && den === 1) return `\\(${sign}\\pi\\)`;
+            if (num === 1) return `\\(${sign}\\frac{\\pi}{${den}}\\)`;
+            if (den === 1) return `\\(${sign}${num}\\pi\\)`;
+            return `\\(${sign}\\frac{${num}\\pi}{${den}}\\)`;
         }
 
         function drawTrigCircle() {
             const w = canvas.width;
             const h = canvas.height;
-            const cx = w / 2 - 40; // shift slightly left to leave room for tangent axis text
+            const cx = w / 2 - 40; 
             const cy = h / 2;
-            const R = 120; // unit circle radius
+            const R = 130; 
             
             const totalDeg = parseInt(sliderAngle.value);
             const totalRad = totalDeg * Math.PI / 180;
             
-            // Normalized angle for trig functions
             let normalizedDeg = totalDeg % 360;
-            if (normalizedDeg < 0) normalizedDeg += 360; // 0 to 360
+            if (normalizedDeg < 0) normalizedDeg += 360;
             const normRad = normalizedDeg * Math.PI / 180;
 
             const kTurns = Math.floor(totalDeg / 360);
 
-            // Calc values
             const cosVal = Math.cos(totalRad);
             const sinVal = Math.sin(totalRad);
             let tanVal = "∞";
@@ -411,7 +398,7 @@
                 tanVal = (sinVal / cosVal).toFixed(2);
             }
 
-            // Update UI
+            // Обновляем дашборд
             valDeg.textContent = totalDeg + '°';
             valRad.innerHTML = formatRad(totalDeg) + ' рад';
             if (window.MathJax && window.MathJax.typesetPromise) {
@@ -425,30 +412,29 @@
 
             ctx.clearRect(0, 0, w, h);
 
-            // 1. Draw Grid & Axes
+            // 1. Сетка и Оси
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(0, cy); ctx.lineTo(w, cy); // X axis
-            ctx.moveTo(cx, 0); ctx.lineTo(cx, h); // Y axis
+            ctx.moveTo(0, cy); ctx.lineTo(w, cy); 
+            ctx.moveTo(cx, 0); ctx.lineTo(cx, h); 
             ctx.stroke();
             
-            // X and Y labels
             ctx.fillStyle = '#888';
             ctx.font = '14px sans-serif';
-            ctx.fillText('cos', w - 25, cy - 10);
-            ctx.fillText('sin', cx + 10, 15);
+            ctx.fillText('X', w - 25, cy - 10);
+            ctx.fillText('Y', cx + 10, 15);
             ctx.fillText('1', cx + R + 5, cy + 15);
             ctx.fillText('1', cx + 5, cy - R - 5);
 
-            // 2. Draw Unit Circle
+            // 2. Единичный круг
             ctx.strokeStyle = '#555';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(cx, cy, R, 0, Math.PI * 2);
             ctx.stroke();
 
-            // 3. Draw Tangent Axis (vertical line at x = R)
+            // 3. Ось Тангенсов
             const tanAxisX = cx + R;
             ctx.strokeStyle = 'var(--brand-orange)';
             ctx.lineWidth = 1;
@@ -461,21 +447,19 @@
             ctx.fillStyle = 'var(--brand-orange)';
             ctx.fillText('tg', tanAxisX + 10, 15);
 
-            // 4. Current Point Coordinates
-            // Canvas Y is inverted (down is positive), so subtract for sin
+            // 4. Координаты точки
             const px = cx + R * cosVal;
             const py = cy - R * sinVal;
 
-            // 5. Draw Angle Sector/Arc
+            // 5. Дуга угла (мягкая заливка)
             ctx.fillStyle = 'rgba(6, 182, 212, 0.2)';
             ctx.beginPath();
             ctx.moveTo(cx, cy);
-            // Draw arc for normalized angle
-            ctx.arc(cx, cy, 30, 0, -normRad, true); 
+            ctx.arc(cx, cy, 35, 0, -normRad, true); 
             ctx.closePath();
             ctx.fill();
 
-            // Draw Spiral to indicate k turns (if |k| > 0)
+            // Спираль для оборотов (k)
             if (kTurns !== 0 || totalDeg < 0) {
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
                 ctx.lineWidth = 1;
@@ -483,15 +467,24 @@
                 const step = (totalRad) / 100;
                 for (let i = 0; i <= 100; i++) {
                     let a = i * step;
-                    let r = 10 + i * 0.2; // spiral outwards
-                    // Inverse Y for canvas
+                    let r = 12 + i * 0.2; 
                     ctx.lineTo(cx + r * Math.cos(-a), cy + r * Math.sin(-a));
                 }
                 ctx.stroke();
             }
 
-            // 6. Draw Triangle (Projections)
-            // Cosine projection (Red)
+            // 6. Прямоугольный треугольник (проекции)
+            
+            // Мягкая заливка треугольника
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(px, cy);
+            ctx.lineTo(px, py);
+            ctx.closePath();
+            ctx.fill();
+
+            // Проекция Косинуса (Красная)
             ctx.strokeStyle = 'var(--brand-red)';
             ctx.lineWidth = 4;
             ctx.beginPath();
@@ -499,24 +492,28 @@
             ctx.lineTo(px, cy);
             ctx.stroke();
 
-            // Sine projection (Blue)
+            // Проекция Синуса (Синяя)
             ctx.strokeStyle = 'var(--brand-blue)';
             ctx.beginPath();
             ctx.moveTo(px, cy);
             ctx.lineTo(px, py);
             ctx.stroke();
             
-            // Helper dash to Y axis
-            ctx.strokeStyle = 'rgba(59, 130, 246, 0.4)';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            ctx.moveTo(px, py);
-            ctx.lineTo(cx, py);
-            ctx.stroke();
-            ctx.setLineDash([]);
+            // Подписи прямо на холсте
+            if (Math.abs(cosVal) > 0.1) {
+                ctx.fillStyle = 'var(--brand-red)';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('cos', cx + (px - cx) / 2, cy + (cosVal > 0 ? 15 : -5));
+            }
+            if (Math.abs(sinVal) > 0.1) {
+                ctx.fillStyle = 'var(--brand-blue)';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText('sin', px + (cosVal > 0 ? -25 : 5), cy + (py - cy) / 2);
+            }
 
-            // 7. Draw Radius line
+            // Радиус-вектор
             ctx.strokeStyle = '#fff';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -524,19 +521,17 @@
             ctx.lineTo(px, py);
             ctx.stroke();
 
-            // 8. Draw Tangent line (Orange)
+            // 7. Линия Тангенса (Оранжевая)
             if (Math.abs(cosVal) > 0.001) {
-                // Ray from center through point to tangent axis
                 const tanY = cy - R * (sinVal / cosVal);
                 
-                // Draw ray extension
+                // Пунктир продолжения радиуса
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
                 ctx.lineWidth = 1;
                 ctx.setLineDash([5,5]);
                 ctx.beginPath();
                 ctx.moveTo(px, py);
                 ctx.lineTo(tanAxisX, tanY);
-                // Also draw backwards if angle is in Q2 or Q3
                 if (cosVal < 0) {
                     ctx.moveTo(cx, cy);
                     ctx.lineTo(tanAxisX, tanY);
@@ -544,7 +539,7 @@
                 ctx.stroke();
                 ctx.setLineDash([]);
 
-                // Draw Tangent segment on axis
+                // Отрезок Тангенса на оси
                 ctx.strokeStyle = 'var(--brand-orange)';
                 ctx.lineWidth = 4;
                 ctx.beginPath();
@@ -552,12 +547,12 @@
                 ctx.lineTo(tanAxisX, tanY);
                 ctx.stroke();
                 
-                // Tangent point
+                // Точка пересечения с осью тангенсов
                 ctx.fillStyle = '#fff';
                 ctx.beginPath(); ctx.arc(tanAxisX, tanY, 4, 0, Math.PI*2); ctx.fill();
             }
 
-            // 9. Point
+            // 8. Главная точка на окружности
             ctx.beginPath();
             ctx.arc(px, py, 6, 0, Math.PI*2);
             ctx.fillStyle = 'var(--accent)';
@@ -575,7 +570,6 @@
         sliderAngle.addEventListener('input', drawTrigCircle);
 
         // Initial draw
-        // Let fonts load before initial render
         setTimeout(drawTrigCircle, 100);
 
     </script>
