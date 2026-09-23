@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Тригонометрия в геометрии</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+            --brand-orange: #F97316;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 500px; }
+        .table-container { overflow-x: auto; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: top;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
+        .data-table td { color: var(--text-muted); }
+
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.2rem;
+            overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 10px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #0a0a0a; border-radius: 8px; border: 1px solid #333; padding: 10px; touch-action: none;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; min-height: 20px;}
+        .dashboard-value { font-size: 1.15rem; font-weight: bold; font-family: monospace; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+        }
+    </style>
+    <link rel="stylesheet" href="loading_animation.css">
+</head>
+<body>
+    <script src="loading_script.js"></script>
+
+    <div class="container">
+        <h1>Тригонометрия в планиметрии и стереометрии</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="triangle" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">О чем этот конспект?</strong><br>
+                <span style="color: var(--text-muted);">Без тригонометрии геометрия ограничивалась бы только теоремой Пифагора. Синусы и косинусы — это мощнейший инструмент, который связывает длины сторон и градусы углов. Этот арсенал жизненно необходим для решения сложных геометрических задач во второй части экзаменов.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="ruler"></i> 1. База: Прямоугольный треугольник</h2>
+        <div class="card">
+            <p>В прямоугольном треугольнике тригонометрические функции определяются как отношения длин сторон. Чтобы не запутаться, всегда начинайте с определения того, какой катет противолежащий, а какой — прилежащий <b>относительно выбранного угла</b>.</p>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: var(--brand-blue);">Синус ($\sin\alpha$)</strong></td>
+                            <td>$$\frac{\text{Противолежащий катет}}{\text{Гипотенуза}}$$</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--brand-red);">Косинус ($\cos\alpha$)</strong></td>
+                            <td>$$\frac{\text{Прилежащий катет}}{\text{Гипотенуза}}$$</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: var(--brand-orange);">Тангенс ($\tan\alpha$)</strong></td>
+                            <td>$$\frac{\text{Противолежащий катет}}{\text{Прилежащий катет}}$$</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert-box alert-warning" style="margin-bottom: 0; margin-top: 15px;">
+                <div class="icon-box"><i data-lucide="zap" color="var(--warn-text)"></i></div>
+                <div>
+                    <strong style="color: var(--warn-text);">Лайфхак: Выражение сторон</strong><br>
+                    <span style="color: var(--text-muted);">Не учите эти формулы как дроби. Учите их как действие! Чтобы найти <b>противолежащий</b> катет, нужно гипотенузу умножить на $\sin\alpha$. Чтобы найти <b>прилежащий</b> — гипотенузу умножить на $\cos\alpha$.</span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="scan"></i> 2. Теоремы для ЛЮБЫХ треугольников</h2>
+        <div class="card">
+            <p style="color: var(--text-muted);">Если треугольник не прямоугольный, Пифагор не работает. На сцену выходят две универсальные теоремы, которые работают абсолютно для всех треугольников.</p>
+
+            <h3 style="color: var(--brand-purple); margin-top: 20px;">Теорема Косинусов (Прокачанный Пифагор)</h3>
+            <p style="font-size: 0.95rem;">Квадрат любой стороны равен сумме квадратов двух других сторон минус удвоенное произведение этих сторон на косинус угла между ними.</p>
+            <div class="formula-box" style="border-color: var(--brand-purple);">
+                $$c^2 = a^2 + b^2 - 2ab\cos\gamma$$
+            </div>
+
+            <h3 style="color: var(--brand-cyan); margin-top: 30px;">Теорема Синусов</h3>
+            <p style="font-size: 0.95rem;">Стороны треугольника пропорциональны синусам противолежащих углов. Причём это отношение всегда равно <b>двум радиусам описанной окружности</b> ($2R$, то есть диаметру).</p>
+            <div class="formula-box" style="border-color: var(--brand-cyan);">
+                $$\frac{a}{\sin\alpha} = \frac{b}{\sin\beta} = \frac{c}{\sin\gamma} = 2R$$
+            </div>
+        </div>
+
+        <h2><i data-lucide="layers"></i> 3. Площади через тригонометрию</h2>
+        <div class="card">
+            <p>Тригонометрия дает нам формулы площадей, которые работают даже тогда, когда мы не знаем высоту фигуры.</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--brand-green);">
+                    <div style="font-size: 0.9rem; color: var(--brand-green); margin-bottom: 5px;">Площадь Треугольника</div>
+                    $$S = \frac{1}{2}ab\sin\gamma$$
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-orange);">
+                    <div style="font-size: 0.9rem; color: var(--brand-orange); margin-bottom: 5px;">Площадь Параллелограмма</div>
+                    $$S = ab\sin\gamma$$
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="monitor-play"></i> 4. Лаборатория: Динамический треугольник</h2>
+        <p style="color: var(--text-muted);">Потяните за вершины треугольника. Обратите внимание на угол $A$ (красный). Когда треугольник становится тупоугольным, косинус уходит в минус! А в панели данных вы можете увидеть, как в реальном времени проверяется работа теорем Синусов и Косинусов.</p>
+        
+        <div class="simulator">
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 15px;">
+                <div class="dashboard-item">
+                    <div class="dashboard-label">Угол $\angle A$</div>
+                    <div class="dashboard-value" id="dash-angle-a" style="color: var(--brand-red);">0°</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">$\sin A$</div>
+                    <div class="dashboard-value" id="dash-sin-a" style="color: var(--text-main);">0.00</div>
+                </div>
+                <div class="dashboard-item">
+                    <div class="dashboard-label">$\cos A$</div>
+                    <div class="dashboard-value" id="dash-cos-a" style="color: var(--text-main);">0.00</div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="dashboard-item" style="border: 1px solid var(--brand-purple); background: rgba(139, 92, 246, 0.05);">
+                    <div class="dashboard-label" style="color: var(--brand-purple);">Т. Косинусов: $a^2 = b^2+c^2 - 2bc\cos A$</div>
+                    <div class="dashboard-value" style="font-size: 1rem;"><span id="dash-cos-left">0</span> = <span id="dash-cos-right">0</span></div>
+                </div>
+                <div class="dashboard-item" style="border: 1px solid var(--brand-cyan); background: rgba(6, 182, 212, 0.05);">
+                    <div class="dashboard-label" style="color: var(--brand-cyan);">Т. Синусов ($2R$): $a/\sin A = b/\sin B$</div>
+                    <div class="dashboard-value" style="font-size: 1rem;"><span id="dash-sin-left">0</span> = <span id="dash-sin-right">0</span></div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-triangle" width="700" height="350"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="alert-triangle"></i> 5. Ловушки тупого угла</h2>
+        <div class="card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <div class="alert-box alert-error" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--error-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="x-circle" style="width: 18px;"></i> Потерянный минус
+                </strong>
+                <p style="margin: 10px 0 0 0; font-size: 0.9rem;">В тупоугольном треугольнике (например, $\angle C = 120^\circ$) косинус становится отрицательным: $\cos 120^\circ = -0.5$.<br>
+                Если забыть про это в теореме косинусов ($c^2 = a^2 + b^2 - 2ab\cos\gamma$), то минус на минус даст плюс, и мы должны будем <b>ПРИБАВЛЯТЬ</b> хвост, а не вычитать. Частая причина потерянных баллов!</p>
+            </div>
+
+            <div class="alert-box alert-warning" style="margin: 0; flex-direction: column;">
+                <strong style="color: var(--warn-text); display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="zap" style="width: 18px;"></i> Неоднозначность Синуса
+                </strong>
+                <p style="margin: 10px 0 0 0; font-size: 0.9rem;">Синусы смежных углов равны: $\sin(180^\circ - \alpha) = \sin\alpha$. <br>Если в задаче вы нашли, что $\sin\alpha = 0.5$, это значит, что угол может быть как $30^\circ$, так и $150^\circ$! Чтобы узнать точно, нужно проверить длины других сторон или косинус этого угла.</p>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 6. Практика</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Поиск стороны</h3>
+            <p>В треугольнике $ABC$ известны длины двух сторон: $AC = 5$ и $BC = 8$. Угол между ними $\angle C = 60^\circ$. Найдите длину третьей стороны $AB$.</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')"><i data-lucide="help-circle" style="width: 16px;"></i> Подсказка</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+            
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Известны две стороны и угол между ними. Идеальная ситуация для <b>Теоремы косинусов</b>! Запишем ее для стороны $c$ ($AB$): $c^2 = a^2 + b^2 - 2ab\cos\angle C$. Вспомните, что $\cos 60^\circ = 0.5$.
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. Применим теорему косинусов для стороны $AB$:<br>
+                $$AB^2 = AC^2 + BC^2 - 2 \cdot AC \cdot BC \cdot \cos\angle C$$</p>
+                
+                <p>2. Подставим значения ($AC=5$, $BC=8$, $\cos 60^\circ = 0.5$):<br>
+                $$AB^2 = 5^2 + 8^2 - 2 \cdot 5 \cdot 8 \cdot 0.5$$</p>
+
+                <p>3. Вычислим результат:<br>
+                $$AB^2 = 25 + 64 - 80 \cdot 0.5$$
+                $$AB^2 = 89 - 40 = 49$$</p>
+
+                <p>4. Извлекаем корень (сторона не может быть отрицательной):<br>
+                $$AB = \sqrt{49} = 7$$</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">
+                    Ответ: 7
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        function forceMathJaxRender() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.error(err));
+            } else {
+                window.setTimeout(forceMathJaxRender, 200);
+            }
+        }
+        window.setTimeout(forceMathJaxRender, 100);
+
+        function showStep(stepId, btnId) {
+            const el = document.getElementById(stepId);
+            el.classList.add('active');
+            if (btnId) {
+                const btn = document.getElementById(btnId);
+                if(btn) btn.style.display = 'none';
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([el]).catch(err => console.error(err));
+            }
+        }
+
+        /* ==========================================
+           СИМУЛЯТОР: ДИНАМИЧЕСКИЙ ТРЕУГОЛЬНИК
+           ========================================== */
+        
+        const canvas = document.getElementById('canvas-triangle');
+        const ctx = canvas.getContext('2d');
+        
+        // Вершины треугольника
+        let points = [
+            { id: 'A', x: 200, y: 100, isDragging: false, color: '#EF4444' }, // Красный угол
+            { id: 'B', x: 100, y: 250, isDragging: false, color: '#ffffff' },
+            { id: 'C', x: 500, y: 250, isDragging: false, color: '#ffffff' }
+        ];
+
+        let dragTarget = null;
+        const HIT_RADIUS = 15;
+        const VISUAL_SCALE = 10; // 10 px = 1 единица длины
+
+        // Элементы дашборда
+        const dashAngleA = document.getElementById('dash-angle-a');
+        const dashSinA = document.getElementById('dash-sin-a');
+        const dashCosA = document.getElementById('dash-cos-a');
+        const dashCosL = document.getElementById('dash-cos-left');
+        const dashCosR = document.getElementById('dash-cos-right');
+        const dashSinL = document.getElementById('dash-sin-left');
+        const dashSinR = document.getElementById('dash-sin-right');
+
+        function dist(p1, p2) {
+            return Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2);
+        }
+
+        // Вычисление угла через теорему косинусов (векторы)
+        function getAngle(pCenter, p1, p2) {
+            const a2 = dist(pCenter, p1)**2;
+            const b2 = dist(pCenter, p2)**2;
+            const c2 = dist(p1, p2)**2;
+            let cosVal = (a2 + b2 - c2) / (2 * Math.sqrt(a2) * Math.sqrt(b2));
+            // Clamp for float precision
+            cosVal = Math.max(-1, Math.min(1, cosVal));
+            return Math.acos(cosVal);
+        }
+
+        function getPointerPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * (canvas.width / rect.width),
+                y: (clientY - rect.top) * (canvas.height / rect.height)
+            };
+        }
+
+        function handlePointerDown(e) {
+            const pos = getPointerPos(e);
+            for (let p of points) {
+                if (dist(pos, p) < HIT_RADIUS * 1.5) {
+                    dragTarget = p;
+                    dragTarget.isDragging = true;
+                    e.preventDefault();
+                    break;
+                }
+            }
+        }
+
+        function handlePointerMove(e) {
+            if (!dragTarget) return;
+            const pos = getPointerPos(e);
+            
+            // Ограничения холста
+            dragTarget.x = Math.max(HIT_RADIUS, Math.min(canvas.width - HIT_RADIUS, pos.x));
+            dragTarget.y = Math.max(HIT_RADIUS, Math.min(canvas.height - HIT_RADIUS, pos.y));
+            
+            updatePhysics();
+            e.preventDefault();
+        }
+
+        function handlePointerUp(e) {
+            if (dragTarget) {
+                dragTarget.isDragging = false;
+                dragTarget = null;
+            }
+        }
+
+        canvas.addEventListener('mousedown', handlePointerDown);
+        canvas.addEventListener('mousemove', handlePointerMove);
+        window.addEventListener('mouseup', handlePointerUp);
+        
+        canvas.addEventListener('touchstart', handlePointerDown, {passive: false});
+        canvas.addEventListener('touchmove', handlePointerMove, {passive: false});
+        window.addEventListener('touchend', handlePointerUp);
+
+        function updatePhysics() {
+            const [A, B, C] = points;
+            
+            // Длины сторон в математических юнитах
+            const a = dist(B, C) / VISUAL_SCALE; // сторона напротив A
+            const b = dist(A, C) / VISUAL_SCALE; // сторона напротив B
+            const c = dist(A, B) / VISUAL_SCALE; // сторона напротив C
+
+            // Углы в радианах
+            const alpha = getAngle(A, B, C);
+            const beta = getAngle(B, A, C);
+            
+            // Значения функций для угла A
+            const sinAlpha = Math.sin(alpha);
+            const cosAlpha = Math.cos(alpha);
+            const alphaDeg = alpha * 180 / Math.PI;
+
+            // Расчеты теорем (округляем для красоты дашборда)
+            const cosLeft = a**2;
+            const cosRight = b**2 + c**2 - 2*b*c*cosAlpha;
+
+            const sinLeft = a / sinAlpha;
+            const sinRight = b / Math.sin(beta);
+
+            // Обновляем дашборд
+            dashAngleA.textContent = alphaDeg.toFixed(1) + '°';
+            dashSinA.textContent = sinAlpha.toFixed(3);
+            dashCosA.textContent = cosAlpha.toFixed(3);
+            
+            // Подсветка тупого угла
+            if (cosAlpha < 0) {
+                dashCosA.style.color = "var(--error-text)";
+                dashAngleA.style.color = "var(--error-text)";
+            } else {
+                dashCosA.style.color = "var(--text-main)";
+                dashAngleA.style.color = "var(--text-main)";
+            }
+
+            dashCosL.textContent = cosLeft.toFixed(1);
+            dashCosR.textContent = cosRight.toFixed(1);
+            
+            dashSinL.textContent = sinLeft.toFixed(1);
+            dashSinR.textContent = sinRight.toFixed(1);
+
+            drawTriangle(A, B, C, alpha, a, b, c);
+        }
+
+        function drawTriangle(A, B, C, alpha, a, b, c) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Отрисовка дуги угла А (Красная)
+            const angleStart = Math.atan2(B.y - A.y, B.x - A.x);
+            const angleEnd = Math.atan2(C.y - A.y, C.x - A.x);
+            
+            ctx.beginPath();
+            // Обработка направления отрисовки дуги
+            let drawAntiClockwise = false;
+            let diff = angleEnd - angleStart;
+            while(diff < -Math.PI) diff += 2*Math.PI;
+            while(diff > Math.PI) diff -= 2*Math.PI;
+            if (diff < 0) drawAntiClockwise = true;
+
+            ctx.arc(A.x, A.y, 30, angleStart, angleEnd, drawAntiClockwise);
+            ctx.lineTo(A.x, A.y);
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
+            ctx.fill();
+
+            // Сам треугольник
+            ctx.beginPath();
+            ctx.moveTo(A.x, A.y);
+            ctx.lineTo(B.x, B.y);
+            ctx.lineTo(C.x, C.y);
+            ctx.closePath();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.fill();
+            
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Подписи сторон
+            ctx.fillStyle = 'var(--text-muted)';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`c=${c.toFixed(1)}`, (A.x+B.x)/2 - 15, (A.y+B.y)/2 - 10);
+            ctx.fillText(`b=${b.toFixed(1)}`, (A.x+C.x)/2 + 15, (A.y+C.y)/2 - 10);
+            ctx.fillText(`a=${a.toFixed(1)}`, (B.x+C.x)/2, (B.y+C.y)/2 + 20);
+
+            // Точки вершин
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                
+                if (p.isDragging) {
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 10;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+                
+                ctx.strokeStyle = '#111';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Подписи вершин
+                ctx.fillStyle = p.color;
+                ctx.font = 'bold 16px sans-serif';
+                ctx.fillText(p.id, p.x, p.y - 15);
+            });
+        }
+
+        // Запуск
+        updatePhysics();
+
+    </script>
+</body>
+</html>
