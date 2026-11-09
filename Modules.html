@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Конспект: Модуль числа от А до Я</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        window.mathJaxLoaded = true;
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --bg-hover: rgba(255, 255, 255, 0.05);
+            --border: #333333;
+            --accent: #06B6D4;
+            --accent-hover: #0891B2;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #EF4444;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #3B82F6;
+            --warn-bg: rgba(245, 158, 11, 0.1);
+            --warn-text: #F59E0B;
+            --brand-purple: #8B5CF6;
+            --brand-green: #4CAF50;
+            --brand-pink: #EC4899;
+            --brand-orange: #F97316;
+            --brand-red: #EF4444;
+            --brand-blue: #3B82F6;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-main); color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.5rem; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 30px; letter-spacing: -0.5px; }
+        h2 { font-size: 1.5rem; color: var(--accent); margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; color: #fff; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 25px; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .alert-box {
+            padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; gap: 15px; align-items: flex-start;
+        }
+        .alert-info { background-color: var(--info-bg); border-left: 4px solid var(--info-text); }
+        .alert-warning { background-color: var(--warn-bg); border-left: 4px solid var(--warn-text); }
+        .alert-error { background-color: var(--error-bg); border-left: 4px solid var(--error-text); }
+
+        .icon-box { flex-shrink: 0; margin-top: 2px; }
+
+        ul { padding-left: 20px; color: var(--text-muted); }
+        li { margin-bottom: 10px; }
+        strong { color: var(--text-main); font-weight: 600; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
+        .table-container { overflow-x: auto; margin-bottom: 15px; }
+        .data-table th, .data-table td { border: 1px solid var(--border); padding: 12px 15px; text-align: left; vertical-align: middle;}
+        .data-table th { background-color: rgba(255,255,255,0.05); color: var(--text-main); font-weight: 600; }
+        .data-table td { color: var(--text-muted); font-size: 0.95rem; }
+
+        .formula-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin: 20px 0; }
+        .formula-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+            padding: 15px; text-align: center; border-radius: 8px; font-size: 1.15rem;
+            overflow-x: auto; overflow-y: hidden; 
+            white-space: normal; word-wrap: break-word;
+        }
+        
+        mjx-container[display="true"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 5px 0; margin: 0 !important; }
+        mjx-container[jax="SVG"] { color: inherit !important; }
+
+        /* Симулятор */
+        .simulator { background: #111; border: 1px solid #444; border-radius: 12px; padding: 20px; margin: 20px 0; overflow: hidden; }
+        .process-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .process-btn {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 10px 15px; border-radius: 6px; cursor: pointer; flex: 1; min-width: 140px; text-align: center; font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .process-btn.active {
+            background: rgba(6, 182, 212, 0.1); border-color: var(--accent); color: var(--accent); font-weight: bold;
+        }
+        
+        .sim-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .control-group { display: flex; flex-direction: column; gap: 8px; }
+        .control-group label { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+        
+        .canvas-container { display: flex; justify-content: center; width: 100%; overflow: hidden; position: relative; background: #0a0a0a; border-radius: 8px; border: 1px solid #333; padding: 10px; touch-action: none;}
+        canvas { max-width: 100%; display: block; }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; 
+            margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border: 1px solid var(--border);
+        }
+        .dashboard-item { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+        .dashboard-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; min-height: 20px;}
+        .dashboard-value { font-size: 1.15rem; font-weight: bold; font-family: monospace; }
+
+        .btn {
+            background-color: var(--accent); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 0.95rem; justify-content: center;
+        }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+        .btn-outline:hover { background: rgba(6, 182, 212, 0.1); }
+
+        .step-content { display: none; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); overflow-x: auto; }
+        .step-content.active { display: block; animation: slideDown 0.3s ease; }
+        
+        /* Стили для аккуратного отображения математических переменных в UI без MathJax-разрывов */
+        .math-var { font-family: 'Times New Roman', Times, serif; font-style: italic; font-size: 1.05em; }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .card { padding: 15px; }
+            .sim-controls { grid-template-columns: 1fr; }
+        }
+    </style>
+    <link rel="stylesheet" href="loading_animation.css">
+</head>
+<body>
+    <script src="loading_script.js"></script>
+
+    <div class="container">
+        <h1>Модуль числа: Полное руководство</h1>
+        
+        <div class="alert-box alert-info">
+            <div class="icon-box"><i data-lucide="shield" color="var(--info-text)"></i></div>
+            <div>
+                <strong style="color: var(--info-text);">Почему «отбросить минус» больше не работает?</strong><br>
+                <span style="color: var(--text-muted);">В младших классах модуль объясняют просто: $|-5| = 5$. Но в старшей школе под модулем стоят переменные: $|x-3|$. Мы заранее не знаем знак выражения внутри, поэтому просто убрать скобки модуля нельзя — необходимо применять строгие математические определения.</span>
+            </div>
+        </div>
+
+        <h2><i data-lucide="split"></i> 1. Два определения модуля: Алгебра и Геометрия</h2>
+        <div class="card">
+            <p>Для решения задач необходимо свободно переключаться между алгебраической записью и геометрической интерпретацией модуля.</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--brand-purple); text-align: left;">
+                    <div style="font-size: 0.95rem; color: var(--brand-purple); margin-bottom: 10px; font-weight: bold; text-align: center;">1. Алгебраическое определение</div>
+                    $$|x| = \begin{cases} x, & \quad x \ge 0 \\ -x, & \quad x < 0 \end{cases}$$
+                    <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 10px; line-height: 1.4;">
+                        Если подмодульное выражение неотрицательно ($x \ge 0$), модуль раскрывается без изменения знака.<br>
+                        Если выражение отрицательно ($x < 0$), перед ним ставится знак «минус» для компенсации знака: $-(-5) = 5$.
+                    </span>
+                </div>
+                
+                <div class="formula-box" style="border-color: var(--accent); text-align: left;">
+                    <div style="font-size: 0.95rem; color: var(--accent); margin-bottom: 10px; font-weight: bold; text-align: center;">2. Геометрический смысл</div>
+                    $$|x - a| = \rho(x; a)$$
+                    <span style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 10px; line-height: 1.4;">
+                        Модуль разности двух чисел равен <b>расстоянию</b> между этими точками на числовой прямой.<br>
+                        Уравнение $|x - 3| = 5$ означает поиск всех точек $x$, удаленных от точки $3$ ровно на $5$ единиц (это точки $-2$ и $8$).
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="zap"></i> 2. Базовые свойства и Связь с корнями</h2>
+        <div class="card">
+            <p>Основные алгебраические тождества, используемые при преобразовании выражений с модулем:</p>
+            <div class="formula-grid">
+                <div class="formula-box">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Мультипликативность</div>
+                    $$|a \cdot b| = |a| \cdot |b|$$
+                    $$\left|\frac{a}{b}\right| = \frac{|a|}{|b|} \quad (b \neq 0)$$
+                </div>
+                <div class="formula-box">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Симметричность</div>
+                    $$|-a| = |a|$$
+                    $$|a - b| = |b - a|$$
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-green);">
+                    <div style="font-size: 0.85rem; color: var(--brand-green); margin-bottom: 5px; font-weight: bold;">Четная степень</div>
+                    $$|a|^2 = a^2$$
+                    <span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 5px;">Возведение в квадрат позволяет избавиться от знака модуля.</span>
+                </div>
+            </div>
+
+            <div class="alert-box alert-error" style="margin-top: 20px; margin-bottom: 0;">
+                <div class="icon-box"><i data-lucide="alert-octagon" color="var(--error-text)"></i></div>
+                <div>
+                    <strong style="color: var(--error-text);">Важнейшее тождество: Корень из квадрата</strong><br>
+                    <span style="color: var(--text-muted);">Запись $\sqrt{x^2} = x$ неверна при отрицательных значениях переменной. Так как результат извлечения арифметического квадратного корня обязан быть неотрицательным, действует строгое правило:<br>
+                    <b style="color: #fff; font-size: 1.1rem; background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 4px; display: inline-block; margin-top: 6px;">$\sqrt{x^2} = |x|$</b></span>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="table"></i> 3. Схемы равносильных переходов</h2>
+        <div class="card table-container">
+            <p style="margin-top: 0; color: var(--text-muted);">Вместо раскрытия модуля по определению через рассмотрение знаков на промежутках, большинство стандартных задач решается с помощью равносильных переходов:</p>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="18%">Вид</th>
+                        <th width="32%">Равносильный переход</th>
+                        <th width="20%">Условия (ОДЗ)</th>
+                        <th width="30%">Математическая суть</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong style="color: var(--accent);">Уравнение</strong><br>$|f(x)| = a$</td>
+                        <td>$$\left[\begin{gathered} f(x) = a \\ f(x) = -a \end{gathered}\right.$$</td>
+                        <td>$a \ge 0$<br><span style="font-size: 0.8rem;">(При $a < 0$ корней нет: $x \in \emptyset$)</span></td>
+                        <td>Точки, удаленные от нуля на расстояние $a$. При $a = 0$ оба случая сливаются в одно уравнение $f(x) = 0$.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--brand-pink);">Уравнение</strong><br>$|f(x)| = g(x)$</td>
+                        <td>$$\begin{cases} g(x) \ge 0 \\ \left[\begin{gathered} f(x) = g(x) \\ f(x) = -g(x) \end{gathered}\right. \end{cases}$$</td>
+                        <td>Правая часть обязана быть неотрицательной: $g(x) \ge 0$</td>
+                        <td>Так как левая часть заведомо $\ge 0$, правая часть также не может быть отрицательной. Условие для $f(x)$ писать не требуется.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--brand-purple);">Уравнение</strong><br>$|f(x)| = |g(x)|$</td>
+                        <td>$$\left[\begin{gathered} f(x) = g(x) \\ f(x) = -g(x) \end{gathered}\right.$$</td>
+                        <td>Дополнительных условий нет (только ОДЗ самих функций)</td>
+                        <td>Модули двух выражений равны тогда и только тогда, когда сами выражения либо равны, либо противоположны по знаку.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--brand-green);">Неравенство</strong><br>$|f(x)| < g(x)$</td>
+                        <td>$$\begin{cases} f(x) < g(x) \\ f(x) > -g(x) \end{cases}$$<span style="font-size: 0.8rem;">Двойное: $-g(x) < f(x) < g(x)$</span></td>
+                        <td>Условие $g(x) > 0$ выполняется автоматически</td>
+                        <td><b>Пересечение (система).</b> Расстояние меньше заданного: значения $f(x)$ зажаты внутри интервала $(-g(x); g(x))$.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: var(--brand-orange);">Неравенство</strong><br>$|f(x)| > g(x)$</td>
+                        <td>$$\left[\begin{gathered} f(x) > g(x) \\ f(x) < -g(x) \end{gathered}\right.$$</td>
+                        <td>Выполняется при любых $g(x)$ (при $g(x) < 0$ решение — вся ОДЗ)</td>
+                        <td><b>Объединение (совокупность).</b> Расстояние больше заданного: значения $f(x)$ лежат за пределами отрезка $[-g(x); g(x)]$.</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0;"><i>Примечание: Для уравнений и неравенств, содержащих сумму нескольких модулей (например, $|x-1| + |x+2| = 5$), применяется <b>метод интервалов</b>: числовая прямая разбивается корнями подмодульных выражений на знакопостоянные промежутки, и на каждом из них модули раскрываются строго по определению.</i></p>
+        </div>
+
+        <h2><i data-lucide="trending-up"></i> 4. Модуль и Графики функций</h2>
+        <div class="card">
+            <p>Базовый график $y = |x|$ представляет собой биссектрисы первой и второй координатных четвертей («уголок» с вершиной в начале координат). При наложении модуля на произвольную функцию $f(x)$ происходят следующие геометрические преобразования:</p>
+            
+            <div class="formula-grid">
+                <div class="formula-box" style="border-color: var(--brand-pink); text-align: left;">
+                    <div style="font-size: 0.95rem; color: var(--brand-pink); margin-bottom: 8px; font-weight: bold; text-align: center;">Внешний модуль: $y = |f(x)|$</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.4;">
+                        Значения функции становятся неотрицательными ($y \ge 0$). <br><br>
+                        <b>Построение:</b> Часть графика, лежащая выше оси $Ox$, сохраняется без изменений. Часть графика, лежащая ниже оси $Ox$, <b>симметрично отражается наверх</b> относительно оси $Ox$.
+                    </p>
+                </div>
+                <div class="formula-box" style="border-color: var(--brand-orange); text-align: left;">
+                    <div style="font-size: 0.95rem; color: var(--brand-orange); margin-bottom: 8px; font-weight: bold; text-align: center;">Внутренний модуль: $y = f(|x|)$</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; line-height: 1.4;">
+                        Функция становится четной: $f(|-x|) = f(|x|)$.<br><br>
+                        <b>Построение:</b> Часть графика в левой полуплоскости ($x < 0$) полностью <b>стирается</b>. Часть графика из правой полуплоскости ($x \ge 0$) сохраняется и <b>симметрично копируется налево</b> относительно оси $Oy$.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2><i data-lucide="monitor-play"></i> 5. Лаборатория: Интерактивный модуль</h2>
+        <p style="color: var(--text-muted);">В первом режиме вы можете наглядно увидеть, как работает геометрический смысл модуля (метод расстояний на прямой) при решении уравнений и неравенств. Во втором режиме — изучить, как операторы модуля деформируют графики функций.</p>
+        
+        <div class="simulator">
+            <div class="process-selector">
+                <div class="process-btn active" id="btn-mode-radar" onclick="setSimMode('radar')">1. Метод расстояний (Числовая ось)</div>
+                <div class="process-btn" id="btn-mode-graph" onclick="setSimMode('graph')">2. Трансформация графиков</div>
+            </div>
+
+            <!-- Контролы для Режима 1 (Числовая ось / Радар) -->
+            <div id="controls-radar">
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">Выберите тип задачи и настройте точку отсчета <span class="math-var">b</span> и расстояние (радиус) <span class="math-var">c</span>:</p>
+                
+                <div class="process-selector" style="margin-bottom: 15px;">
+                    <div class="process-btn active" id="btn-op-eq" onclick="setRadarOp('eq')" style="font-size: 0.9rem; padding: 8px;">Уравнение: |<span class="math-var">x</span> &minus; <span class="math-var">b</span>| = <span class="math-var">c</span></div>
+                    <div class="process-btn" id="btn-op-less" onclick="setRadarOp('less')" style="font-size: 0.9rem; padding: 8px;">Неравенство: |<span class="math-var">x</span> &minus; <span class="math-var">b</span>| &lt; <span class="math-var">c</span></div>
+                    <div class="process-btn" id="btn-op-more" onclick="setRadarOp('more')" style="font-size: 0.9rem; padding: 8px;">Неравенство: |<span class="math-var">x</span> &minus; <span class="math-var">b</span>| &gt; <span class="math-var">c</span></div>
+                </div>
+
+                <div class="sim-controls">
+                    <div class="control-group">
+                        <label style="color: #fff;">
+                            <span>Точка отсчета (центр <span class="math-var">b</span>):</span>
+                            <span id="val-rad-b" style="font-weight: bold; font-family: monospace; color: var(--accent);">1</span>
+                        </label>
+                        <input type="range" id="sim-rad-b" min="-5" max="5" value="1" step="1">
+                    </div>
+                    <div class="control-group">
+                        <label style="color: #fff;">
+                            <span>Расстояние (радиус <span class="math-var">c</span>):</span>
+                            <span id="val-rad-c" style="font-weight: bold; font-family: monospace; color: var(--brand-purple);">4</span>
+                        </label>
+                        <input type="range" id="sim-rad-c" min="-2" max="7" value="4" step="1" style="accent-color: var(--brand-purple);">
+                    </div>
+                </div>
+
+                <div class="dashboard-grid" style="grid-template-columns: 1fr 1.5fr;">
+                    <div class="dashboard-item" id="dash-rad-box" style="border: 1px solid var(--accent); background: rgba(6, 182, 212, 0.05);">
+                        <div class="dashboard-label" id="dash-rad-title">Итоговое множество решений:</div>
+                        <div class="dashboard-value" id="dash-rad-ans" style="color: var(--accent); font-size: 1.25rem;">x = -3; x = 5</div>
+                    </div>
+                    <div class="dashboard-item">
+                        <div class="dashboard-label">Геометрическая интерпретация:</div>
+                        <div class="dashboard-value" id="dash-rad-desc" style="color: var(--text-muted); font-family: inherit; font-size: 0.95rem; font-weight: normal; line-height: 1.4;">
+                            Ищем точки на прямой, которые удалены от координаты <b>1</b> ровно на <b>4</b> единицы влево и вправо.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контролы для Режима 2 (Графики) -->
+            <div id="controls-graph" style="display: none;">
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">Базовая функция (белый пунктир): парабола <span class="math-var">f</span>(<span class="math-var">x</span>) = 0.5(<span class="math-var">x</span> &minus; 2)&sup2; &minus; 3. Выберите трансформацию:</p>
+                <div class="process-selector" style="margin-bottom: 15px;">
+                    <div class="process-btn active" id="btn-tr-base" onclick="setTransform('base')" style="font-size: 0.85rem; padding: 8px;">Исходная: <span class="math-var">y</span> = <span class="math-var">f</span>(<span class="math-var">x</span>)</div>
+                    <div class="process-btn" id="btn-tr-out" onclick="setTransform('out')" style="font-size: 0.85rem; padding: 8px;">Внешний: <span class="math-var">y</span> = |<span class="math-var">f</span>(<span class="math-var">x</span>)|</div>
+                    <div class="process-btn" id="btn-tr-in" onclick="setTransform('in')" style="font-size: 0.85rem; padding: 8px;">Внутренний: <span class="math-var">y</span> = <span class="math-var">f</span>(|<span class="math-var">x</span>|)</div>
+                    <div class="process-btn" id="btn-tr-both" onclick="setTransform('both')" style="font-size: 0.85rem; padding: 8px;">Комбинация: <span class="math-var">y</span> = |<span class="math-var">f</span>(|<span class="math-var">x</span>|)|</div>
+                </div>
+                <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+                    <div class="dashboard-item">
+                        <div class="dashboard-label">Алгоритм построения графика:</div>
+                        <div class="dashboard-value" id="dash-tr-desc" style="color: var(--brand-pink); font-family: inherit; font-size: 0.95rem; font-weight: normal; line-height: 1.4;">Исходная парабола с вершиной в точке (2; -3). Часть графика расположена ниже оси Ox.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="canvas-mod" width="750" height="220"></canvas>
+            </div>
+        </div>
+
+        <h2><i data-lucide="target"></i> 6. Практика</h2>
+        <div class="card">
+            <h3 style="color: var(--accent); margin-top:0;">Задача: Уравнение вида $|f(x)| = g(x)$</h3>
+            <p>Решите уравнение: $\quad |2x - 3| = x - 1$</p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="hint-btn-1" onclick="showStep('hint1', 'hint-btn-1')"><i data-lucide="help-circle" style="width: 16px;"></i> Подсказка</button>
+                <button class="btn" onclick="showStep('sol1', 'hint-btn-1')"><i data-lucide="check-circle" style="width: 16px;"></i> Показать решение</button>
+            </div>
+            
+            <div class="step-content" id="hint1">
+                <strong>💡 Подсказка:</strong> Воспользуйтесь второй строкой из таблицы равносильных переходов. Справа находится выражение с переменной. Запишите условие неотрицательности правой части ($x - 1 \ge 0$), а затем решите совокупность двух линейных уравнений: $2x-3 = x-1$ и $2x-3 = -(x-1)$.
+            </div>
+
+            <div class="step-content" id="sol1">
+                <p><strong>Решение:</strong></p>
+                <p>1. Перейдем к равносильной системе. Модуль не может равняться отрицательному числу, поэтому накладываем условие на правую часть:<br>
+                $$\begin{cases} x - 1 \ge 0 \\ \left[\begin{gathered} 2x - 3 = x - 1 \\ 2x - 3 = -(x - 1) \end{gathered}\right. \end{cases} \quad \Leftrightarrow \quad \begin{cases} \mathbf{x \ge 1} \\ \left[\begin{gathered} 2x - x = 3 - 1 \\ 2x - 3 = -x + 1 \end{gathered}\right. \end{cases}$$</p>
+                
+                <p>2. Решаем оба уравнения совокупности:<br>
+                Первое уравнение: $x_1 = 2$.<br>
+                Второе уравнение: $3x = 4 \implies x_2 = \frac{4}{3} = 1\frac{1}{3}$.</p>
+
+                <p>3. Проверяем выполнение условия $x \ge 1$:<br>
+                Оба корня ($2$ и $1\frac{1}{3}$) больше единицы, следовательно, оба входят в ответ.</p>
+                
+                <div style="background: rgba(6, 182, 212, 0.1); padding: 10px 15px; border-radius: 6px; display: inline-block; color: var(--accent); font-weight: bold; margin-top: 10px;">
+                    Ответ: $1\frac{1}{3}; \quad 2$
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        function forceMathJaxRender() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.error(err));
+            } else {
+                window.setTimeout(forceMathJaxRender, 200);
+            }
+        }
+        window.setTimeout(forceMathJaxRender, 100);
+
+        function showStep(stepId, btnId) {
+            const el = document.getElementById(stepId);
+            el.classList.add('active');
+            if (btnId) {
+                const btn = document.getElementById(btnId);
+                if(btn) btn.style.display = 'none';
+            }
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([el]).catch(err => console.error(err));
+            }
+        }
+
+        /* ==========================================
+           СИМУЛЯТОР МОДУЛЕЙ
+           ========================================== */
+        
+        const canvas = document.getElementById('canvas-mod');
+        const ctx = canvas.getContext('2d');
+        
+        let simMode = 'radar'; // 'radar' or 'graph'
+        let radarOp = 'eq'; // 'eq', 'less', 'more'
+        let trMode = 'base'; // 'base', 'out', 'in', 'both'
+
+        // Elements for Radar Mode
+        const inRadB = document.getElementById('sim-rad-b');
+        const inRadC = document.getElementById('sim-rad-c');
+        const valRadB = document.getElementById('val-rad-b');
+        const valRadC = document.getElementById('val-rad-c');
+        const dashRadBox = document.getElementById('dash-rad-box');
+        const dashRadAns = document.getElementById('dash-rad-ans');
+        const dashRadDesc = document.getElementById('dash-rad-desc');
+
+        // Elements for Graph Mode
+        const dashTrDesc = document.getElementById('dash-tr-desc');
+
+        window.setSimMode = function(mode) {
+            simMode = mode;
+            document.getElementById('btn-mode-radar').classList.toggle('active', mode === 'radar');
+            document.getElementById('btn-mode-graph').classList.toggle('active', mode === 'graph');
+            
+            document.getElementById('controls-radar').style.display = mode === 'radar' ? 'block' : 'none';
+            document.getElementById('controls-graph').style.display = mode === 'graph' ? 'block' : 'none';
+            
+            canvas.height = mode === 'radar' ? 220 : 350;
+            updateCanvas();
+        };
+
+        window.setRadarOp = function(op) {
+            radarOp = op;
+            ['eq', 'less', 'more'].forEach(o => {
+                const btn = document.getElementById('btn-op-' + o);
+                btn.classList.remove('active');
+                btn.style.borderColor = 'var(--border)';
+                btn.style.color = 'var(--text-muted)';
+                btn.style.background = 'var(--bg-card)';
+            });
+
+            const activeBtn = document.getElementById('btn-op-' + op);
+            activeBtn.classList.add('active');
+            
+            let col = 'var(--accent)';
+            let bg = 'rgba(6, 182, 212, 0.1)';
+            if (op === 'less') { col = 'var(--brand-green)'; bg = 'rgba(76, 175, 80, 0.1)'; }
+            if (op === 'more') { col = 'var(--brand-orange)'; bg = 'rgba(249, 115, 22, 0.1)'; }
+
+            activeBtn.style.borderColor = col;
+            activeBtn.style.color = col;
+            activeBtn.style.background = bg;
+
+            updateCanvas();
+        };
+
+        window.setTransform = function(type) {
+            trMode = type;
+            ['base', 'out', 'in', 'both'].forEach(t => {
+                const btn = document.getElementById('btn-tr-' + t);
+                btn.classList.remove('active');
+                btn.style.borderColor = 'var(--border)';
+                btn.style.color = 'var(--text-muted)';
+                btn.style.background = 'var(--bg-card)';
+            });
+
+            const activeBtn = document.getElementById('btn-tr-' + type);
+            activeBtn.classList.add('active');
+            activeBtn.style.borderColor = 'var(--brand-pink)';
+            activeBtn.style.color = 'var(--brand-pink)';
+            activeBtn.style.background = 'rgba(236, 72, 153, 0.1)';
+
+            if (type === 'base') {
+                dashTrDesc.innerHTML = 'Исходная парабола <span class="math-var">y</span> = 0.5(<span class="math-var">x</span> &minus; 2)&sup2; &minus; 3. Часть графика расположена ниже оси <span class="math-var">Ox</span> (значения <span class="math-var">y</span> &lt; 0).';
+            } else if (type === 'out') {
+                dashTrDesc.innerHTML = '<b>Внешний модуль |<span class="math-var">f</span>(<span class="math-var">x</span>)|:</b> Участок графика ниже оси <span class="math-var">Ox</span> зеркально отразился наверх. Теперь вся функция неотрицательна.';
+            } else if (type === 'in') {
+                dashTrDesc.innerHTML = '<b>Внутренний модуль <span class="math-var">f</span>(|<span class="math-var">x</span>|):</b> Левая полуплоскость (<span class="math-var">x</span> &lt; 0) стерлась, а правая часть графика симметрично скопировалась налево через ось <span class="math-var">Oy</span>.';
+            } else if (type === 'both') {
+                dashTrDesc.innerHTML = '<b>Комбинация |<span class="math-var">f</span>(|<span class="math-var">x</span>|)|:</b> Сначала правая часть отразилась налево (через <span class="math-var">Oy</span>), а затем все отрицательные участки отразились наверх (через <span class="math-var">Ox</span>).';
+            }
+
+            updateCanvas();
+        };
+
+        // Отрисовка 1D прямой для режима "Метод расстояний"
+        function drawRadarMode(w, h) {
+            ctx.clearRect(0, 0, w, h);
+
+            const b = parseInt(inRadB.value);
+            const c = parseInt(inRadC.value);
+            valRadB.textContent = b;
+            valRadC.textContent = c;
+
+            const axisY = h / 2 + 30;
+            const originX = w / 2;
+            const scale = 28; // пикселей на единицу
+
+            // 1. Базовая числовая ось
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(20, axisY);
+            ctx.lineTo(w - 20, axisY);
+            ctx.lineTo(w - 30, axisY - 5);
+            ctx.moveTo(w - 20, axisY);
+            ctx.lineTo(w - 30, axisY + 5);
+            ctx.stroke();
+
+            ctx.fillStyle = '#888';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.fillText('x', w - 15, axisY - 10);
+
+            // Засечки и цифры на оси
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            for (let i = -12; i <= 12; i++) {
+                let px = originX + i * scale;
+                ctx.strokeStyle = i === 0 ? '#aaa' : '#444';
+                ctx.lineWidth = i === 0 ? 2 : 1;
+                ctx.beginPath();
+                ctx.moveTo(px, axisY - (i === 0 ? 6 : 4));
+                ctx.lineTo(px, axisY + (i === 0 ? 6 : 4));
+                ctx.stroke();
+
+                ctx.fillStyle = i === 0 ? '#fff' : '#777';
+                ctx.fillText(i, px, axisY + 10);
+            }
+
+            const pxB = originX + b * scale;
+            const x1 = b - c;
+            const x2 = b + c;
+            const px1 = originX + x1 * scale;
+            const px2 = originX + x2 * scale;
+
+            let activeColor = '#06B6D4'; // cyan for eq
+            if (radarOp === 'less') activeColor = '#4CAF50'; // green
+            if (radarOp === 'more') activeColor = '#F97316'; // orange
+
+            dashRadBox.style.borderColor = activeColor;
+            dashRadAns.style.color = activeColor;
+
+            // Логика при c < 0
+            if (c < 0) {
+                if (radarOp === 'eq' || radarOp === 'less') {
+                    dashRadBox.style.borderColor = 'var(--error-text)';
+                    dashRadAns.style.color = 'var(--error-text)';
+                    dashRadAns.textContent = "Нет решений (x ∈ ∅)";
+                    dashRadDesc.innerHTML = `Расстояние не может быть отрицательным (<span class="math-var">c</span> = ${c} &lt; 0). Ни одна точка не удовлетворяет условию.`;
+                } else {
+                    dashRadAns.textContent = "x ∈ (-∞; +∞)";
+                    dashRadDesc.innerHTML = `Модуль всегда неотрицателен, поэтому он заведомо больше любого отрицательного числа (<span class="math-var">c</span> = ${c}). Решение — вся числовая прямая.`;
+                    
+                    ctx.strokeStyle = activeColor;
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.moveTo(20, axisY);
+                    ctx.lineTo(w - 25, axisY);
+                    ctx.stroke();
+                }
+                drawCenterPoint(pxB, axisY, b);
+                return;
+            }
+
+            // Логика при c == 0
+            if (c === 0) {
+                drawCenterPoint(pxB, axisY, b);
+                if (radarOp === 'eq') {
+                    dashRadAns.textContent = `x = ${b}`;
+                    dashRadDesc.innerHTML = `Расстояние от точки <b>${b}</b> равно нулю только в самой точке <b>${b}</b>.`;
+                    drawRootPoint(pxB, axisY, activeColor, false);
+                } else if (radarOp === 'less') {
+                    dashRadBox.style.borderColor = 'var(--error-text)';
+                    dashRadAns.style.color = 'var(--error-text)';
+                    dashRadAns.textContent = "Нет решений (x ∈ ∅)";
+                    dashRadDesc.innerHTML = `Расстояние не может быть строго меньше нуля.`;
+                } else if (radarOp === 'more') {
+                    dashRadAns.textContent = `(-∞; ${b}) ∪ (${b}; +∞)`;
+                    dashRadDesc.innerHTML = `Расстояние больше нуля для всех точек прямой, кроме самого центра <b>${b}</b> (в нем расстояние равно 0, точка выколота).`;
+                    
+                    ctx.strokeStyle = activeColor;
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.moveTo(20, axisY);
+                    ctx.lineTo(w - 25, axisY);
+                    ctx.stroke();
+                    drawRootPoint(pxB, axisY, activeColor, true);
+                }
+                return;
+            }
+
+            // Стандартная логика при c > 0
+            const radiusPx = c * scale;
+            
+            ctx.fillStyle = 'rgba(139, 92, 246, 0.08)';
+            ctx.beginPath();
+            ctx.arc(pxB, axisY, radiusPx, Math.PI, 0, false);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = '#8B5CF6';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            const arcHeight = Math.min(radiusPx * 0.6, 85);
+            ctx.ellipse(pxB - radiusPx/2, axisY, radiusPx/2, arcHeight, 0, Math.PI, 0, false);
+            ctx.ellipse(pxB + radiusPx/2, axisY, radiusPx/2, arcHeight, 0, Math.PI, 0, false);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#8B5CF6';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(`-${c}`, pxB - radiusPx/2, axisY - arcHeight - 4);
+            ctx.fillText(`+${c}`, pxB + radiusPx/2, axisY - arcHeight - 4);
+
+            if (radarOp === 'eq') {
+                dashRadAns.textContent = `x₁ = ${x1};  x₂ = ${x2}`;
+                dashRadDesc.innerHTML = `Уравнение: ищем точки, находящиеся ровно на границе радиуса <b>${c}</b> от центра <b>${b}</b>. Это две точки: ${b} &minus; ${c} = <b>${x1}</b> и ${b} + ${c} = <b>${x2}</b>.`;
+                
+                drawRootPoint(px1, axisY, activeColor, false);
+                drawRootPoint(px2, axisY, activeColor, false);
+
+            } else if (radarOp === 'less') {
+                dashRadAns.textContent = `x ∈ (${x1}; ${x2})`;
+                dashRadDesc.innerHTML = `Неравенство «меньше»: нам подходят все точки, расстояние от которых до центра <b>${b}</b> меньше <b>${c}</b> (внутренняя область между границами).`;
+
+                ctx.strokeStyle = activeColor;
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(px1, axisY);
+                ctx.lineTo(px2, axisY);
+                ctx.stroke();
+
+                ctx.lineWidth = 1.5;
+                for (let x = px1 + 6; x < px2; x += 8) {
+                    ctx.beginPath(); ctx.moveTo(x, axisY); ctx.lineTo(x - 4, axisY - 8); ctx.stroke();
+                }
+
+                drawRootPoint(px1, axisY, activeColor, true);
+                drawRootPoint(px2, axisY, activeColor, true);
+
+            } else if (radarOp === 'more') {
+                dashRadAns.textContent = `(-∞; ${x1}) ∪ (${x2}; +∞)`;
+                dashRadDesc.innerHTML = `Неравенство «больше»: подходят все точки, удаленные от центра <b>${b}</b> дальше чем на <b>${c}</b> шагов (внешние области за пределами границ).`;
+
+                ctx.strokeStyle = activeColor;
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(20, axisY);
+                ctx.lineTo(px1, axisY);
+                ctx.moveTo(px2, axisY);
+                ctx.lineTo(w - 25, axisY);
+                ctx.stroke();
+
+                ctx.lineWidth = 1.5;
+                for (let x = 25; x < px1; x += 8) {
+                    ctx.beginPath(); ctx.moveTo(x, axisY); ctx.lineTo(x - 4, axisY - 8); ctx.stroke();
+                }
+                for (let x = px2 + 6; x < w - 25; x += 8) {
+                    ctx.beginPath(); ctx.moveTo(x, axisY); ctx.lineTo(x - 4, axisY - 8); ctx.stroke();
+                }
+
+                drawRootPoint(px1, axisY, activeColor, true);
+                drawRootPoint(px2, axisY, activeColor, true);
+            }
+
+            drawCenterPoint(pxB, axisY, b);
+        }
+
+        function drawCenterPoint(px, py, val) {
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(px, py + 32);
+            ctx.stroke();
+
+            ctx.fillStyle = '#1e1e1e';
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.roundRect(px - 28, py + 32, 56, 22, 4);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`Центр ${val}`, px, py + 43);
+
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(px, py, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawRootPoint(px, py, color, isHollow) {
+            ctx.beginPath();
+            ctx.arc(px, py, 6, 0, Math.PI * 2);
+            if (isHollow) {
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fill();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            } else {
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+        }
+
+        // Отрисовка 2D координатной сетки для режима "Графики"
+        function drawCoordinateSystem2D(w, h, originX, originY, scale) {
+            ctx.clearRect(0, 0, w, h);
+            
+            ctx.strokeStyle = '#222';
+            ctx.lineWidth = 1;
+            for (let x = originX % scale; x < w; x += scale) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+            for (let y = originY % scale; y < h; y += scale) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke(); // X
+            ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke(); // Y
+
+            ctx.fillStyle = '#888';
+            ctx.font = '11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            for (let x = originX % scale; x < w; x += scale) {
+                let val = Math.round((x - originX) / scale);
+                if (val !== 0) {
+                    ctx.beginPath(); ctx.moveTo(x, originY - 3); ctx.lineTo(x, originY + 3); ctx.stroke();
+                    ctx.fillText(val, x, originY + 6);
+                }
+            }
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let y = originY % scale; y < h; y += scale) {
+                let val = Math.round((originY - y) / scale);
+                if (val !== 0) {
+                    ctx.beginPath(); ctx.moveTo(originX - 3, y); ctx.lineTo(originX + 3, y); ctx.stroke();
+                    ctx.fillText(val, originX - 6, y);
+                }
+            }
+            ctx.fillText('0', originX - 6, originY + 12);
+        }
+
+        function updateCanvas() {
+            const w = canvas.width;
+            const h = canvas.height;
+
+            if (simMode === 'radar') {
+                drawRadarMode(w, h);
+            } else {
+                const scale = 30;
+                const originX = w / 2;
+                const originY = h / 2 + 30;
+
+                drawCoordinateSystem2D(w, h, originX, originY, scale);
+
+                const baseFunc = (x) => 0.5 * Math.pow(x - 2, 2) - 3;
+
+                // 1. Пунктирный призрак исходной функции
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                for (let px = 0; px <= w; px += 2) {
+                    let x = (px - originX) / scale;
+                    let y = baseFunc(x);
+                    let py = originY - y * scale;
+                    if (px === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // 2. Трансформированный график
+                ctx.strokeStyle = '#EC4899';
+                ctx.lineWidth = 4;
+                ctx.lineJoin = 'round';
+                ctx.beginPath();
+                
+                for (let px = 0; px <= w; px += 1) {
+                    let x = (px - originX) / scale;
+                    let y = 0;
+
+                    if (trMode === 'base') y = baseFunc(x);
+                    else if (trMode === 'out') y = Math.abs(baseFunc(x));
+                    else if (trMode === 'in') y = baseFunc(Math.abs(x));
+                    else if (trMode === 'both') y = Math.abs(baseFunc(Math.abs(x)));
+
+                    let py = originY - y * scale;
+                    if (px === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.stroke();
+            }
+        }
+
+        inRadB.addEventListener('input', updateCanvas);
+        inRadC.addEventListener('input', updateCanvas);
+
+        // Init
+        setTimeout(() => {
+            setTransform('base');
+            setRadarOp('eq');
+            setSimMode('radar');
+        }, 100);
+
+    </script>
+</body>
+</html>
